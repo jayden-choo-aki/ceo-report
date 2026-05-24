@@ -195,6 +195,26 @@
       height: 24px;
     }
 
+    /* 보조 KPI 행 (재무건전성·이익 분해) */
+    .kpi-row-sm {
+      border-top: none;
+      margin-top: -1px;
+    }
+    .kpi-row-sm .kpi-card {
+      padding: 14px 20px 14px;
+    }
+    .kpi-row-sm .kpi-label {
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .kpi-row-sm .kpi-value {
+      font-size: 18px;
+      line-height: 1.15;
+    }
+    .kpi-row-sm .kpi-unit {
+      font-size: 12px;
+    }
+
     /* Chart island container */
     .chart-island {
       margin-top: 32px;
@@ -516,6 +536,30 @@
         </div>
       </div>
 
+      <!-- 보조 KPI: 이익 분해 + 재무건전성 -->
+      <div class="kpi-row kpi-row-sm">
+        <div class="kpi-card">
+          <div class="kpi-label">매출총이익률 (GP)</div>
+          <div class="kpi-value num"><span id="kpi-gp-margin">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta num" id="kpi-gp-margin-delta" style="font-size:11px">YoY —</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">판관비율 (SGA)</div>
+          <div class="kpi-value num"><span id="kpi-sga-ratio">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta num" id="kpi-sga-ratio-delta" style="font-size:11px">YoY —</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">부채비율</div>
+          <div class="kpi-value num"><span id="kpi-debt-ratio">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral num" id="kpi-debt-ratio-meta" style="font-size:11px">총부채 / 자기자본</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">영업현금흐름 (Operating CF)</div>
+          <div class="kpi-value num"><span id="kpi-ocf">—</span><span class="kpi-unit">억원</span></div>
+          <div class="kpi-delta num" id="kpi-ocf-delta" style="font-size:11px">YoY —</div>
+        </div>
+      </div>
+
       <!-- 인터랙티브 차트 island: 5년 매출·영업이익 추이 -->
       <div id="chart-revenue-trend" class="chart-island" style="height: 320px"></div>
 
@@ -523,19 +567,24 @@
       <div id="chart-quarterly" class="chart-island" style="height: 300px; margin-top: 24px"></div>
 
       <!-- 5년 시계열 표 -->
-      <table class="data-table" id="fy-history-table">
-        <thead>
-          <tr>
-            <th>회계연도</th>
-            <th class="num">매출 (억원)</th>
-            <th class="num">영업이익 (억원)</th>
-            <th class="num">영업이익률</th>
-            <th class="num">순이익 (억원)</th>
-            <th class="num">자산 (억원)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div style="overflow-x: auto">
+        <table class="data-table" id="fy-history-table">
+          <thead>
+            <tr>
+              <th>회계연도</th>
+              <th class="num">매출 (억원)</th>
+              <th class="num">매출총이익률</th>
+              <th class="num">영업이익 (억원)</th>
+              <th class="num">영업이익률</th>
+              <th class="num">판관비율</th>
+              <th class="num">순이익 (억원)</th>
+              <th class="num">자산 (억원)</th>
+              <th class="num">영업CF (억원)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </section>
 
     <!-- =============== 3. 브랜드별 성과 =============== -->
@@ -1353,18 +1402,80 @@
       const fmt = (n) => Math.round(n / 1e8).toLocaleString("ko-KR");
       tbody.innerHTML = rows
         .map((r) => {
-          const margin = (r.operatingProfit / r.revenue) * 100;
+          const gpMargin = (r.grossProfit / r.revenue) * 100;
+          const opMargin = (r.operatingProfit / r.revenue) * 100;
+          const sgaRatio = (r.sgaExpenses / r.revenue) * 100;
+          const ocf = r.operatingCashFlow != null ? fmt(r.operatingCashFlow) : "—";
           return `
             <tr>
               <td>FY${r.fy}</td>
               <td class="num">${fmt(r.revenue)}</td>
+              <td class="num">${gpMargin.toFixed(1)}%</td>
               <td class="num">${fmt(r.operatingProfit)}</td>
-              <td class="num">${margin.toFixed(1)}%</td>
+              <td class="num">${opMargin.toFixed(1)}%</td>
+              <td class="num">${sgaRatio.toFixed(1)}%</td>
               <td class="num">${fmt(r.netProfit)}</td>
               <td class="num">${fmt(r.totalAssets)}</td>
+              <td class="num">${ocf}</td>
             </tr>`;
         })
         .join("");
+    }
+
+    function renderFinancialHealth(audit) {
+      if (!audit || !audit.separate) return;
+      const cur = findFy(audit, 2025);
+      const prev = findFy(audit, 2024);
+      if (!cur) return;
+      const fmt = (n) => Math.round(n / 1e8).toLocaleString("ko-KR");
+
+      // GP Margin
+      const gp = (cur.grossProfit / cur.revenue) * 100;
+      setText("kpi-gp-margin", gp.toFixed(1));
+      if (prev) {
+        const prevGp = (prev.grossProfit / prev.revenue) * 100;
+        const d = gp - prevGp;
+        setText(
+          "kpi-gp-margin-delta",
+          `${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d).toFixed(1)}pp YoY`
+        );
+        setDeltaClass("kpi-gp-margin-delta", d);
+      }
+
+      // SGA율 (낮을수록 좋음 → 색 반전: 상승이 negative)
+      const sga = (cur.sgaExpenses / cur.revenue) * 100;
+      setText("kpi-sga-ratio", sga.toFixed(1));
+      if (prev) {
+        const prevSga = (prev.sgaExpenses / prev.revenue) * 100;
+        const d = sga - prevSga;
+        setText(
+          "kpi-sga-ratio-delta",
+          `${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d).toFixed(1)}pp YoY`
+        );
+        setDeltaClass("kpi-sga-ratio-delta", -d);
+      }
+
+      // 부채비율
+      if (cur.totalEquity) {
+        const debt = (cur.totalLiabilities / cur.totalEquity) * 100;
+        setText("kpi-debt-ratio", debt.toFixed(1));
+      }
+
+      // Operating CF
+      if (cur.operatingCashFlow != null) {
+        setText("kpi-ocf", fmt(cur.operatingCashFlow));
+        if (prev && prev.operatingCashFlow != null && prev.operatingCashFlow !== 0) {
+          const yoy =
+            ((cur.operatingCashFlow - prev.operatingCashFlow) /
+              Math.abs(prev.operatingCashFlow)) *
+            100;
+          setText(
+            "kpi-ocf-delta",
+            `${yoy > 0 ? "+" : yoy < 0 ? "−" : ""}${Math.abs(yoy).toFixed(1)}% YoY`
+          );
+          setDeltaClass("kpi-ocf-delta", yoy);
+        }
+      }
     }
 
     function renderExecSummary(sales, audit) {
@@ -1409,6 +1520,7 @@
       renderDataStatusBanner(data.sales);
       renderExecSummary(data.sales, data.audit);
       renderTotals(data.sales, data.audit);
+      renderFinancialHealth(data.audit);
       renderFyHistory(data.audit);
       renderBrands(data.sales, data.inventory);
       renderChannels(data.sales);
