@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "company": "주식회사 인동에프엔",
+    "asOf": "2025-12-31",
+    "currency": "KRW",
+    "fiscalYear": 2025,
+    "note": "샘플 데이터 — 브랜드 메타는 공식 자료(company-info.md), 매장수·점유율·가격대는 추정치",
+    "recommendUpdate": true
+  },
+  "brands": [
+    {
+      "id": "shesmiss",
+      "nameKo": "쉬즈미스",
+      "nameEn": "SHESMISS",
+      "launchYear": 1996,
+      "positioning": "모던 컨템포러리",
+      "targetAgeRange": "32~45",
+      "targetPersona": "도시 직장 여성 / 트렌드 민감 / 합리적 럭셔리 추구",
+      "pricePointKrw": {
+        "topAvg": 280000,
+        "bottomAvg": 250000,
+        "outerAvg": 580000,
+        "dressAvg": 320000
+      },
+      "color": "#1a1a2e",
+      "colorAccent": "#4a4e7d",
+      "storeCount": 72,
+      "channelMix": {
+        "백화점": 0.58,
+        "아울렛": 0.18,
+        "DFmall": 0.20,
+        "해외": 0.04
+      },
+      "revenueShareFy2025": 0.46,
+      "categoryFocus": ["outer", "top", "dress"],
+      "keyMessage": "주력 브랜드. 매출 규모·이익 기여 모두 1위",
+      "yoyTrend": "안정 성장"
+    },
+    {
+      "id": "list",
+      "nameKo": "리스트",
+      "nameEn": "LIST",
+      "launchYear": 2005,
+      "positioning": "영 컨템포러리",
+      "targetAgeRange": "25~35",
+      "targetPersona": "MZ세대 직장 여성 / SNS·디지털 친화 / 출근복+데일리 통합",
+      "pricePointKrw": {
+        "topAvg": 180000,
+        "bottomAvg": 165000,
+        "outerAvg": 420000,
+        "dressAvg": 220000
+      },
+      "color": "#e91e63",
+      "colorAccent": "#f48fb1",
+      "storeCount": 58,
+      "channelMix": {
+        "백화점": 0.42,
+        "아울렛": 0.20,
+        "DFmall": 0.33,
+        "해외": 0.05
+      },
+      "revenueShareFy2025": 0.32,
+      "categoryFocus": ["top", "bottom", "dress"],
+      "keyMessage": "디지털 채널 비중 1위. MZ 타겟 신성장 동력",
+      "yoyTrend": "고성장 (DFmall 주도)"
+    },
+    {
+      "id": "sistina",
+      "nameKo": "시스티나",
+      "nameEn": "SISTINA",
+      "launchYear": 2010,
+      "positioning": "뉴 클래식 & 시크 컨템포러리",
+      "targetAgeRange": "40~55",
+      "targetPersona": "성숙한 여성 / 격식·품격 중시 / 백화점 단골 고객",
+      "pricePointKrw": {
+        "topAvg": 350000,
+        "bottomAvg": 320000,
+        "outerAvg": 780000,
+        "dressAvg": 450000
+      },
+      "color": "#7c2d3a",
+      "colorAccent": "#a85968",
+      "storeCount": 41,
+      "channelMix": {
+        "백화점": 0.72,
+        "아울렛": 0.14,
+        "DFmall": 0.11,
+        "해외": 0.03
+      },
+      "revenueShareFy2025": 0.22,
+      "categoryFocus": ["outer", "dress", "top"],
+      "keyMessage": "고객 단가(AOV) 최고. 백화점 의존도 높음 — 채널 다변화 과제",
+      "yoyTrend": "정체"
+    }
+  ]
+}

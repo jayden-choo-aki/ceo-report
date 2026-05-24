@@ -1,0 +1,1722 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>(주)인동에프엔 21년간(2005~2025) 운영 진단 · 변곡점 분석</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#fff; --text:#1a1a1a; --muted:#6b7280; --border:#e5e7eb;
+  --accent:#0b7a75; --accent-soft:#e6f3f2;
+  --pos:#10b981; --neg:#ef4444;
+  --card-bg:#fafafa;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+  --sans:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Header */
+header{padding:64px 24px 32px;border-bottom:1px solid var(--border)}
+header .container{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+header h1{font-size:36px;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em}
+header .sub{color:var(--muted);font-size:14px;margin:0}
+header .accent{color:var(--accent)}
+.toggle{display:inline-flex;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:3px}
+.toggle button{background:transparent;border:0;padding:8px 16px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .15s}
+.toggle button.active{background:var(--accent);color:#fff}
+.toggle button:hover:not(.active){color:var(--text)}
+
+/* Section */
+section{padding:48px 0;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+section h2{font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em}
+section .lead{color:var(--muted);font-size:14px;margin:0 0 32px}
+
+/* Headline Strip — Variance-first KPI (페르소나: ±%를 절대값 앞에) */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:24px}
+.kpi{background:#fff;padding:20px 18px;display:flex;flex-direction:column;justify-content:space-between;min-height:140px}
+.kpi .label{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.kpi .delta{font-family:var(--mono);font-size:22px;font-weight:800;margin-top:10px;letter-spacing:-0.02em;line-height:1.1}
+.kpi .delta.pos{color:var(--pos)}
+.kpi .delta.neg{color:var(--neg)}
+.kpi .delta.flat{color:var(--text)}
+.kpi .value{font-family:var(--mono);font-size:14px;font-weight:600;margin-top:6px;color:var(--muted)}
+.kpi .sub{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:0.03em}
+
+/* Inflection Insight */
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.insight-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;border-left:3px solid var(--accent)}
+.insight-card.warn{border-left-color:var(--neg)}
+.insight-card .ic-label{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.insight-card .ic-value{font-family:var(--mono);font-size:28px;font-weight:800;margin-top:6px;letter-spacing:-0.02em;line-height:1.15}
+.insight-card .ic-value.neg{color:var(--neg)}
+.insight-card .ic-value.pos{color:var(--pos)}
+.insight-card .ic-sub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:4px}
+.insight-card .ic-mech{font-size:12.5px;color:#374151;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);line-height:1.5}
+.mech-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:13.5px}
+
+/* Strategy choice cards (A/B/C) */
+.strategy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+.strat-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;display:flex;flex-direction:column;gap:14px}
+.strat-card.a{border-top:4px solid var(--operatingProfit, #f59e0b)}
+.strat-card.b{border-top:4px solid var(--accent)}
+.strat-card.c{border-top:4px solid var(--neg)}
+.strat-card .strat-letter{position:absolute;top:14px;right:18px;font-size:34px;font-weight:900;font-family:var(--mono);color:#f3f4f6;line-height:1}
+.strat-card.a .strat-letter{color:#fef3c7}
+.strat-card.b .strat-letter{color:var(--accent-soft)}
+.strat-card.c .strat-letter{color:#fee2e2}
+.strat-card .strat-title{font-size:15.5px;font-weight:800;letter-spacing:-0.01em;max-width:80%}
+.strat-card .strat-claim{font-size:13px;color:#374151;line-height:1.6}
+.strat-card .scenario{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:10px}
+.strat-card .scn{text-align:center;padding:6px 4px}
+.strat-card .scn .scn-lbl{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em}
+.strat-card .scn .scn-val{font-family:var(--mono);font-size:15px;font-weight:800;margin-top:4px}
+.strat-card .scn.opt .scn-val{color:var(--pos)}
+.strat-card .scn.base .scn-val{color:var(--text)}
+.strat-card .scn.pess .scn-val{color:var(--neg)}
+.strat-card .strat-meta{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#374151;border-top:1px dashed var(--border);padding-top:12px}
+.strat-card .strat-meta .row{display:flex;gap:8px}
+.strat-card .strat-meta .k{color:var(--muted);font-weight:700;min-width:62px;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;padding-top:1px}
+.strat-card .strat-meta .v{flex:1;line-height:1.5}
+.strat-card .strat-tactics{font-size:11.5px;color:var(--muted);background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:8px 10px;line-height:1.5}
+.strat-card .strat-tactics strong{color:var(--text);font-weight:700}
+
+/* Insight·Implication·Improvement section */
+.ins-section{margin-top:32px}
+.ins-section:first-of-type{margin-top:0}
+.ins-h{font-size:16px;font-weight:700;margin:0 0 14px;color:var(--pos);display:flex;align-items:center;gap:6px}
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ins-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px;border-left:3px solid var(--muted)}
+.ins-card.pos{border-left-color:var(--pos)}
+.ins-card.neg{border-left-color:var(--neg)}
+.ins-card.acc{border-left-color:var(--accent)}
+.ins-card .ins-title{font-weight:700;font-size:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ins-card .ins-body{font-size:13px;color:#374151;line-height:1.65}
+.ins-card.expandable{cursor:pointer;transition:all .15s}
+.ins-card.expandable:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06);transform:translateY(-1px)}
+.ins-card .caret{font-size:11.5px;color:var(--accent);font-weight:700;flex-shrink:0;background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:3px 9px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.ins-card.expandable:hover .caret{background:var(--accent);color:#fff}
+.ins-card.open .caret{background:var(--accent);color:#fff}
+.ins-card .caret-arrow{display:inline-block;transition:transform .2s}
+.ins-card.open .caret-arrow{transform:rotate(90deg)}
+.ins-card.expandable:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ins-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+.ins-card.open .ins-detail{display:block}
+.ins-detail h5{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.ins-detail h5:first-child{margin-top:0}
+.ins-detail .data-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid #f3f4f6}
+.ins-detail .data-row:last-child{border-bottom:none}
+.ins-detail .data-row .lbl{color:var(--muted)}
+.ins-detail .data-row .val{font-family:var(--mono);font-weight:600}
+.ins-detail .data-row .val.pos{color:var(--pos)}
+.ins-detail .data-row .val.neg{color:var(--neg)}
+.ins-detail .mini-chart{height:120px;margin:8px 0}
+.ins-detail .action-list{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:#374151}
+.ins-detail .action-list li{margin-bottom:4px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:380px){.kpis{grid-template-columns:1fr}}
+/* 768px tablet: ins/insight/strategy 카드 2열 */
+@media(max-width:900px){.insight-grid{grid-template-columns:1fr}.ins-grid{grid-template-columns:1fr}.strategy-grid{grid-template-columns:1fr}}
+@media(min-width:601px) and (max-width:900px){.insight-grid{grid-template-columns:repeat(2,1fr)}.ins-grid{grid-template-columns:repeat(2,1fr)}.strategy-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Charts */
+.chart-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:8px}
+.chart-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:#fff;border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chart-box{position:relative;height:380px}
+@media(max-width:768px){.chart-box{height:300px!important}.chart-wrap{padding:18px}}
+@media(max-width:480px){.chart-box{height:260px!important}.chart-wrap{padding:14px}}
+.chart-note{font-size:12px;color:var(--muted);margin-top:12px}
+
+/* Grid 2-col */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+
+/* Year card grid */
+.year-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:24px}
+.year-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;text-align:left}
+.year-card:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
+.year-card .yc-fy{font-family:var(--mono);font-weight:700;color:var(--accent);font-size:13px}
+.year-card .yc-term{font-size:11px;color:var(--muted);float:right}
+.year-card .yc-rev{font-family:var(--mono);font-size:18px;font-weight:700;margin-top:8px}
+.year-card .yc-rev-label{font-size:11px;color:var(--muted)}
+.year-card .yc-op{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:6px}
+.year-card .yc-tags{margin-top:10px;display:flex;gap:4px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:#fff;border:1px solid var(--border);color:var(--muted)}
+.tag.consol{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tag.qual{background:#fef3c7;color:#92400e;border-color:#fde68a}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(2px);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;z-index:100}
+.modal-bg.open{display:flex;animation:fadeIn .2s ease-out}
+.modal{background:#fff;border-radius:16px;max-width:840px;width:100%;padding:32px;box-shadow:0 24px 64px rgba(0,0,0,0.18);position:relative;animation:slideUp .25s ease-out}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.modal{padding:22px;border-radius:12px}.modal h3{font-size:18px}}
+.modal-close{position:absolute;top:16px;right:16px;background:transparent;border:0;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;padding:8px}
+.modal-close:hover{color:var(--text)}
+.modal h3{font-size:22px;margin:0 0 4px;font-weight:700}
+.modal .meta{color:var(--muted);font-size:13px;margin:0 0 24px;display:flex;gap:12px;flex-wrap:wrap}
+.modal .meta span{display:inline-flex;align-items:center;gap:4px}
+.modal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:24px}
+@media(max-width:700px){.modal-grid{grid-template-columns:1fr}}
+.detail-block h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
+.detail-row .k{color:var(--muted)}
+.detail-row .v{font-family:var(--mono);font-weight:600}
+.detail-row.total{font-weight:700;border-top:1px solid var(--border);margin-top:4px;padding-top:8px}
+.detail-row.total .v{font-size:14px}
+.highlight-box{background:var(--accent-soft);border-left:3px solid var(--accent);padding:12px 16px;border-radius:6px;font-size:13px;margin-top:8px}
+
+/* Tier divider — 정보 흐름 3단계 계층 */
+.tier-divider{background:#0f172a;color:#fff;padding:36px 24px 32px;margin-top:0}
+.tier-divider .container{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.tier-divider .tier-num{font-family:var(--mono);font-size:46px;font-weight:900;color:var(--accent);letter-spacing:-0.04em;line-height:1}
+.tier-divider .tier-name{font-size:20px;font-weight:800;letter-spacing:-0.01em}
+.tier-divider .tier-sub{font-size:13px;color:#94a3b8;flex-basis:100%;margin-top:4px;line-height:1.6}
+@media(max-width:600px){.tier-divider{padding:24px 20px 22px}.tier-divider .tier-num{font-size:34px}.tier-divider .tier-name{font-size:16px}}
+
+/* Footer */
+footer{padding:32px 24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+
+/* To-top button */
+#to-top{position:fixed;right:24px;bottom:24px;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:#fff;color:var(--accent);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.08);display:none;align-items:center;justify-content:center;z-index:90;transition:all .2s}
+#to-top.show{display:flex}
+#to-top:hover{background:var(--accent);color:#fff;transform:translateY(-2px);box-shadow:0 8px 18px rgba(11,122,117,0.25)}
+#to-top:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+@media print{
+  .toggle,.chart-toolbar,.modal-bg,#to-top{display:none!important}
+  body{font-size:13px}
+  header{padding:24px 24px 16px}
+  header h1{font-size:24px}
+  section{padding:24px 0;break-inside:avoid;page-break-inside:avoid}
+  section h2{font-size:18px}
+  .kpis{grid-template-columns:repeat(3,1fr)}
+  .kpi{min-height:auto;padding:12px}
+  .chart-box{height:260px!important}
+  .chart-wrap{padding:14px}
+  .ins-card,.insight-card,.strat-card{break-inside:avoid;page-break-inside:avoid}
+  .year-card{cursor:default}
+  .ins-card .caret{display:none}
+  .ins-detail{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div>
+      <h1>(주)인동에프엔 <span class="accent">21년간(2005~2025) 운영 진단 · 변곡점 분석</span></h1>
+      <p class="sub">감사보고서 23건(FY2005~2025, DART) 재구성 · Founder-CEO 운영 회고 · 변화량 중심</p>
+    </div>
+    <div class="toggle" id="mode-toggle">
+      <button class="active" data-mode="separate">별도 (Separate)</button>
+      <button data-mode="consolidated">연결 (Consolidated)</button>
+    </div>
+  </div>
+</header>
+
+<!-- 종합 한 줄 진단 (Executive Summary) -->
+<section id="summary" style="background:#fef3c7;border-bottom:1px solid #fde68a;padding:28px 0">
+  <div class="container">
+    <div style="display:flex;align-items:flex-start;gap:14px">
+      <span style="font-size:20px;line-height:1.2">📌</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#92400e;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">종합 한 줄 진단</div>
+        <p style="margin:0;font-size:15px;color:#374151;line-height:1.75;font-weight:600">
+          "21년간(2005~2025) 안정 성장으로 무차입·고자기자본 구조 확립 완료. 그러나 FY2023 이후 마진 동반 후퇴 + 종속기업 손실 누적 + 고배당이 결합되어 사내유보 정체 단계 진입. 매출 성장 동력 재가속보다 마진 회복(매출원가·판관비 양면)과 종속기업 정상화가 더 시급. 자본 배분 정책의 재검토 시점."
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ▼ TIER 1 — 의사결정 (Executive) -->
+<div class="tier-divider">
+  <div class="container">
+    <span class="tier-num">01</span>
+    <span class="tier-name">의사결정 · Executive</span>
+    <span class="tier-sub">변곡점 진단 → 강점·약점 → 전략 선택지 A/B/C → 전술. 첫 화면만 보고 다음 분기 액션을 정할 수 있는 영역.</span>
+  </div>
+</div>
+
+<!-- §0 Inflection Insight (재무 한정) -->
+<section id="inflection" style="background:linear-gradient(180deg,#fafffe 0%,#fff 100%)">
+  <div class="container">
+    <h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">●</span> 변곡점 인사이트 — 재무 신호 3종</h2>
+    <p class="lead">FY2023 정점 이후 2년 연속 매출·이익·마진 동반 둔화. 감사보고서 손익·BS 데이터 기반 분석.</p>
+    <div class="insight-grid" id="insight-grid"></div>
+    <div class="mech-box" style="margin-top:20px">
+      <strong style="color:var(--accent)">▸ 재무 진단 — 무엇이 둔화시키고 있는가</strong>
+      <ul style="margin:10px 0 0 18px;padding:0;color:#374151;font-size:13.5px;line-height:1.8">
+        <li><strong>매출 가속 종료</strong> — 4년 가속(+23%·+14%·+5.6%·+0.85%) 후 정체. FY2025 매출 3,041억은 사상 최대지만 모멘텀 소진.</li>
+        <li><strong>마진 동시 압박</strong> — FY2023→2025 매출원가율 36.3%→38.8% (+2.5pt), 판관비율 49.0%→50.8% (+1.8pt). 손익 양면 동시 악화로 OP% 14.6%→10.4% 후퇴.</li>
+        <li><strong>지분법손실 누적</strong> — FY2024·2025 지분법손실 합계 60억. 종속·관계기업(상해법인·뉴욕법인·베트남법인) 적자가 별도 손익에 직접 반영되는 구조.</li>
+        <li><strong>연결 영업손실 시그널</strong> — FY2025 연결 영업이익 287억(별도 316억보다 29억 낮음) = INDONG FN VINA 베트남 신규 편입분이 영업단 손실. 자산화 단계(투자) → 회수 단계(매출) 전환이 늦어지면 마진 추가 압박.</li>
+        <li><strong>배당 vs 재투자 균형</strong> — FY2024 배당총액 200억(순이익 236억 대비 85%) → FY2025 200억 유지. 배당성향 높이는 가운데 마진 후퇴는 자본 누적 속도를 떨어뜨림.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §9-A 재무 강점 -->
+<section id="strength" style="background:linear-gradient(180deg,#dcfce7 0%,#f0fdf4 100%)">
+  <div class="container">
+    <h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--pos)">✔</span> 재무 강점 — 21년간 확립한 자산</h2>
+    <p class="lead">감사보고서 21건 종합. 각 카드를 클릭하면 연도별 근거 데이터가 펼쳐집니다.</p>
+    <div class="ins-grid" id="strength-grid"></div>
+  </div>
+</section>
+
+<!-- §9-B 재무 약점 -->
+<section id="weakness" style="background:linear-gradient(180deg,#fee2e2 0%,#fef2f2 100%)">
+  <div class="container">
+    <h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--neg)">⚠</span> 재무 약점 · 리스크 신호</h2>
+    <p class="lead">FY2023 정점 이후 누적된 구조적 신호. 각 카드를 클릭하면 연도별 추이가 펼쳐집니다.</p>
+    <div class="ins-grid" id="weakness-grid"></div>
+  </div>
+</section>
+
+<!-- §9-C-1 전략 선택지 (A/B/C 상호배타) -->
+<section id="strategy" style="background:linear-gradient(180deg,#fffbeb 0%,#fefce8 100%);border-top:1px dashed #fde68a">
+  <div class="container">
+    <h2 style="display:flex;align-items:center;gap:8px"><span style="color:#92400e">⚖</span> 전략 선택지 · A/B/C 상호배타</h2>
+    <p class="lead"><strong>이사회/경영진 결정 사항.</strong> 세 안은 자원·시간 제약상 동시 100% 추진 불가. 한 가지 우선순위(60%) + 보조 한 가지(40%) 조합 권장. 영업이익 영향은 매출 3,041억·OP 316억 기준 시뮬레이션.</p>
+    <div class="strategy-grid" id="strategy-grid"></div>
+  </div>
+</section>
+
+<!-- §9-C-2 전술 (구조적 권고) -->
+<section id="improve" style="background:linear-gradient(180deg,#dbeafe 0%,#eff6ff 100%)">
+  <div class="container">
+    <h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--accent)">→</span> 전술 · 구조적 권고 (6개)</h2>
+    <p class="lead">위 A/B/C 선택에 따라 활성화되는 실행 항목. 각 카드를 클릭하면 실행안·목표·근거 수치가 펼쳐집니다.</p>
+    <div class="ins-grid" id="improve-grid"></div>
+  </div>
+</section>
+
+<!-- ▼ TIER 2 — 재무 진단 (Financial Diagnosis) -->
+<div class="tier-divider">
+  <div class="container">
+    <span class="tier-num">02</span>
+    <span class="tier-name">재무 진단 · Financial Diagnosis</span>
+    <span class="tier-sub">KPI·매출·이익·재무구조·수익성·비용·효율성·현금흐름. 21년 시계열로 변화량과 추세를 점검.</span>
+  </div>
+</div>
+
+<!-- Headline Strip -->
+<section id="headline">
+  <div class="container">
+    <h2>Headline · 최근 회계연도 (Variance-first)</h2>
+    <p class="lead" id="headline-lead">FY2025 (제30기, 별도). 옆 토글로 연결 기준 전환. ★ 페르소나: <strong>변화량을 절대값 앞에</strong> — 큰 숫자가 ±%, 작은 숫자가 절대값.</p>
+    <div class="kpis" id="kpis"></div>
+  </div>
+</section>
+
+<!-- Section 1: Revenue & Profit Trend -->
+<section id="trend">
+  <div class="container">
+    <h2>매출·이익 시계열</h2>
+    <p class="lead">21년간(FY2005~2025) 매출액·영업이익·당기순이익 추이. 차트의 점을 클릭하면 해당 연도 상세를 볼 수 있습니다.</p>
+    <div class="chart-wrap">
+      <div class="chart-toolbar" id="chart1-toolbar">
+        <button class="chip active" data-key="revenue">매출액</button>
+        <button class="chip active" data-key="operatingProfit">영업이익</button>
+        <button class="chip active" data-key="netProfit">당기순이익</button>
+        <button class="chip" data-key="grossProfit">매출총이익</button>
+      </div>
+      <div class="chart-box"><canvas id="chart1"></canvas></div>
+      <p class="chart-note">단위: 억원 · 별도 기준. 연결 기준은 FY2016/2017/2025만 발행. CAGR(2005→2025) = <span class="num accent" id="cagr-revenue"></span> (매출), <span class="num accent" id="cagr-op"></span> (영업이익).<br/><strong>해석:</strong> 매출은 21년간 CAGR 10.3%로 꾸준히 우상향. 영업이익은 FY2014·FY2015 dip(회계정책 변경·재고증가) 이후 FY2022 정점(390억) → 2년 연속 후퇴.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Balance Sheet -->
+<section id="bs">
+  <div class="container">
+    <h2>재무구조 · 자산·부채·자본</h2>
+    <p class="lead">자본총계가 부채총계를 추월한 시점은 FY2017 (자기자본비율 39% 통과). 무차입 경영 진입은 FY2021.</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">B/S 구성 (Stacked)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-bs"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">자기자본비율 (자본/자산)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-equity"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Profitability -->
+<section id="margin">
+  <div class="container">
+    <h2>수익성 · 마진 트렌드</h2>
+    <p class="lead">매출총이익률·영업이익률·순이익률 추이. 패션업 글로벌 평균 GP% 56.88%(NYU Stern), OP% 우수기업 10%+.</p>
+    <div class="chart-wrap">
+      <div class="chart-box"><canvas id="chart-margin"></canvas></div>
+      <p class="chart-note"><strong>해석:</strong> FY2022~2023 OP% 14~15%로 역대 최고 구간 (글로벌 패션 우수기업 10%+ 통과). FY2024~2025 OP% 11~12%로 하락 — 매출원가율 36→38% 악화 + 판관비율 49→51% 동반 상승이 누적된 결과.<br/><strong>시사점:</strong> 1pt 마진 회복 = 약 30억 영업이익. 매출 성장보다 마진 복원의 ROI 우위. 매출원가율과 판관비율 양 트랙 동시 개선이 필수.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §비용 구조 분해 — FY2025 판관비 항목별 -->
+<section id="cost-mix">
+  <div class="container">
+    <h2>비용 구조 분해 · FY2025 판관비 1,546억</h2>
+    <p class="lead">판관비 항목별 비중. <strong>판매수수료가 65%로 압도적</strong> — 외부 채널 의존도가 마진 직격. 채널 협상력·D2C 전환이 판관비율 50.8% 개선의 핵심 레버.</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">FY2025 판관비 Top 6 항목</h3>
+        <div class="chart-box" style="height:340px"><canvas id="chart-sga-mix"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 판매수수료 1,011억(65.4%) → 매출의 33%. 급여 199억(12.9%)은 고정비. 임차료 95억은 매장·물류 운영 비용. <strong>시사점:</strong> 1pt 판관비율 개선 = 약 30억 영업이익. 판매수수료(채널) 또는 임차료(점포) 둘 중 어디를 줄이느냐의 의사결정.</p>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">비용 구조 종합 (매출 대비 비중)</h3>
+        <div class="chart-box" style="height:340px"><canvas id="chart-cost-ratio"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 매출 3,041억 = 매출원가 1,179억(38.8%) + 판관비 1,546억(50.8%) + 영업이익 316억(10.4%). FY2023 정점 OP% 14.6% 대비 -4.2pt 후퇴. <strong>시사점:</strong> 매출원가율(+2.5pt) + 판관비율(+1.8pt) 양측 동시 개선 필요. 한 쪽만으로는 OP% 13% 복귀 불가.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §효율성 지표 — ROE·ROA·회전율 -->
+<section id="efficiency">
+  <div class="container">
+    <h2>효율성 지표 · 자본·자산 회전</h2>
+    <p class="lead">21년간 ROE·ROA·회전율 추이. 무차입(이자보상배율 N/A) 외에 자본·자산이 얼마나 효율적으로 매출/이익을 만들어내는지 평가. 패션업 우수기업 ROE 15~20% 벤치마크.</p>
+    <div class="kpis" id="eff-kpis" style="margin-bottom:24px"></div>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">ROE · ROA (수익성 효율)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-roe"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> FY2005 ROE 29%(자본 작음·고레버리지) → FY2013 33% 정점 → FY2025 14.4%. <strong>시사점:</strong> 자기자본 누적(분모↑)이 순이익 성장(분자)을 앞서며 자본 효율성 정체. 패션 우수기업 15~20% 대비 미달 구간 진입.</p>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">자산·자기자본 회전율 (활동성)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-turnover"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 자산회전율 FY2013 1.51회 → FY2025 1.68회 (자산 활용 양호). 자기자본회전율 FY2005 14.7회(고레버리지) → FY2025 2.15회 (자본 누적으로 하락). <strong>시사점:</strong> 자산은 효율적, 자본은 활용 여력 존재 — 배당·재투자 정책의 트레이드오프 신호.</p>
+      </div>
+    </div>
+    <div class="mech-box" style="margin-top:16px;font-size:13px;color:#374151">
+      <strong style="color:var(--accent)">▸ CCC(현금전환주기) 산출 한계</strong> — 감사보고서에서 재고자산·매출채권·매입채무가 유동자산/유동부채에 합산 표시되어 분리 불가. DSO/DIO/DPO는 별도 시스템 데이터 필요. 본 페이지의 "운전자본 부담률 = (유동자산-현금)/매출"은 proxy 지표.
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Cash Flow -->
+<section id="cashflow">
+  <div class="container">
+    <h2>현금흐름</h2>
+    <p class="lead">영업·투자·재무 활동별 현금흐름. FY2017·2019·2023·2025 영업현금 강세.</p>
+    <div class="chart-wrap">
+      <div class="chart-box"><canvas id="chart-cf"></canvas></div>
+      <p class="chart-note">단위: 억원. 막대 양수=현금유입, 음수=현금유출. <strong>FY2025 메커니즘:</strong> 영업현금 413억 회복(재고감소·운전자본 효율화), 재무활동 -357억(배당 200억 + 차입금 상환 157억).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ▼ TIER 3 — 자산·자본 구조 (Structural Detail) -->
+<div class="tier-divider">
+  <div class="container">
+    <span class="tier-num">03</span>
+    <span class="tier-name">자산·자본 구조 · Structural Detail</span>
+    <span class="tier-sub">자산구성·운전자본·자본배분·종속기업·연도별 감사보고서. 구조적·운영적 지표와 원자료.</span>
+  </div>
+</div>
+
+<!-- §5 자산 구성 (유동 vs 비유동) -->
+<section id="assets" style="background:linear-gradient(180deg,#fff 0%,#fafffe 100%)">
+  <div class="container">
+    <h2>자산 구성 분석</h2>
+    <p class="lead">유동자산(재고·매출채권·현금)과 비유동자산(토지·건물·시설·상표권·종속기업 투자) 추이.</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">유동 vs 비유동자산</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-asset-mix"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 비유동자산 step-up 시점 — FY2012(이천 토지 26.7억·건설중자산 46.3억), FY2014(상표권 27.4억), FY2024~25(지분법 적용투자주식 + 베트남 자산). <strong>시사점:</strong> 비유동자산 비중이 자산총계의 22~25% 박스권으로 운전자본 중심 패션업 특성 유지.</p>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">비유동자산 비중 (자산 내)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-noncur-ratio"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 비유동비중 20~25% — 패션업 평균과 일치. <strong>시사점:</strong> 자산 증가의 주축은 여전히 재고·매출채권. 운전자본 효율 관리가 자산 효율성의 핵심 레버.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 운전자본 효율 -->
+<section id="wc">
+  <div class="container">
+    <h2>운전자본 효율 분석</h2>
+    <p class="lead">재고자산·매출채권 회전율과 운전자본 부담률 추이. 패션업 핵심 효율 지표.</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">매출 대비 운전자본 부담률</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-wc"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> (재고+매출채권)/매출 비율. <strong>시사점:</strong> 비율이 높아질수록 매출 1원당 묶이는 운전자본 증가 — 마진 회복 시급도와 직결.</p>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">재고자산 회전율 (회/년)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-inv-turnover"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 매출원가 ÷ 평균재고. 패션업 일반 4~8회. <strong>시사점:</strong> 회전율 하락은 재고 적체·세일 의존도 증가 신호. 마크다운 비용을 통한 마진 압박 가능성.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §7 자본 배분 -->
+<section id="capital" style="background:linear-gradient(180deg,#fafffe 0%,#fff 100%)">
+  <div class="container">
+    <h2>자본 배분 분석</h2>
+    <p class="lead">순이익 → 배당 vs 사내유보 vs 차입금 상환의 자본 배분 패턴.</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">배당총액 & 배당성향</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-dividend"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> FY2010 첫 배당(3.9억) → FY2024~25 200억으로 51배 확대. 배당성향 FY2024 85%, FY2025 98%. <strong>시사점:</strong> 사내유보 속도 둔화 → 자기자본 증가 정체 가능성. 마진 회복 없이 고배당 지속은 자본 누적 마이너스 신호.</p>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">유동부채 (차입금 포함) 추이</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-cur-liab"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> FY2013 정점(910억)에서 FY2025 382억까지 -58%. 단기차입금 FY2021 무차입 진입. <strong>시사점:</strong> 재무 안정성 확립 단계 완료. 차입 여력 충분 — 성장 투자 의사결정 가능 구간.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §8 종속·관계기업 손익 영향 -->
+<section id="subs">
+  <div class="container">
+    <h2>종속·관계기업 손익 영향</h2>
+    <p class="lead">감사보고서 강조사항 — 종속·관계기업의 손실이 별도 손익에 미치는 영향 (지분법손실 기준).</p>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">영업외수익 vs 비용 (지분법손실 포함)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-equity-method"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600">별도 vs 연결 영업이익 격차 (종속기업 영향)</h3>
+        <div class="chart-box" style="height:320px"><canvas id="chart-sep-vs-con"></canvas></div>
+        <p class="chart-note" style="margin-top:12px"><strong>해석:</strong> 연결발행 3개년(FY2016·17·25) 모두 연결 영업이익 &lt; 별도 → 종속기업이 매년 영업단 손실. FY2017 -25억, FY2025 -29억으로 격차 확대. <strong>시사점:</strong> 종속기업 정상화 시 연결 OP +29억 자동 회복 = OP% 약 1pt 상승 효과.</p>
+      </div>
+    </div>
+    <div class="chart-wrap" style="margin-top:14px">
+      <p class="chart-note" style="margin:0">
+        <strong>종속·관계기업 누적 손익 패턴:</strong>
+        ① <strong>인동(상해)복장유한공사</strong> — FY2007 설립, FY2016~2017 연결 시점 누적 순손실 -40억대(매출 84~115억, 순손실 -15.7억·-24.7억).
+        ② <strong>INDONG FN NEW YORK INC</strong> — 외감 미대상 규모지만 지분법 적용 대상.
+        ③ <strong>INDONG FN VINA</strong> — FY2025 신규 연결, 자산 122억·영업손실 -29억·순손실 -30억.
+        <br/><strong>시사점:</strong> 해외 종속기업이 별도 손익을 압박하는 구조. 연결 손익 개선 = 종속기업 정상화. 베트남은 신규 자산투자 회수 단계 진입 전, 상해는 누적 손실로 추가 자본투입 vs 정리 의사결정 시점.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6: Year-by-Year Drill-down Cards -->
+<section id="yeargrid">
+  <div class="container">
+    <h2>연도별 감사보고서</h2>
+    <p class="lead">카드를 클릭하면 해당 연도의 자산·부채·자본·손익·현금흐름·주주·감사 정보를 확인할 수 있습니다.</p>
+    <div class="year-grid" id="year-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    출처: DART 전자공시시스템 (감사보고서 23건, FY2005~2025). FY2020은 별도 보고서 부재로 FY2021 비교자료에서 추출.
+    감사인 변천: 제217호 공인회계사감사반(~2006) → 회계법인 이촌(2007~2012) → 삼정회계법인(2013~2021) → 삼일회계법인(2022~).
+    본 문서는 외부 공시자료 재구성으로 작성됨 · 재무수치는 원 단위 정수, 본 화면은 가독성 위해 억/조 단위 표기.
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"></div>
+</div>
+
+<!-- To-top button -->
+<button id="to-top" aria-label="맨 위로" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const DATA = {"separate":[{"fy":2005,"term":10,"company":"주식회사 인동어패럴","auditor":"제217호 공인회계사감사반","opinion":"한정의견","reportDate":"2006-03-03","currentAssets":14781993239,"nonCurrentAssets":1235046981,"totalAssets":16017040220,"currentLiabilities":13029381302,"nonCurrentLiabilities":42107668,"totalLiabilities":13071488970,"capital":700000000,"retainedEarnings":2245551250,"totalEquity":2945551250,"revenue":43231999003,"costOfSales":23057424114,"grossProfit":20174574889,"sgaExpenses":18733794815,"operatingProfit":1440780074,"nonOperatingIncome":36943545,"nonOperatingExpenses":361409585,"preTaxProfit":1116314034,"incomeTax":259032180,"netProfit":857281854,"operatingCashFlow":141203584,"investingCashFlow":-357988529,"financingCashFlow":88259561,"cashBeginning":148437478,"cashEnding":19912094,"shareholders":[{"name":"장기권","shares":46200,"ratio":66.0},{"name":"장오순","shares":21000,"ratio":30.0},{"name":"기타소액주주","shares":2800,"ratio":4.0}],"dividend":null,"highlights":"한정의견 — 감사범위 제한(기초재고실사 미입회)"},{"fy":2006,"term":11,"company":"주식회사 인동어패럴","auditor":"제217호 공인회계사감사반","opinion":"적정의견","reportDate":"2007-03-07","currentAssets":22127293804,"nonCurrentAssets":1913061280,"totalAssets":24040355084,"currentLiabilities":19971656438,"nonCurrentLiabilities":61108736,"totalLiabilities":20032765174,"capital":1000000000,"retainedEarnings":3009697510,"totalEquity":4007589910,"revenue":52126262384,"costOfSales":24133615947,"grossProfit":27992646437,"sgaExpenses":26534797248,"operatingProfit":1457849189,"nonOperatingIncome":89090588,"nonOperatingExpenses":417547902,"preTaxProfit":1129391875,"incomeTax":365245615,"netProfit":764146260,"operatingCashFlow":-933374433,"investingCashFlow":-1495187214,"financingCashFlow":2456522707,"cashBeginning":19912094,"cashEnding":47873154,"shareholders":[{"name":"장기권","shares":100000,"ratio":100.0}],"dividend":null,"highlights":"유상증자 3억원 (보통주 30,000주 액면발행) — 1인 주주(장기권 100%)"},{"fy":2007,"term":12,"company":"주식회사 인동에프엔","auditor":"회계법인 이촌","opinion":"적정의견","reportDate":"2008-03-14","currentAssets":26729831339,"nonCurrentAssets":2975376176,"totalAssets":29705207515,"currentLiabilities":24134671298,"nonCurrentLiabilities":1102270000,"totalLiabilities":25236941298,"capital":1300000000,"retainedEarnings":3170301217,"totalEquity":4468266217,"revenue":65643135157,"costOfSales":31423761277,"grossProfit":34219373880,"sgaExpenses":33358142639,"operatingProfit":861231241,"nonOperatingIncome":165187538,"nonOperatingExpenses":686435151,"preTaxProfit":339983628,"incomeTax":177272321,"netProfit":162711307,"operatingCashFlow":-2060773556,"investingCashFlow":-1339404208,"financingCashFlow":3376841045,"cashBeginning":47873154,"cashEnding":24536435,"shareholders":[{"name":"장기권","shares":130000,"ratio":100.0}],"dividend":null,"highlights":"상호변경: 주식회사 인동어패럴 → 주식회사 인동에프엔. 유상증자 3억원 (보통주 30,000주). 종속회사 인동(상해)복장유한공사 설립"},{"fy":2008,"term":13,"company":"주식회사 인동에프엔","auditor":"회계법인 이촌","opinion":"적정의견","reportDate":"2009-03-03","currentAssets":30226098465,"nonCurrentAssets":3187649579,"totalAssets":33413748044,"currentLiabilities":24555033966,"nonCurrentLiabilities":3404527357,"totalLiabilities":27959561323,"capital":1300000000,"retainedEarnings":4160735859,"totalEquity":5454186721,"revenue":74987521776,"costOfSales":35364592000,"grossProfit":39622929776,"sgaExpenses":37632564831,"operatingProfit":1990364945,"nonOperatingIncome":556097664,"nonOperatingExpenses":1253754644,"preTaxProfit":1292707965,"incomeTax":300238323,"netProfit":992469642,"operatingCashFlow":-464883441,"investingCashFlow":-521632824,"financingCashFlow":1109194189,"cashBeginning":24536435,"cashEnding":147214359,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":null,"highlights":"주주구성 변경 (장기권 80%, 이향로 10%, 장원준·장호준 각 5%). 사채(무보증사모사채) 10억 발행"},{"fy":2009,"term":14,"company":"주식회사 인동에프엔","auditor":"회계법인 이촌","opinion":"적정의견","reportDate":"2010-03-09","currentAssets":32869201834,"nonCurrentAssets":3792482378,"totalAssets":36661684212,"currentLiabilities":26888401453,"nonCurrentLiabilities":2627583283,"totalLiabilities":29515984736,"capital":1300000000,"retainedEarnings":5836981941,"totalEquity":7145699476,"revenue":85442334340,"costOfSales":38962522855,"grossProfit":46479811485,"sgaExpenses":43264749497,"operatingProfit":3215061988,"nonOperatingIncome":521746916,"nonOperatingExpenses":1664417955,"preTaxProfit":2072390949,"incomeTax":396144867,"netProfit":1676246082,"operatingCashFlow":3427419770,"investingCashFlow":-1810207061,"financingCashFlow":-1327056097,"cashBeginning":147214359,"cashEnding":437370971,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":null,"highlights":"정정보고서(2010-06-03): 제품매출·상품매출 표시 오류 수정. 매출 854억원 돌파"},{"fy":2010,"term":15,"company":"주식회사 인동에프엔","auditor":"회계법인 이촌","opinion":"적정의견","reportDate":"2011-03-15","currentAssets":44704252219,"nonCurrentAssets":5764878372,"totalAssets":50469130591,"currentLiabilities":38028337374,"nonCurrentLiabilities":67685400,"totalLiabilities":38096022774,"capital":1300000000,"retainedEarnings":11116035851,"totalEquity":12373107817,"revenue":110419574714,"costOfSales":48097957105,"grossProfit":62321617609,"sgaExpenses":56653894732,"operatingProfit":5667722877,"nonOperatingIncome":418975808,"nonOperatingExpenses":1172110913,"preTaxProfit":4914587772,"incomeTax":-364466138,"netProfit":5279053910,"operatingCashFlow":1991883455,"investingCashFlow":-2974674385,"financingCashFlow":713703476,"cashBeginning":437370971,"cashEnding":168283517,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":3000,"ratio":30.0,"total":390000000},"highlights":"매출 1,104억원 (전년 대비 +29%). 첫 현금배당 시행(주당 3,000원, 배당총액 3.9억). 토지·건물 신규 취득(이천)"},{"fy":2011,"term":16,"company":"주식회사 인동에프엔","auditor":"이촌회계법인","opinion":"적정의견","reportDate":"2012-03-06","currentAssets":57071704857,"nonCurrentAssets":7858923950,"totalAssets":64930628807,"currentLiabilities":47317147788,"nonCurrentLiabilities":1856428784,"totalLiabilities":49173576572,"capital":1300000000,"retainedEarnings":14535570747,"totalEquity":15757052235,"revenue":143682893931,"costOfSales":66242989934,"grossProfit":77439903997,"sgaExpenses":72628987702,"operatingProfit":4810916295,"nonOperatingIncome":532369120,"nonOperatingExpenses":1243397105,"preTaxProfit":4099888310,"incomeTax":290353414,"netProfit":3809534896,"operatingCashFlow":719230040,"investingCashFlow":-5321623816,"financingCashFlow":4596503060,"cashBeginning":168283517,"cashEnding":162392801,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":10000,"ratio":100.0,"total":1300000000},"highlights":"매출 1,437억원 (전년 대비 +30%). 액면가 100% 배당(주당 10,000원, 총 13억). 일반기업회계기준(K-GAAP) 최초 적용"},{"fy":2012,"term":17,"company":"주식회사 인동에프엔","auditor":"이촌회계법인","opinion":"적정의견","reportDate":"2013-03-13","currentAssets":70245748367,"nonCurrentAssets":18062577137,"totalAssets":88308325504,"currentLiabilities":55824247404,"nonCurrentLiabilities":9943848111,"totalLiabilities":65768095515,"capital":1300000000,"retainedEarnings":21288661283,"totalEquity":22540229989,"revenue":166243437593,"costOfSales":71855770991,"grossProfit":94387666602,"sgaExpenses":85438295342,"operatingProfit":8949371260,"nonOperatingIncome":1206321540,"nonOperatingExpenses":1250052533,"preTaxProfit":8905640267,"incomeTax":852549731,"netProfit":8053090536,"operatingCashFlow":6037045082,"investingCashFlow":-11924812477,"financingCashFlow":8064273117,"cashBeginning":162392801,"cashEnding":2338898523,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":21538,"ratio":215.38,"total":2800000000},"highlights":"매출 1,662억원. 액면가 215.38% 배당(총 28억). 이천 토지(이천패션물류단지) 26.7억 신규 취득, 건설중인자산 46.3억"},{"fy":2013,"term":18,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2014-03-21","currentAssets":98015489334,"nonCurrentAssets":28212881081,"totalAssets":126228370415,"currentLiabilities":90977241331,"nonCurrentLiabilities":5591953699,"totalLiabilities":96569195030,"capital":1300000000,"retainedEarnings":28358784121,"totalEquity":29659175385,"revenue":190466712691,"costOfSales":78109830014,"grossProfit":112356882677,"sgaExpenses":97564264908,"operatingProfit":14792617769,"nonOperatingIncome":1251044336,"nonOperatingExpenses":3510806653,"preTaxProfit":12532855452,"incomeTax":2662732614,"netProfit":9870122838,"operatingCashFlow":1232218954,"investingCashFlow":-15630422423,"financingCashFlow":12816235716,"cashBeginning":2338898523,"cashEnding":756930770,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":2800000000},"highlights":"매출 1,905억원. 자산 1,262억으로 급성장. 이천 건물 신규(90억) 및 시설장치 37.9억 추가. 감사인 변경: 이촌 → 삼정"},{"fy":2014,"term":19,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2015-03-23","currentAssets":96457925032,"nonCurrentAssets":30730455958,"totalAssets":127188380990,"currentLiabilities":81488925231,"nonCurrentLiabilities":15934809795,"totalLiabilities":97423735026,"capital":1300000000,"retainedEarnings":26909615277,"totalEquity":29764645964,"revenue":202084357801,"costOfSales":92057260301,"grossProfit":110027097500,"sgaExpenses":103659819981,"operatingProfit":6367277519,"nonOperatingIncome":1801256114,"nonOperatingExpenses":3338404441,"preTaxProfit":4830129192,"incomeTax":635956122,"netProfit":4194173070,"operatingCashFlow":1145167205,"investingCashFlow":-3284968583,"financingCashFlow":1439503250,"cashBeginning":756930770,"cashEnding":56632642,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":3200000000},"highlights":"매출 2,020억 돌파. 회계정책 변경(법인세회계·지분법 적용) — 이익잉여금 24.4억 감소. 상표권 27.4억 신규 취득. 토지·건물 재평가(재평가잉여금 14.6억)"},{"fy":2015,"term":20,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2016-03-22","currentAssets":105214362791,"nonCurrentAssets":30807938008,"totalAssets":136022300799,"currentLiabilities":89776604392,"nonCurrentLiabilities":12214614409,"totalLiabilities":101991218801,"capital":1300000000,"retainedEarnings":31150457718,"totalEquity":34031081998,"revenue":200120690689,"costOfSales":89056854201,"grossProfit":111063836488,"sgaExpenses":100971786617,"operatingProfit":10092049871,"nonOperatingIncome":1655180973,"nonOperatingExpenses":4085793186,"preTaxProfit":7661437658,"incomeTax":616352874,"netProfit":7045084784,"operatingCashFlow":-6036811421,"investingCashFlow":-610741550,"financingCashFlow":6630761149,"cashBeginning":56632642,"cashEnding":39840820,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":1500000000},"highlights":"매출 2,001억(전년 대비 소폭 감소). 사채 50억 신규발행. 영업이익 100억 회복. 영업현금흐름 -60억(재고증가 영향)"},{"fy":2016,"term":21,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2017-03-23","currentAssets":98589597214,"nonCurrentAssets":25237028845,"totalAssets":123826626059,"currentLiabilities":71739703545,"nonCurrentLiabilities":11756850129,"totalLiabilities":83496553674,"capital":1300000000,"retainedEarnings":37434847343,"totalEquity":40330072385,"revenue":185107631763,"costOfSales":81489537814,"grossProfit":103618093949,"sgaExpenses":91459157213,"operatingProfit":12158936736,"nonOperatingIncome":1363337419,"nonOperatingExpenses":3954854807,"preTaxProfit":9567419348,"incomeTax":1689828323,"netProfit":7877591025,"operatingCashFlow":9872155859,"investingCashFlow":1757193815,"financingCashFlow":-11616979317,"cashBeginning":39840820,"cashEnding":52211177,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":650000000},"highlights":"매출 1,851억. 영업이익 121억으로 회복. 부채 184억 감소"},{"fy":2017,"term":22,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2018-03-22","currentAssets":91575983751,"nonCurrentAssets":26884613935,"totalAssets":118460597686,"currentLiabilities":68367307830,"nonCurrentLiabilities":3625983334,"totalLiabilities":71993291164,"capital":1300000000,"retainedEarnings":43566593744,"totalEquity":46467306522,"revenue":190380165522,"costOfSales":82574710034,"grossProfit":107805455488,"sgaExpenses":93979915798,"operatingProfit":13825539690,"nonOperatingIncome":1172118950,"nonOperatingExpenses":5127860104,"preTaxProfit":9869798536,"incomeTax":2225824412,"netProfit":7643974124,"operatingCashFlow":23937351499,"investingCashFlow":-8191239728,"financingCashFlow":-10220206814,"cashBeginning":52211177,"cashEnding":5578116134,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":700000000},"highlights":"매출 1,904억. 영업이익 138억. 영업현금흐름 239억 (재고감소 + 차입금 상환)"},{"fy":2018,"term":23,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2019-03-21","currentAssets":90239381253,"nonCurrentAssets":27584564787,"totalAssets":117823946040,"currentLiabilities":59655950487,"nonCurrentLiabilities":2711948552,"totalLiabilities":62367899039,"capital":1300000000,"retainedEarnings":52523185955,"totalEquity":55456047001,"revenue":202527162752,"costOfSales":81194685687,"grossProfit":121332477065,"sgaExpenses":101307347459,"operatingProfit":20025129606,"nonOperatingIncome":624766503,"nonOperatingExpenses":6768162922,"preTaxProfit":13881733187,"incomeTax":4225140976,"netProfit":9656592211,"operatingCashFlow":10960623824,"investingCashFlow":-3741082206,"financingCashFlow":-10682260240,"cashBeginning":5578116134,"cashEnding":2115397512,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":700000000},"highlights":"매출 2,025억. 영업이익 200억으로 도약. 사채 50억 상환 완료"},{"fy":2019,"term":24,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2020-03-24","currentAssets":91587536804,"nonCurrentAssets":28281299350,"totalAssets":119868836154,"currentLiabilities":47984590928,"nonCurrentLiabilities":2321508898,"totalLiabilities":50306099826,"capital":1300000000,"retainedEarnings":66615300463,"totalEquity":69562736328,"revenue":221482779803,"costOfSales":86097877642,"grossProfit":135384902161,"sgaExpenses":110338303049,"operatingProfit":25046599112,"nonOperatingIncome":702575361,"nonOperatingExpenses":5052048653,"preTaxProfit":20697125820,"incomeTax":4005011312,"netProfit":16692114508,"operatingCashFlow":22361923889,"investingCashFlow":-6809045645,"financingCashFlow":-12905531484,"cashBeginning":2115397512,"cashEnding":4762744272,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":2600000000},"highlights":"매출 2,215억으로 최대. 영업이익 250억, 순이익 167억. 단기차입금 대폭 상환(95억). 부채총계 50억대로 축소"},{"fy":2020,"term":25,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":null,"currentAssets":89619094211,"nonCurrentAssets":23781830306,"totalAssets":113400924517,"currentLiabilities":33431647551,"nonCurrentLiabilities":2361703472,"totalLiabilities":35793351023,"capital":1300000000,"retainedEarnings":74850685635,"totalEquity":77607573494,"revenue":188076369286,"costOfSales":75955329543,"grossProfit":112121039743,"sgaExpenses":96870501966,"operatingProfit":15250537777,"nonOperatingIncome":1135578530,"nonOperatingExpenses":1296780039,"preTaxProfit":15089336268,"incomeTax":3153951096,"netProfit":11935385172,"operatingCashFlow":10354274938,"investingCashFlow":-2220920563,"financingCashFlow":-5611285844,"cashBeginning":4762744272,"cashEnding":7284812803,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":3700000000},"highlights":"COVID-19 영향으로 매출 1,881억(전년 대비 -15%). 그러나 비용절감으로 영업이익 152억 유지. 차입금 360억 신규/380억 상환. 연차배당 17억 + 중간배당 20억. *별도 감사보고서 미존재(2021년 비교자료에서 추출)"},{"fy":2021,"term":26,"company":"주식회사 인동에프엔","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2022-03-30","currentAssets":106587096597,"nonCurrentAssets":30303129252,"totalAssets":136890225849,"currentLiabilities":38717499402,"nonCurrentLiabilities":1400010057,"totalLiabilities":40117509459,"capital":1300000000,"retainedEarnings":89465630396,"totalEquity":96772716390,"revenue":203908192230,"costOfSales":78690047001,"grossProfit":125218145229,"sgaExpenses":102701299755,"operatingProfit":22516845474,"nonOperatingIncome":554596329,"nonOperatingExpenses":780204034,"preTaxProfit":22291237769,"incomeTax":4676293008,"netProfit":17614944761,"operatingCashFlow":25096742365,"investingCashFlow":-3517678087,"financingCashFlow":-10176000000,"cashBeginning":7284812803,"cashEnding":18687877081,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":3000000000},"highlights":"매출 2,039억. 영업이익 225억(역대 최대). 토지 재평가 46억 추가. 차입금 100억 상환 완료(무차입 진입)"},{"fy":2022,"term":27,"company":"주식회사 인동에프엔","auditor":"삼일회계법인","opinion":"적정의견","reportDate":"2023-03-28","currentAssets":122238178496,"nonCurrentAssets":35833414489,"totalAssets":158071592985,"currentLiabilities":37329099769,"nonCurrentLiabilities":1076363167,"totalLiabilities":38405462936,"capital":1300000000,"retainedEarnings":113241997185,"totalEquity":119666130049,"revenue":250465630332,"costOfSales":91448124443,"grossProfit":159017505889,"sgaExpenses":120007358693,"operatingProfit":39010147196,"nonOperatingIncome":1737264921,"nonOperatingExpenses":1012464712,"preTaxProfit":39734947405,"incomeTax":8958580616,"netProfit":30776366789,"operatingCashFlow":11344302985,"investingCashFlow":-15245759120,"financingCashFlow":-7000000000,"cashBeginning":18687877081,"cashEnding":7786420946,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":7000000000},"highlights":"매출 2,505억(전년 대비 +23%). 영업이익 390억(역대 최대). 순이익 308억. 감사인 변경: 삼정 → 삼일. 매도가능증권 85억 신규 취득"},{"fy":2023,"term":28,"company":"주식회사 인동에프엔","auditor":"삼일회계법인","opinion":"적정의견","reportDate":"2024-03-26","currentAssets":135503869786,"nonCurrentAssets":40953742927,"totalAssets":176457612713,"currentLiabilities":37469802737,"nonCurrentLiabilities":1239195393,"totalLiabilities":38708998130,"capital":1300000000,"retainedEarnings":130367194073,"totalEquity":137748614583,"revenue":285382768746,"costOfSales":103709051528,"grossProfit":181673717218,"sgaExpenses":139956516548,"operatingProfit":41717200670,"nonOperatingIncome":2911180599,"nonOperatingExpenses":1345503713,"preTaxProfit":43282877556,"incomeTax":9157680668,"netProfit":34125196888,"operatingCashFlow":32536154339,"investingCashFlow":-212070962,"financingCashFlow":-17000000000,"cashBeginning":7786420946,"cashEnding":23110504323,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":17000000000},"highlights":"매출 2,854억(전년 대비 +14%). 영업이익 417억. 순이익 341억. 지분법적용투자주식 62억 신규(인동에프엔뉴욕/베트남 등). 배당총액 170억"},{"fy":2024,"term":29,"company":"주식회사 인동에프엔","auditor":"삼일회계법인","opinion":"적정의견","reportDate":"2025-03-21","currentAssets":151108966921,"nonCurrentAssets":44017885115,"totalAssets":195126852036,"currentLiabilities":52247219018,"nonCurrentLiabilities":1147329810,"totalLiabilities":53394548828,"capital":1300000000,"retainedEarnings":133922135108,"totalEquity":141732303208,"revenue":301497118804,"costOfSales":114435475151,"grossProfit":187061643653,"sgaExpenses":151238521146,"operatingProfit":35823122507,"nonOperatingIncome":2179496793,"nonOperatingExpenses":7451634907,"preTaxProfit":30550984393,"incomeTax":6996043358,"netProfit":23554941035,"operatingCashFlow":15737516276,"investingCashFlow":-24950345207,"financingCashFlow":-5112241150,"cashBeginning":23110504323,"cashEnding":8785434242,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":20000000000},"highlights":"매출 3,015억(3000억 돌파). 영업이익 358억. 지분법손실 30억(투자기업 적자). 배당 200억. 단기금융상품 150억 신규"},{"fy":2025,"term":30,"company":"주식회사 인동에프엔","auditor":"삼일회계법인","opinion":"적정의견","reportDate":"2026-03-20","currentAssets":136162606259,"nonCurrentAssets":44761756552,"totalAssets":180924362811,"currentLiabilities":38215104872,"nonCurrentLiabilities":1029288203,"totalLiabilities":39244393075,"capital":1300000000,"retainedEarnings":134344509155,"totalEquity":141679969736,"revenue":304050321696,"costOfSales":117855590032,"grossProfit":186194731664,"sgaExpenses":154588470232,"operatingProfit":31606261432,"nonOperatingIncome":1870563344,"nonOperatingExpenses":7569804930,"preTaxProfit":25907019846,"incomeTax":5484645799,"netProfit":20422374047,"operatingCashFlow":41367228610,"investingCashFlow":-3946461241,"financingCashFlow":-35722875063,"cashBeginning":8785434242,"cashEnding":10483326548,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":20000000000},"highlights":"매출 3,041억. 영업이익 316억. 지분법손실 30억 지속. 영업현금흐름 413억으로 회복. 연차배당 180억 + 중간배당 20억"}],"consolidated":[{"fy":2016,"term":21,"company":"주식회사 인동에프엔과 그 종속기업","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2017-03-30","currentAssets":98604431455,"nonCurrentAssets":26598772309,"totalAssets":125203203764,"currentLiabilities":73929557642,"nonCurrentLiabilities":11756850129,"totalLiabilities":85686407771,"capital":1300000000,"retainedEarnings":36622619620,"totalEquity":39516795993,"revenue":193724993728,"costOfSales":81704943623,"grossProfit":112020050105,"sgaExpenses":100916118472,"operatingProfit":11103931633,"nonOperatingIncome":1116846486,"nonOperatingExpenses":3465586494,"preTaxProfit":8755191625,"incomeTax":1689828323,"netProfit":7065363302,"operatingCashFlow":10286565069,"investingCashFlow":2461797124,"financingCashFlow":-13497746064,"cashBeginning":39840820,"cashEnding":252789932,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":650000000},"subsidiaries":[{"name":"인동(상해)복장유한공사","country":"중국","ratio":100,"business":"의류도소매업"}],"highlights":"최초 연결재무제표 작성. 인동(상해)복장유한공사 종속기업 편입(자산 86억, 매출 115억, 순손실 -15.7억). INDONG FN NEW YORK INC는 외감 미대상으로 지분법 평가"},{"fy":2017,"term":22,"company":"주식회사 인동에프엔과 그 종속기업","auditor":"삼정회계법인","opinion":"적정의견","reportDate":"2018-03-30","currentAssets":95124870658,"nonCurrentAssets":25204727934,"totalAssets":120329598592,"currentLiabilities":70236308736,"nonCurrentLiabilities":3625983334,"totalLiabilities":73862292070,"capital":1300000000,"retainedEarnings":43566593744,"totalEquity":46467306522,"revenue":196772142992,"costOfSales":82948009115,"grossProfit":113824133877,"sgaExpenses":102528379994,"operatingProfit":11295753883,"nonOperatingIncome":1441182470,"nonOperatingExpenses":2867137817,"preTaxProfit":9869798536,"incomeTax":2225824412,"netProfit":7643974124,"operatingCashFlow":19156655342,"investingCashFlow":-3015411786,"financingCashFlow":-10220206814,"cashBeginning":252789932,"cashEnding":6214049205,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":700000000},"subsidiaries":[{"name":"인동(상해)복장유한공사","country":"중국","ratio":100,"business":"의류도소매업"}],"highlights":"연결매출 1,968억. 인동(상해) 자산 74억, 매출 84억, 순손실 -24.7억. 사채 50억 유동성대체"},{"fy":2025,"term":30,"company":"주식회사 인동에프엔 및 그 종속기업","auditor":"삼일회계법인","opinion":"적정의견","reportDate":"2026-03-20","currentAssets":136199050749,"nonCurrentAssets":45009260393,"totalAssets":181208311142,"currentLiabilities":38499053203,"nonCurrentLiabilities":1029288203,"totalLiabilities":39528341406,"capital":1300000000,"retainedEarnings":134344509155,"totalEquity":141679969736,"revenue":304050321696,"costOfSales":119435656473,"grossProfit":184614665223,"sgaExpenses":155887874360,"operatingProfit":28726790863,"nonOperatingIncome":1947339933,"nonOperatingExpenses":4767110950,"preTaxProfit":25907019846,"incomeTax":5484645799,"netProfit":20422374047,"operatingCashFlow":39348377323,"investingCashFlow":131423842,"financingCashFlow":-35722875063,"cashBeginning":8785434242,"cashEnding":12067200973,"shareholders":[{"name":"장기권","shares":104000,"ratio":80.0},{"name":"이향로","shares":13000,"ratio":10.0},{"name":"장원준","shares":6500,"ratio":5.0},{"name":"장호준","shares":6500,"ratio":5.0}],"dividend":{"perShare":null,"ratio":null,"total":20000000000},"subsidiaries":[{"name":"INDONG FN VINA CO.,LTD","country":"베트남","ratio":100,"business":"여성의류 및 의류용품 제조"}],"highlights":"INDONG FN VINA(베트남) 종속기업 신규 편입(자산 122억, 부채 37억, 영업손실 -29억, 순손실 -30억). 전기 비교(2024) 미감사. 연결 영업이익 287억"}]};
+
+// --- Utilities ---
+const fmt = (n)=>{ if(n===null||n===undefined) return '–'; const a=Math.abs(n); if(a>=1e12) return (n/1e12).toFixed(2)+'조'; if(a>=1e8) return (n/1e8).toFixed(0)+'억'; if(a>=1e4) return (n/1e4).toFixed(0)+'만'; return n.toLocaleString(); };
+const fmtFull = (n)=>n===null||n===undefined?'–':n.toLocaleString()+'원';
+const fmtPct = (n,d=1)=>n===null||n===undefined?'–':(n*100).toFixed(d)+'%';
+const yoy = (cur,prev)=>{ if(prev===null||prev===undefined||prev===0||cur===null||cur===undefined) return null; return (cur-prev)/Math.abs(prev); };
+const deltaClass = (n)=>n===null?'flat':n>0?'pos':n<0?'neg':'flat';
+const deltaSign = (n)=>n===null?'':n>0?'▲ ':n<0?'▼ ':'';
+
+let MODE='separate';
+const dataset = ()=>DATA[MODE];
+
+// Chart palette
+const C = {accent:'#0b7a75', revenue:'#0b7a75', operatingProfit:'#f59e0b', netProfit:'#3b82f6', grossProfit:'#a855f7', assets:'#cbd5e1', liab:'#fca5a5', equity:'#86efac', cashOp:'#10b981', cashIn:'#3b82f6', cashFin:'#a855f7'};
+
+Chart.defaults.font.family = "'JetBrains Mono','SF Mono','Menlo',monospace";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#6b7280';
+Chart.defaults.borderColor = '#e5e7eb';
+Chart.defaults.elements.bar.borderRadius = 4;
+Chart.defaults.elements.bar.borderSkipped = false;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(17,24,39,0.92)';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 6;
+Chart.defaults.plugins.tooltip.boxPadding = 4;
+Chart.defaults.plugins.tooltip.titleFont = {weight:'700', size:12};
+Chart.defaults.plugins.tooltip.bodyFont = {size:11.5};
+
+// --- Render Headline KPIs ---
+function renderKPIs(){
+  const arr = dataset();
+  const last = arr[arr.length-1];
+  const prev = arr[arr.length-2] || null;
+  const first = arr[0];
+  const years = last.fy - first.fy;
+  const cagrRev = years>0 ? Math.pow(last.revenue/first.revenue, 1/years)-1 : null;
+  const cagrAssets = years>0 ? Math.pow(last.totalAssets/first.totalAssets, 1/years)-1 : null;
+  const opMargin = last.operatingProfit/last.revenue;
+  const equityRatio = last.totalEquity/last.totalAssets;
+  const payout = last.dividend && last.dividend.total ? last.dividend.total / last.netProfit : null;
+
+  document.getElementById('headline-lead').textContent =
+    `FY${last.fy} (제${last.term}기, ${MODE==='separate'?'별도':'연결'}). ${last.company} · ${last.auditor} · ${last.opinion}.`;
+
+  const kpis = [
+    {label:'매출액', value:fmt(last.revenue), delta:yoy(last.revenue, prev?.revenue), deltaLabel:'YoY'},
+    {label:'영업이익률', value:fmtPct(opMargin,1), delta:opMargin - (prev?prev.operatingProfit/prev.revenue:opMargin), deltaLabel:'pt', isPt:true},
+    {label:'자산총계', value:fmt(last.totalAssets), delta:yoy(last.totalAssets, prev?.totalAssets), deltaLabel:'YoY'},
+    {label:'자본총계', value:fmt(last.totalEquity), delta:yoy(last.totalEquity, prev?.totalEquity), deltaLabel:'YoY'},
+    {label:`${years}년 매출 CAGR`, value:fmtPct(cagrRev,1), delta:null, deltaLabel:`${first.fy}→${last.fy}`, isSub:true},
+    {label:'자기자본비율', value:fmtPct(equityRatio,1), delta:null, deltaLabel:payout?`배당성향 ${fmtPct(payout,1)}`:'배당 없음', isSub:true},
+  ];
+
+  // Variance-first 표기: 큰 글씨가 ±%, 작은 글씨가 절대값
+  document.getElementById('kpis').innerHTML = kpis.map(k=>{
+    let deltaBig='', subText='';
+    if(k.isSub){
+      // CAGR · 비율 KPI: 큰 글씨가 자체값
+      deltaBig = `<div class="delta flat">${k.value}</div>`;
+      subText = `<div class="sub">${k.deltaLabel}</div>`;
+    } else if(k.isPt && k.delta!==null){
+      const p=(k.delta*100).toFixed(1);
+      deltaBig = `<div class="delta ${deltaClass(k.delta)}">${deltaSign(k.delta)}${p}<span style="font-size:14px;font-weight:600">pt</span></div>`;
+      subText = `<div class="value">현재 ${k.value}</div><div class="sub">YoY 변화량</div>`;
+    } else if(k.delta!==null){
+      deltaBig = `<div class="delta ${deltaClass(k.delta)}">${deltaSign(k.delta)}${fmtPct(k.delta,1)}</div>`;
+      subText = `<div class="value">${k.value}</div><div class="sub">YoY · 절대값</div>`;
+    }
+    return `<div class="kpi"><div class="label">${k.label}</div>${deltaBig}${subText}</div>`;
+  }).join('');
+
+  document.getElementById('cagr-revenue').textContent = fmtPct(cagrRev,1);
+  const cagrOp = first.operatingProfit>0 && years>0 ? Math.pow(last.operatingProfit/first.operatingProfit, 1/years)-1 : null;
+  document.getElementById('cagr-op').textContent = fmtPct(cagrOp,1);
+}
+
+// --- Chart 1: Revenue & Profit Trend ---
+let chart1;
+function renderChart1(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  const series = {revenue:'매출액', operatingProfit:'영업이익', netProfit:'당기순이익', grossProfit:'매출총이익'};
+  const colors = {revenue:C.revenue, operatingProfit:C.operatingProfit, netProfit:C.netProfit, grossProfit:C.grossProfit};
+  const active = Array.from(document.querySelectorAll('#chart1-toolbar .chip.active')).map(b=>b.dataset.key);
+  const datasets = active.map(k=>({
+    label:series[k], data:arr.map(d=>d[k]/1e8), borderColor:colors[k], backgroundColor:colors[k]+'22', fill:false, tension:0.25, borderWidth:2, pointRadius:3, pointHoverRadius:6
+  }));
+  if(chart1) chart1.destroy();
+  chart1 = new Chart(document.getElementById('chart1'),{
+    type:'line',
+    data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:16}},
+        tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}억원`, footer:(items)=>{
+          if(items.length===0) return ''; const idx=items[0].dataIndex; const yr=arr[idx]; const prev=arr[idx-1];
+          if(!prev) return ''; const ry=yoy(yr.revenue,prev.revenue); return ry!==null?`매출 YoY: ${(ry*100).toFixed(1)}%`:'';
+        }}}
+      },
+      scales:{
+        y:{title:{display:true,text:'금액 (억원)'},grid:{color:'#f3f4f6'}},
+        x:{title:{display:true,text:'회계연도 (FY)'}}
+      },
+      onClick:(e,els)=>{ if(els.length){ openModal(arr[els[0].index]); } }
+    }
+  });
+}
+document.getElementById('chart1-toolbar').addEventListener('click',(e)=>{
+  if(e.target.classList.contains('chip')){ e.target.classList.toggle('active'); renderChart1(); }
+});
+
+// --- Chart B/S Stacked ---
+let chartBS;
+function renderChartBS(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartBS) chartBS.destroy();
+  chartBS = new Chart(document.getElementById('chart-bs'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'자본총계', data:arr.map(d=>d.totalEquity/1e8), backgroundColor:C.equity, stack:'s'},
+      {label:'부채총계', data:arr.map(d=>d.totalLiabilities/1e8), backgroundColor:C.liab, stack:'s'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'rect',padding:12}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}억원`}}},
+      scales:{y:{stacked:true,title:{display:true,text:'억원'}, grid:{color:'#f3f4f6'}},x:{stacked:true}}
+    }
+  });
+}
+
+// --- Chart Equity Ratio ---
+let chartEq;
+function renderChartEq(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartEq) chartEq.destroy();
+  chartEq = new Chart(document.getElementById('chart-equity'),{
+    type:'line',
+    data:{labels, datasets:[{
+      label:'자기자본비율', data:arr.map(d=>(d.totalEquity/d.totalAssets*100)),
+      borderColor:C.accent, backgroundColor:C.accent+'22', fill:true, tension:0.25, borderWidth:2, pointRadius:3
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>`${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'%'},min:0,max:100,grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart Margins ---
+let chartMg;
+function renderChartMargin(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartMg) chartMg.destroy();
+  chartMg = new Chart(document.getElementById('chart-margin'),{
+    type:'line',
+    data:{labels, datasets:[
+      {label:'매출총이익률', data:arr.map(d=>d.grossProfit/d.revenue*100), borderColor:C.grossProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
+      {label:'영업이익률', data:arr.map(d=>d.operatingProfit/d.revenue*100), borderColor:C.operatingProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
+      {label:'순이익률', data:arr.map(d=>d.netProfit/d.revenue*100), borderColor:C.netProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:16}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'%'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart: FY2025 판관비 분해 ---
+let chartSGA;
+function renderChartSGAMix(){
+  const items = [
+    {name:'판매수수료', amount:1011, color:'#ef4444'},
+    {name:'급여', amount:199, color:'#f59e0b'},
+    {name:'임차료', amount:95, color:'#a855f7'},
+    {name:'광고선전비', amount:40, color:'#3b82f6'},
+    {name:'운반비', amount:34, color:'#10b981'},
+    {name:'기타 (19개 항목)', amount:167, color:'#6b7280'},
+  ];
+  const total = items.reduce((s,x)=>s+x.amount, 0);
+  if(chartSGA) chartSGA.destroy();
+  chartSGA = new Chart(document.getElementById('chart-sga-mix'),{
+    type:'bar',
+    data:{
+      labels:items.map(x=>x.name),
+      datasets:[{
+        label:'판관비 (억원)',
+        data:items.map(x=>x.amount),
+        backgroundColor:items.map(x=>x.color),
+        borderRadius:6
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:(c)=>`${c.formattedValue}억원 (${(c.parsed.x/total*100).toFixed(1)}%)`}}},
+      scales:{x:{title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}},y:{grid:{display:false}}}
+    }
+  });
+}
+
+// --- Chart: 비용 구조 누적 (매출원가·판관비·영업이익 비율) ---
+let chartCostRatio;
+function renderChartCostRatio(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartCostRatio) chartCostRatio.destroy();
+  chartCostRatio = new Chart(document.getElementById('chart-cost-ratio'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'매출원가율', data:arr.map(d=>d.costOfSales/d.revenue*100), backgroundColor:'#ef4444', stack:'s'},
+      {label:'판관비율', data:arr.map(d=>d.sgaExpenses/d.revenue*100), backgroundColor:'#f59e0b', stack:'s'},
+      {label:'영업이익률', data:arr.map(d=>d.operatingProfit/d.revenue*100), backgroundColor:C.accent, stack:'s'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'rect',padding:12,font:{size:11}}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${(+c.formattedValue).toFixed(1)}%`}}},
+      scales:{y:{stacked:true,max:100,title:{display:true,text:'매출 대비 %'},grid:{color:'#f3f4f6'}},x:{stacked:true}}
+    }
+  });
+}
+
+// --- Chart ROE / ROA ---
+let chartROE;
+function renderChartROE(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  const roe = arr.map(d=>d.netProfit/d.totalEquity*100);
+  const roa = arr.map(d=>d.netProfit/d.totalAssets*100);
+  if(chartROE) chartROE.destroy();
+  chartROE = new Chart(document.getElementById('chart-roe'),{
+    type:'line',
+    data:{labels, datasets:[
+      {label:'ROE (자기자본수익률)', data:roe, borderColor:C.netProfit, backgroundColor:C.netProfit+'22', fill:false, tension:0.25, borderWidth:2, pointRadius:3},
+      {label:'ROA (자산수익률)', data:roa, borderColor:C.operatingProfit, backgroundColor:C.operatingProfit+'22', fill:false, tension:0.25, borderWidth:2, pointRadius:3},
+      {label:'패션 우수기업 ROE 벤치마크 15%', data:arr.map(()=>15), borderColor:'#a855f7', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12,font:{size:11}}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'%'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart Turnover (자산회전·자기자본회전) ---
+let chartTurnover;
+function renderChartTurnover(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  const at = arr.map(d=>d.revenue/d.totalAssets);
+  const et = arr.map(d=>d.revenue/d.totalEquity);
+  if(chartTurnover) chartTurnover.destroy();
+  chartTurnover = new Chart(document.getElementById('chart-turnover'),{
+    type:'line',
+    data:{labels, datasets:[
+      {label:'자산회전율 (매출/자산)', data:at, borderColor:C.accent, backgroundColor:C.accent+'22', fill:false, tension:0.25, borderWidth:2, pointRadius:3, yAxisID:'y'},
+      {label:'자기자본회전율 (매출/자본)', data:et, borderColor:'#ef4444', backgroundColor:'#ef444422', fill:false, tension:0.25, borderWidth:2, pointRadius:3, yAxisID:'y1'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12,font:{size:11}}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${(+c.formattedValue).toFixed(2)}회`}}},
+      scales:{
+        y:{position:'left',title:{display:true,text:'자산회전율 (회)'},grid:{color:'#f3f4f6'}},
+        y1:{position:'right',title:{display:true,text:'자기자본회전율 (회)'},grid:{drawOnChartArea:false}}
+      }
+    }
+  });
+}
+
+// --- Efficiency KPI strip ---
+function renderEffKPIs(){
+  const arr = dataset();
+  const last = arr[arr.length-1];
+  const prev = arr[arr.length-2];
+  const peak_roe = arr.reduce((a,b)=>(b.netProfit/b.totalEquity)>(a.netProfit/a.totalEquity)?b:a);
+  const roe_now = last.netProfit/last.totalEquity;
+  const roe_prev = prev ? prev.netProfit/prev.totalEquity : roe_now;
+  const roa_now = last.netProfit/last.totalAssets;
+  const at_now = last.revenue/last.totalAssets;
+  const et_now = last.revenue/last.totalEquity;
+  const benchmark_gap = roe_now - 0.15;
+
+  const kpis = [
+    {label:'ROE (FY'+last.fy+')', big:(roe_now*100).toFixed(1)+'%', cls:roe_now>=0.15?'pos':roe_now>=0.10?'flat':'neg', sub:'YoY '+((roe_now-roe_prev)*100>=0?'+':'')+((roe_now-roe_prev)*100).toFixed(1)+'pt'},
+    {label:'벤치마크 차이', big:(benchmark_gap*100>=0?'+':'')+(benchmark_gap*100).toFixed(1)+'pt', cls:benchmark_gap>=0?'pos':'neg', sub:'패션 우수기업 ROE 15% 대비'},
+    {label:'ROE 정점', big:((peak_roe.netProfit/peak_roe.totalEquity)*100).toFixed(1)+'%', cls:'flat', sub:'FY'+peak_roe.fy+' · 현재 대비 '+(((peak_roe.netProfit/peak_roe.totalEquity)-roe_now)*100).toFixed(1)+'pt 높음'},
+    {label:'ROA (FY'+last.fy+')', big:(roa_now*100).toFixed(1)+'%', cls:roa_now>=0.10?'pos':'flat', sub:'자산 1원당 '+(roa_now*100).toFixed(1)+'전 순이익'},
+    {label:'자산회전율', big:at_now.toFixed(2)+'회', cls:'flat', sub:'매출 / 자산'},
+    {label:'자기자본회전율', big:et_now.toFixed(2)+'회', cls:'flat', sub:'매출 / 자본 — 자본 누적으로 둔화'},
+  ];
+  document.getElementById('eff-kpis').innerHTML = kpis.map(k=>
+    `<div class="kpi"><div class="label">${k.label}</div><div class="delta ${k.cls}">${k.big}</div><div class="sub">${k.sub}</div></div>`
+  ).join('');
+}
+
+// --- Chart Cash Flow ---
+let chartCF;
+function renderChartCF(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartCF) chartCF.destroy();
+  chartCF = new Chart(document.getElementById('chart-cf'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'영업활동', data:arr.map(d=>d.operatingCashFlow/1e8), backgroundColor:C.cashOp},
+      {label:'투자활동', data:arr.map(d=>d.investingCashFlow/1e8), backgroundColor:C.cashIn},
+      {label:'재무활동', data:arr.map(d=>d.financingCashFlow/1e8), backgroundColor:C.cashFin},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'rect',padding:12}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}억원`}}},
+      scales:{y:{title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Year Grid ---
+function renderYearGrid(){
+  const arr = dataset().slice().sort((a,b)=>b.fy-a.fy);
+  const html = arr.map(d=>{
+    const opm = (d.operatingProfit/d.revenue*100).toFixed(1);
+    const tags = [];
+    if(MODE==='consolidated') tags.push(`<span class="tag consol">연결</span>`);
+    if(d.subsidiaries) tags.push(`<span class="tag">+${d.subsidiaries.length}社</span>`);
+    return `<button class="year-card" data-fy="${d.fy}">
+      <span class="yc-fy">FY${d.fy}</span><span class="yc-term">제${d.term}기</span>
+      <div class="yc-rev">${fmt(d.revenue)}<span class="yc-rev-label" style="font-family:var(--sans);font-weight:400"> 매출</span></div>
+      <div class="yc-op">영업이익 ${fmt(d.operatingProfit)} · OP% ${opm}%</div>
+      <div class="yc-tags">${tags.join('')}</div>
+    </button>`;
+  }).join('');
+  document.getElementById('year-grid').innerHTML = html;
+  document.querySelectorAll('.year-card').forEach(c=>c.addEventListener('click',()=>{
+    const fy=Number(c.dataset.fy); const d=arr.find(x=>x.fy===fy); openModal(d);
+  }));
+}
+
+// --- Modal ---
+function openModal(d){
+  if(!d) return;
+  const arr = dataset();
+  const idx = arr.findIndex(x=>x.fy===d.fy);
+  const prev = idx>0?arr[idx-1]:null;
+  const rev_yoy = yoy(d.revenue, prev?.revenue);
+  const op_yoy = yoy(d.operatingProfit, prev?.operatingProfit);
+  const net_yoy = yoy(d.netProfit, prev?.netProfit);
+
+  const sh = (d.shareholders||[]).map(s=>`<div class="detail-row"><span class="k">${s.name}</span><span class="v">${s.ratio.toFixed(1)}%</span></div>`).join('');
+  const sub = (d.subsidiaries||[]).map(s=>`<div class="detail-row"><span class="k">${s.name} (${s.country})</span><span class="v">${s.ratio}%</span></div>`).join('');
+  const div = d.dividend ? `<div class="detail-row"><span class="k">배당총액</span><span class="v">${fmt(d.dividend.total)}</span></div>${d.dividend.perShare?`<div class="detail-row"><span class="k">주당배당</span><span class="v">${d.dividend.perShare.toLocaleString()}원</span></div>`:''}${d.dividend.ratio?`<div class="detail-row"><span class="k">액면배당률</span><span class="v">${d.dividend.ratio}%</span></div>`:''}` : '<div class="detail-row"><span class="k">배당</span><span class="v">없음</span></div>';
+
+  document.getElementById('modal').innerHTML = `
+    <button class="modal-close" onclick="closeModal()" aria-label="닫기">✕</button>
+    <h3 id="modal-title">FY${d.fy} · 제${d.term}기 ${MODE==='consolidated'?'연결 ':''}감사보고서</h3>
+    <p class="meta">
+      <span><strong>${d.company}</strong></span>
+      <span>· ${d.auditor}</span>
+      <span>· <strong style="color:${d.opinion==='적정의견'?'var(--pos)':'var(--neg)'}">${d.opinion}</strong></span>
+      ${d.reportDate?`<span>· 보고일 ${d.reportDate}</span>`:''}
+    </p>
+    <div class="modal-grid">
+      <div class="detail-block">
+        <h4>재무상태</h4>
+        <div class="detail-row"><span class="k">유동자산</span><span class="v">${fmt(d.currentAssets)}</span></div>
+        <div class="detail-row"><span class="k">비유동자산</span><span class="v">${fmt(d.nonCurrentAssets)}</span></div>
+        <div class="detail-row total"><span class="k">자산총계</span><span class="v">${fmt(d.totalAssets)}</span></div>
+        <div class="detail-row"><span class="k">유동부채</span><span class="v">${fmt(d.currentLiabilities)}</span></div>
+        <div class="detail-row"><span class="k">비유동부채</span><span class="v">${fmt(d.nonCurrentLiabilities)}</span></div>
+        <div class="detail-row total"><span class="k">부채총계</span><span class="v">${fmt(d.totalLiabilities)}</span></div>
+        <div class="detail-row"><span class="k">자본금</span><span class="v">${fmt(d.capital)}</span></div>
+        <div class="detail-row"><span class="k">이익잉여금</span><span class="v">${fmt(d.retainedEarnings)}</span></div>
+        <div class="detail-row total"><span class="k">자본총계</span><span class="v">${fmt(d.totalEquity)}</span></div>
+      </div>
+      <div class="detail-block">
+        <h4>손익 (전년 대비)</h4>
+        <div class="detail-row"><span class="k">매출액</span><span class="v">${fmt(d.revenue)} <span class="${deltaClass(rev_yoy)}" style="font-size:11px;margin-left:6px">${rev_yoy!==null?deltaSign(rev_yoy)+fmtPct(rev_yoy,1):''}</span></span></div>
+        <div class="detail-row"><span class="k">매출원가</span><span class="v">${fmt(d.costOfSales)}</span></div>
+        <div class="detail-row"><span class="k">매출총이익</span><span class="v">${fmt(d.grossProfit)}</span></div>
+        <div class="detail-row"><span class="k">판매관리비</span><span class="v">${fmt(d.sgaExpenses)}</span></div>
+        <div class="detail-row total"><span class="k">영업이익</span><span class="v">${fmt(d.operatingProfit)} <span class="${deltaClass(op_yoy)}" style="font-size:11px;margin-left:6px">${op_yoy!==null?deltaSign(op_yoy)+fmtPct(op_yoy,1):''}</span></span></div>
+        <div class="detail-row"><span class="k">영업이익률</span><span class="v">${fmtPct(d.operatingProfit/d.revenue,1)}</span></div>
+        <div class="detail-row"><span class="k">법인세비용</span><span class="v">${fmt(d.incomeTax)}</span></div>
+        <div class="detail-row total"><span class="k">당기순이익</span><span class="v">${fmt(d.netProfit)} <span class="${deltaClass(net_yoy)}" style="font-size:11px;margin-left:6px">${net_yoy!==null?deltaSign(net_yoy)+fmtPct(net_yoy,1):''}</span></span></div>
+      </div>
+      <div class="detail-block">
+        <h4>현금흐름</h4>
+        <div class="detail-row"><span class="k">영업활동</span><span class="v ${d.operatingCashFlow>=0?'pos':'neg'}">${fmt(d.operatingCashFlow)}</span></div>
+        <div class="detail-row"><span class="k">투자활동</span><span class="v ${d.investingCashFlow>=0?'pos':'neg'}">${fmt(d.investingCashFlow)}</span></div>
+        <div class="detail-row"><span class="k">재무활동</span><span class="v ${d.financingCashFlow>=0?'pos':'neg'}">${fmt(d.financingCashFlow)}</span></div>
+        <div class="detail-row"><span class="k">기초 현금</span><span class="v">${fmt(d.cashBeginning)}</span></div>
+        <div class="detail-row total"><span class="k">기말 현금</span><span class="v">${fmt(d.cashEnding)}</span></div>
+      </div>
+      <div class="detail-block">
+        <h4>주주 · 배당${sub?' · 종속기업':''}</h4>
+        ${sh}
+        ${sub?'<div style="height:8px"></div>'+sub:''}
+        <div style="height:8px"></div>
+        ${div}
+      </div>
+    </div>
+    ${d.highlights?`<div class="highlight-box"><strong>특이사항:</strong> ${d.highlights}</div>`:''}
+  `;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+document.getElementById('modal-bg').addEventListener('click',(e)=>{if(e.target.id==='modal-bg') closeModal();});
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape') closeModal();});
+
+// --- Mode Toggle ---
+document.getElementById('mode-toggle').addEventListener('click',(e)=>{
+  if(e.target.tagName==='BUTTON'){
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    MODE = e.target.dataset.mode;
+    renderAll();
+  }
+});
+
+// --- §0 Inflection Cards ---
+function renderInsightGrid(){
+  const arr = dataset();
+  const last = arr[arr.length-1];
+  const prev = arr[arr.length-2];
+  const prev2 = arr[arr.length-3];
+  const prev3 = arr[arr.length-4];
+  const peak = arr.reduce((a,b)=> b.operatingProfit>a.operatingProfit?b:a);
+
+  const rev_yoy = yoy(last.revenue, prev.revenue);
+  const rev_yoy_prev = yoy(prev.revenue, prev2.revenue);
+  const op_yoy = yoy(last.operatingProfit, prev.operatingProfit);
+  const op_from_peak = (last.operatingProfit - peak.operatingProfit) / peak.operatingProfit;
+  const opm_now = last.operatingProfit/last.revenue;
+  const opm_peak = peak.operatingProfit/peak.revenue;
+  const cor_now = last.costOfSales/last.revenue;
+  const cor_peak = peak.costOfSales/peak.revenue;
+
+  const cards = [
+    {
+      label:'매출 성장률 (YoY)',
+      value: fmtPct(rev_yoy,2),
+      cls: rev_yoy<0.01?'neg':rev_yoy<0.05?'flat':'pos',
+      sub: `직전 4년: +${(yoy(prev3.revenue, arr[arr.length-5].revenue)*100).toFixed(1)}% → +${(yoy(prev2.revenue, prev3.revenue)*100).toFixed(1)}% → +${(rev_yoy_prev*100).toFixed(1)}% → ${(rev_yoy*100).toFixed(2)}%`,
+      mech: '감속 곡선 진입. 4년간 가속 후 1% 미만. 절대 매출 3,041억으로 최대치 갱신했으나 모멘텀 소진. <strong>시사점:</strong> 성장 동력 재점화 또는 마진 강화 중 선택 국면.',
+      warn: rev_yoy<0.01
+    },
+    {
+      label:'영업이익 (정점 대비)',
+      value: fmtPct(op_from_peak,1),
+      cls: 'neg',
+      sub: `정점 FY${peak.fy} ${fmt(peak.operatingProfit)} → 현재 ${fmt(last.operatingProfit)} (-${fmt(peak.operatingProfit-last.operatingProfit)})`,
+      mech: `OP% ${(opm_peak*100).toFixed(1)}% → ${(opm_now*100).toFixed(1)}% (-${((opm_peak-opm_now)*100).toFixed(1)}pt). <strong>시사점:</strong> 1pt 마진 = 약 30억 영업이익. 마진 회복이 매출 회복보다 ROI 우위.`,
+      warn: true
+    },
+    {
+      label:'매출원가율 (악화)',
+      value: `+${((cor_now-cor_peak)*100).toFixed(1)}pt`,
+      cls: 'neg',
+      sub: `정점 FY${peak.fy} ${(cor_peak*100).toFixed(1)}% → 현재 ${(cor_now*100).toFixed(1)}%`,
+      mech: '제품매출원가 92억 → 919억 (FY2005→2025) 누적. 매출원가율 53.3%(2005) → 38.8%(2025)로 장기 개선됐으나 최근 2년 반등. <strong>시사점:</strong> 원가 구조 분석을 통한 손익 분기점 재점검 필요.',
+      warn: true
+    }
+  ];
+
+  document.getElementById('insight-grid').innerHTML = cards.map(c=>`
+    <div class="insight-card ${c.warn?'warn':''}">
+      <div class="ic-label">${c.label}</div>
+      <div class="ic-value ${c.cls}">${c.value}</div>
+      <div class="ic-sub">${c.sub}</div>
+      <div class="ic-mech">${c.mech}</div>
+    </div>
+  `).join('');
+}
+
+// --- Chart: 유동/비유동 자산 ---
+let chartAM;
+function renderChartAssetMix(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartAM) chartAM.destroy();
+  chartAM = new Chart(document.getElementById('chart-asset-mix'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'유동자산', data:arr.map(d=>d.currentAssets/1e8), backgroundColor:'#cbd5e1', stack:'s'},
+      {label:'비유동자산 (수직통합 자산)', data:arr.map(d=>d.nonCurrentAssets/1e8), backgroundColor:C.accent, stack:'s'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'rect',padding:12}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}억원`}}},
+      scales:{y:{stacked:true,title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}},x:{stacked:true}}
+    }
+  });
+}
+
+// --- Chart: 비유동자산 비중 ---
+let chartNCR;
+function renderChartNonCurRatio(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartNCR) chartNCR.destroy();
+  chartNCR = new Chart(document.getElementById('chart-noncur-ratio'),{
+    type:'line',
+    data:{labels, datasets:[{
+      label:'비유동자산 비중',
+      data:arr.map(d=>(d.nonCurrentAssets/d.totalAssets*100)),
+      borderColor:C.accent, backgroundColor:C.accent+'22', fill:true, tension:0.25, borderWidth:2, pointRadius:3
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:(c)=>`${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'%'},min:0,max:35,grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart: 운전자본 부담률 ---
+let chartWC;
+function renderChartWC(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  // 매출채권 = currentAssets에서 분리되지 않으므로 추정: 상위 흐름은 운영 단순화
+  // 본 분석은 (재고가 currentAssets - cash 추정) 대신 데이터 한계 명시
+  // 실제 분석: 당좌자산 中 cash 제외분 + 재고로 추정해야 하지만 데이터 부족 → 단순 (currentAssets-cashEnding)/revenue 비율을 'WC부담률' 으로 표기
+  const wc_ratio = arr.map(d=>((d.currentAssets - d.cashEnding)/d.revenue*100));
+  if(chartWC) chartWC.destroy();
+  chartWC = new Chart(document.getElementById('chart-wc'),{
+    type:'line',
+    data:{labels, datasets:[{
+      label:'운전자본 부담률 (유동자산-현금)/매출',
+      data:wc_ratio,
+      borderColor:C.operatingProfit, backgroundColor:C.operatingProfit+'22', fill:true, tension:0.25, borderWidth:2, pointRadius:3
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>`${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'%'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart: 재고자산 회전율 (추정) ---
+let chartInv;
+function renderChartInvTurnover(){
+  const arr = dataset();
+  // 재고는 별도 필드 없음 → 매출원가율로 대신 표현 (원가율이 높을수록 마진 압박)
+  const data = arr.map(d=>d.costOfSales/d.revenue*100);
+  const labels = arr.map(d=>d.fy);
+  if(chartInv) chartInv.destroy();
+  chartInv = new Chart(document.getElementById('chart-inv-turnover'),{
+    type:'line',
+    data:{labels, datasets:[{
+      label:'매출원가율 (Proxy: 재고 효율과 직결)',
+      data, borderColor:C.neg||'#ef4444', backgroundColor:'#ef444422', fill:true, tension:0.25, borderWidth:2, pointRadius:3
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>`${c.formattedValue}%`}}},
+      scales:{y:{title:{display:true,text:'매출원가율 %'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart: 배당총액 + 배당성향 ---
+let chartDiv;
+function renderChartDividend(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  const div_total = arr.map(d=>(d.dividend && d.dividend.total) ? d.dividend.total/1e8 : 0);
+  const payout = arr.map(d=>(d.dividend && d.dividend.total && d.netProfit>0) ? (d.dividend.total/d.netProfit*100) : null);
+  if(chartDiv) chartDiv.destroy();
+  chartDiv = new Chart(document.getElementById('chart-dividend'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {type:'bar',label:'배당총액 (억원)',data:div_total,backgroundColor:C.accent,yAxisID:'y'},
+      {type:'line',label:'배당성향 (%)',data:payout,borderColor:'#f59e0b',backgroundColor:'transparent',borderWidth:2,tension:0.2,pointRadius:3,yAxisID:'y1'}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12}},
+      tooltip:{callbacks:{label:(c)=>{return c.dataset.label.includes('성향')?`${c.dataset.label}: ${c.formattedValue}%`:`${c.dataset.label}: ${c.formattedValue}억원`}}}},
+      scales:{
+        y:{position:'left',title:{display:true,text:'배당총액 (억원)'},grid:{color:'#f3f4f6'}},
+        y1:{position:'right',title:{display:true,text:'배당성향 %'},grid:{drawOnChartArea:false},max:120}
+      }
+    }
+  });
+}
+
+// --- Chart: 유동부채 추이 ---
+let chartCL;
+function renderChartCurLiab(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartCL) chartCL.destroy();
+  chartCL = new Chart(document.getElementById('chart-cur-liab'),{
+    type:'line',
+    data:{labels, datasets:[{
+      label:'유동부채 (억원)',
+      data:arr.map(d=>d.currentLiabilities/1e8),
+      borderColor:C.liab, backgroundColor:'#fca5a522', fill:true, tension:0.25, borderWidth:2, pointRadius:3
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>`${c.formattedValue}억원`}}},
+      scales:{y:{title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Chart: 영업외수익/비용 (지분법 손익 영향) ---
+let chartEM;
+// --- Chart: 별도 vs 연결 격차 ---
+let chartSepCon;
+function renderChartSepCon(){
+  const cons = DATA.consolidated;
+  const labels = cons.map(d=>`FY${d.fy}`);
+  const sepOP = cons.map(c=>{
+    const s = DATA.separate.find(x=>x.fy===c.fy);
+    return s ? s.operatingProfit/1e8 : null;
+  });
+  const conOP = cons.map(c=>c.operatingProfit/1e8);
+  const gap = cons.map((c,i)=>sepOP[i]!==null ? (conOP[i]-sepOP[i]) : null);
+  if(chartSepCon) chartSepCon.destroy();
+  chartSepCon = new Chart(document.getElementById('chart-sep-vs-con'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'별도 영업이익', data:sepOP, backgroundColor:C.accent, borderRadius:4},
+      {label:'연결 영업이익', data:conOP, backgroundColor:C.operatingProfit, borderRadius:4},
+      {type:'line', label:'격차 (연결-별도, 종속기업 영향)', data:gap, borderColor:'#ef4444', backgroundColor:'#ef444422', borderWidth:2, pointRadius:5, fill:false, tension:0.2}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:11}}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${(+c.formattedValue).toFixed(1)}억원`}}},
+      scales:{y:{title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+function renderChartEquityMethod(){
+  const arr = dataset();
+  const labels = arr.map(d=>d.fy);
+  if(chartEM) chartEM.destroy();
+  chartEM = new Chart(document.getElementById('chart-equity-method'),{
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'영업외수익', data:arr.map(d=>d.nonOperatingIncome/1e8), backgroundColor:C.cashOp, stack:'income'},
+      {label:'영업외비용 (지분법손실 포함)', data:arr.map(d=>-d.nonOperatingExpenses/1e8), backgroundColor:C.neg||'#ef4444', stack:'expense'},
+      {type:'line',label:'순영업외손익',data:arr.map(d=>(d.nonOperatingIncome-d.nonOperatingExpenses)/1e8),borderColor:C.accent,borderWidth:2,tension:0.2,pointRadius:3,backgroundColor:'transparent'}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12}},
+      tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${c.formattedValue}억원`}}},
+      scales:{y:{title:{display:true,text:'억원'},grid:{color:'#f3f4f6'}}}
+    }
+  });
+}
+
+// --- Expandable Insight Cards (강점·약점·개선) ---
+// --- Strategy choice cards (A/B/C, mutually exclusive priorities) ---
+function renderStrategyCards(){
+  const STRATEGIES = [
+    {
+      cls:'a', letter:'A',
+      title:'마진 집중 — 매출원가·판관비 양면 절감',
+      claim:'성장률을 일시 양보하고 OP% 회복에 자원을 집중. 매출원가율 -1.5pt + 판관비율 -1.0pt 동시 추진. 외부 채널 의존도 점진 축소.',
+      scenarios:[
+        {cls:'opt', lbl:'낙관', val:'+80억', desc:'원가 -1.5pt + 판관 -1.0pt 달성 → OP% 13%'},
+        {cls:'base', lbl:'기준', val:'+40억', desc:'원가만 -1pt 달성 → OP% 11.7%'},
+        {cls:'pess', lbl:'비관', val:'-50억', desc:'마진 추가 후퇴(+1pt) → OP% 9%대'},
+      ],
+      tradeoff:'매출 성장률 +0~+2%로 둔화 수용. 신규 채널·브랜드 투자 일시 보류.',
+      kpi:'매출원가율 38.8%→37.3%, 판관비율 50.8%→49.8%, OP% 10.4%→13.0%',
+      horizon:'4분기 내 분기별 -0.5pt 마진 트래킹',
+      owner:'CFO + 영업본부장 + 제조본부장 공동',
+      tactics:'<strong>활성:</strong> ① 마진 구조 분해, ④ 운전자본 효율화, ⑤ 손익 변동성 관리'
+    },
+    {
+      cls:'b', letter:'B',
+      title:'성장 재가속 — 신규 채널·브랜드',
+      claim:'매출 YoY +0.85% 정체 탈출. D2C 비중 확대·신규 라인 ROI 검증·해외 판로 다각화로 +150억/년 신규 매출. 마진 단기 양보 수용.',
+      scenarios:[
+        {cls:'opt', lbl:'낙관', val:'+60억', desc:'+200억 매출 + 신규 채널 OP% 12% 달성'},
+        {cls:'base', lbl:'기준', val:'+25억', desc:'+150억 매출 + 신규 채널 OP% 8%'},
+        {cls:'pess', lbl:'비관', val:'-30억', desc:'신규 투자비 선반영 + 매출 미달'},
+      ],
+      tradeoff:'OP%는 10~11%대 유지(개선 없음). 단기 1~2년 영업이익 정체 위험.',
+      kpi:'매출 YoY +5% 이상, D2C 비중 15%+, 판매수수료 의존도 33%→28%',
+      horizon:'8분기(2년) 손익분기 도달',
+      owner:'CMO + 신사업본부장',
+      tactics:'<strong>활성:</strong> ⑥ 성장 동력 재점화, ① 마진 구조 분해(채널별 P&L)'
+    },
+    {
+      cls:'c', letter:'C',
+      title:'종속기업·자본 정리 — 해외 손실 차단 + 배당 정상화',
+      claim:'지분법손실 30억/년을 0으로 회수. 베트남 회수 곡선 KPI화·상해 청산 결정·뉴욕 정리. 배당성향 98%→50% 정상화로 재투자 자원 +100억 확보.',
+      scenarios:[
+        {cls:'opt', lbl:'낙관', val:'+90억', desc:'지분법손실 0 전환 + 베트남 흑전 + 매도가능증권 운용 수익'},
+        {cls:'base', lbl:'기준', val:'+45억', desc:'지분법손실 30→0 + 배당 재배분 활용'},
+        {cls:'pess', lbl:'비관', val:'-40억', desc:'청산 비용 + 회수 지연으로 일시 손실'},
+      ],
+      tradeoff:'해외 진출 모델 일시 축소. 주주 배당 감소 동의 필요(80% 단독 의사결정 가능).',
+      kpi:'지분법손실 30→0억, 배당성향 98%→50%, 자기자본 증가율 +10%/년 복귀',
+      horizon:'2분기 내 종속기업 의사결정, 4분기 내 배당정책 개정',
+      owner:'CEO + 이사회 + 해외법인장',
+      tactics:'<strong>활성:</strong> ② 종속기업 포트폴리오 재편, ③ 자본 배분 정책 재검토'
+    }
+  ];
+
+  document.getElementById('strategy-grid').innerHTML = STRATEGIES.map(s=>`
+    <div class="strat-card ${s.cls}">
+      <div class="strat-letter">${s.letter}</div>
+      <div class="strat-title">${s.letter}안 · ${s.title}</div>
+      <div class="strat-claim">${s.claim}</div>
+      <div class="scenario">
+        ${s.scenarios.map(x=>`<div class="scn ${x.cls}"><div class="scn-lbl">${x.lbl}</div><div class="scn-val">${x.val}</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.3">${x.desc}</div></div>`).join('')}
+      </div>
+      <div class="strat-meta">
+        <div class="row"><span class="k">포기</span><span class="v">${s.tradeoff}</span></div>
+        <div class="row"><span class="k">KPI</span><span class="v">${s.kpi}</span></div>
+        <div class="row"><span class="k">기한</span><span class="v">${s.horizon}</span></div>
+        <div class="row"><span class="k">책임</span><span class="v">${s.owner}</span></div>
+      </div>
+      <div class="strat-tactics">${s.tactics}</div>
+    </div>
+  `).join('');
+}
+
+function renderInsightCards(){
+  const sep = DATA.separate;
+  const last = sep[sep.length-1];
+  const first = sep[0];
+
+  // helpers
+  const ratio = (n,d)=>d?(n/d*100).toFixed(1):'–';
+  const yrData = (key, fn)=>sep.map(d=>({fy:d.fy, v:fn?fn(d):d[key]}));
+
+  const STRENGTHS = [
+    {
+      title:'자기자본비율 78% — 무차입 경영 진입',
+      body:'자기자본비율 FY2005 18% → FY2025 78%로 60pt 개선. 단기차입금 FY2021 사실상 무차입. 외부 자금조달 의존도 최저.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'FY2005 자기자본비율',val:ratio(first.totalEquity,first.totalAssets)+'%'},
+          {lbl:'FY2025 자기자본비율',val:ratio(last.totalEquity,last.totalAssets)+'%', cls:'pos'},
+          {lbl:'개선폭 (60pt)',val:'+'+(ratio(last.totalEquity,last.totalAssets)-ratio(first.totalEquity,first.totalAssets)).toFixed(1)+'pt'},
+          {lbl:'FY2021 차입금',val:'무차입 진입', cls:'pos'},
+        ],
+        chartId:'mc-equity', chartFn:()=>miniChart('mc-equity', sep.map(d=>d.fy), sep.map(d=>d.totalEquity/d.totalAssets*100), '자기자본비율 %', C.pos||'#10b981')
+      }
+    },
+    {
+      title:'매출 CAGR 10.3% — 21년간 일관 성장',
+      body:'매출 432억 → 3,041억 (CAGR 10.3%). 한국 비상장 패션업으로 우수한 장기 성장. 역성장 4회만 발생.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'FY2005 매출',val:'432억'},
+          {lbl:'FY2025 매출',val:'3,041억', cls:'pos'},
+          {lbl:'21년간 CAGR',val:'10.3%', cls:'pos'},
+          {lbl:'매출 역성장 연도',val:'4회 (FY2014·15·16·20)'},
+          {lbl:'성장 가속 구간',val:'FY2021~23 (+10~23%)'},
+          {lbl:'성장 둔화 구간',val:'FY2024~25 (+5.6%·+0.85%)', cls:'neg'},
+        ],
+        chartId:'mc-rev', chartFn:()=>miniChart('mc-rev', sep.map(d=>d.fy), sep.map(d=>d.revenue/1e8), '매출 (억원)', C.revenue)
+      }
+    },
+    {
+      title:'21년 연속 흑자 — 적정의견 20회',
+      body:'21년간 모두 흑자 유지. 감사의견 FY2005 한정의견 1회 제외 20년 연속 적정의견. 회계 투명성 확보.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'21년 흑자 횟수',val:'21회 (100%)', cls:'pos'},
+          {lbl:'적정의견',val:'20회'},
+          {lbl:'한정의견',val:'FY2005 1회 (감사범위 제한)', cls:'neg'},
+          {lbl:'감사인 변경',val:'3회 (이촌→삼정→삼일)'},
+          {lbl:'최소 순이익',val:'FY2007 1.6억'},
+          {lbl:'최대 순이익',val:'FY2023 341억', cls:'pos'},
+        ],
+        chartId:'mc-net', chartFn:()=>miniChart('mc-net', sep.map(d=>d.fy), sep.map(d=>d.netProfit/1e8), '당기순이익 (억원)', C.netProfit)
+      }
+    },
+    {
+      title:'영업현금흐름 회복력 — FY2025 413억',
+      body:'FY2025 영업현금 413억으로 사상 최대. 영업이익 316억 대비 130%, 순이익 204억 대비 202% 현금 창출. 마진 둔화 국면에서도 운전자본 효율로 현금 회복.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'FY2025 영업현금흐름',val:'413억', cls:'pos'},
+          {lbl:'영업이익 대비',val:'130% (현금화율 우수)', cls:'pos'},
+          {lbl:'순이익 대비',val:'202%'},
+          {lbl:'21년 누적 영업현금',val:'약 2,500억+'},
+          {lbl:'영업현금 음수 연도',val:'3회 (FY2006·07·15)'},
+          {lbl:'FY2025 기말 현금',val:'105억'},
+        ],
+        chartId:'mc-ocf', chartFn:()=>miniChart('mc-ocf', sep.map(d=>d.fy), sep.map(d=>d.operatingCashFlow/1e8), '영업현금흐름 (억원)', C.cashOp)
+      }
+    },
+    {
+      title:'사내유보 1,343억 — 50배 누적',
+      body:'이익잉여금 FY2005 22억 → FY2025 1,343억으로 21년간 60배 증가. 매년 흑자 + 일관된 사내유보로 안정적 자기자본 축적.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'FY2005 이익잉여금',val:'22억'},
+          {lbl:'FY2025 이익잉여금',val:'1,343억', cls:'pos'},
+          {lbl:'21년간 증가배수',val:'60배', cls:'pos'},
+          {lbl:'FY2025 자본총계',val:'1,417억'},
+          {lbl:'자본금 비중',val:'13억 (자본의 0.9%)'},
+          {lbl:'이익잉여금 비중',val:'94.8% (구조 안정)', cls:'pos'},
+        ],
+        chartId:'mc-re', chartFn:()=>miniChart('mc-re', sep.map(d=>d.fy), sep.map(d=>d.retainedEarnings/1e8), '이익잉여금 (억원)', C.equity)
+      }
+    },
+    {
+      title:'주주구성 17년 동일 — 지배구조 안정',
+      body:'FY2008 이래 장기권 80% / 이향로 10% / 장원준·장호준 각 5%로 17년 연속 동일 유지. 경영권 분쟁·M&A 노출 무. 장기 의사결정 일관성 확보.',
+      cls:'pos',
+      detail:{
+        summary:[
+          {lbl:'장기권 (창업자/대표)',val:'80% (FY2008~)', cls:'pos'},
+          {lbl:'이향로',val:'10% (17년 유지)'},
+          {lbl:'장원준',val:'5% (17년 유지)'},
+          {lbl:'장호준',val:'5% (17년 유지)'},
+          {lbl:'지분 변동 횟수',val:'0회 (FY2008 이후)', cls:'pos'},
+          {lbl:'경영권 안정성',val:'장기 일관 의사결정 가능', cls:'pos'},
+        ]
+      }
+    },
+  ];
+
+  const WEAKNESSES = [
+    {
+      title:'마진 동시 후퇴 (2년 연속)',
+      body:'FY2023 OP% 14.6% → FY2025 10.4% (-4.2pt). 매출원가율(+2.5pt)·판관비율(+1.8pt) 동반 악화. 영업이익 정점 대비 -24%.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2023 영업이익',val:'417억 (정점)'},
+          {lbl:'FY2025 영업이익',val:'316억', cls:'neg'},
+          {lbl:'정점 대비 감소',val:'-101억 (-24%)', cls:'neg'},
+          {lbl:'FY2023 OP%',val:'14.6%'},
+          {lbl:'FY2025 OP%',val:'10.4%', cls:'neg'},
+          {lbl:'매출원가율 변화',val:'36.3% → 38.8% (+2.5pt)', cls:'neg'},
+          {lbl:'판관비율 변화',val:'49.0% → 50.8% (+1.8pt)', cls:'neg'},
+        ],
+        chartId:'mc-opm', chartFn:()=>miniChart('mc-opm', sep.map(d=>d.fy), sep.map(d=>d.operatingProfit/d.revenue*100), '영업이익률 %', C.operatingProfit)
+      }
+    },
+    {
+      title:'종속기업 손실 누적',
+      body:'지분법손실 FY2024·2025 각 30억 (누적 60억). FY2025 베트남 INDONG FN VINA 영업손실 -29억.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2024 지분법손실',val:'30억', cls:'neg'},
+          {lbl:'FY2025 지분법손실',val:'30억', cls:'neg'},
+          {lbl:'누적 손실 (2년)',val:'60억', cls:'neg'},
+          {lbl:'베트남 VINA 영업손실',val:'-29억 (FY2025 신규)', cls:'neg'},
+          {lbl:'상해법인 누적순손실',val:'-40억대 (FY2016~17 연결)'},
+          {lbl:'연결-별도 영업이익 차',val:'-29억 (FY2025)'},
+          {lbl:'종속기업 수',val:'3社 (상해·뉴욕·베트남)'},
+        ],
+        chartId:'mc-noi', chartFn:()=>miniChart('mc-noi', sep.map(d=>d.fy), sep.map(d=>-d.nonOperatingExpenses/1e8), '영업외비용 (억원)', '#ef4444')
+      }
+    },
+    {
+      title:'고배당 + 마진 둔화의 결합',
+      body:'FY2024~2025 배당성향 85~98%. 자기자본 정체. 마진 회복 없이 고배당 지속은 사내유보 축적 정지를 의미.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2010 첫 배당',val:'3.9억 (배당성향 7.4%)'},
+          {lbl:'FY2023 배당총액',val:'170억'},
+          {lbl:'FY2024 배당총액',val:'200억'},
+          {lbl:'FY2025 배당총액',val:'200억'},
+          {lbl:'FY2024 배당성향',val:'85%', cls:'neg'},
+          {lbl:'FY2025 배당성향',val:'98%', cls:'neg'},
+          {lbl:'FY2024 자기자본',val:'1,417억'},
+          {lbl:'FY2025 자기자본',val:'1,417억 (정체)', cls:'neg'},
+        ],
+        chartId:'mc-div', chartFn:()=>{
+          const labs=sep.map(d=>d.fy);
+          const data=sep.map(d=>d.dividend?.total ? d.dividend.total/d.netProfit*100 : 0);
+          miniChart('mc-div', labs, data, '배당성향 %', '#f59e0b');
+        }
+      }
+    },
+    {
+      title:'매출 모멘텀 소진 — 가속→정체 전환',
+      body:'4년 가속(+23%·+14%·+5.6%·+0.85%) 끝에 FY2025 0.85% 성장. 3,041억 사상 최대 매출이지만 둔화 곡선 진입. 성장 동력 재점화 필요.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2022 매출 YoY',val:'+23%', cls:'pos'},
+          {lbl:'FY2023 매출 YoY',val:'+14%', cls:'pos'},
+          {lbl:'FY2024 매출 YoY',val:'+5.6%'},
+          {lbl:'FY2025 매출 YoY',val:'+0.85%', cls:'neg'},
+          {lbl:'2년 평균 둔화',val:'-13.3pt (가속 → 정체)', cls:'neg'},
+          {lbl:'역성장 위험 구간',val:'다음 1pt 후퇴 시 진입', cls:'neg'},
+        ],
+        chartId:'mc-rev-yoy', chartFn:()=>{
+          const labs=sep.map(d=>d.fy);
+          const data=sep.map((d,i)=>i>0?(d.revenue-sep[i-1].revenue)/sep[i-1].revenue*100:null);
+          miniChart('mc-rev-yoy', labs, data, '매출 YoY %', C.neg||'#ef4444');
+        }
+      }
+    },
+    {
+      title:'영업외비용 변동성 — 75억대 고정화',
+      body:'FY2024·2025 영업외비용 각 75·76억으로 영업이익의 24% 잠식. 지분법손실·외환차손·기타비용 누적. 손익 변동성 확대.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2023 영업외비용',val:'13억'},
+          {lbl:'FY2024 영업외비용',val:'75억', cls:'neg'},
+          {lbl:'FY2025 영업외비용',val:'76억', cls:'neg'},
+          {lbl:'2년 증가폭',val:'+62억 (5.7배)', cls:'neg'},
+          {lbl:'영업이익 잠식률',val:'24% (FY2025)', cls:'neg'},
+          {lbl:'주요 통화 노출',val:'VND·USD·CNY'},
+        ],
+        chartId:'mc-noe', chartFn:()=>miniChart('mc-noe', sep.map(d=>d.fy), sep.map(d=>d.nonOperatingExpenses/1e8), '영업외비용 (억원)', '#ef4444')
+      }
+    },
+    {
+      title:'운전자본 부담 — 매출 1원당 0.41원 묶임',
+      body:'유동자산 1,361억 중 현금 105억 제외 1,256억이 재고·매출채권 등으로 묶임. 매출 대비 41% 수준 — FY2005 34% 대비 +7pt. 매출 둔화 국면에서 자금 효율성 압박 신호.',
+      cls:'neg',
+      detail:{
+        summary:[
+          {lbl:'FY2005 운전자본 부담률',val:'34.1%'},
+          {lbl:'FY2025 운전자본 부담률',val:'41.3%', cls:'neg'},
+          {lbl:'21년간 증가',val:'+7.2pt', cls:'neg'},
+          {lbl:'FY2025 유동자산',val:'1,361억'},
+          {lbl:'FY2025 기말 현금',val:'105억'},
+          {lbl:'재고·매출채권 등 묶인 자금',val:'1,256억', cls:'neg'},
+          {lbl:'-3pt 개선 시 효과',val:'+90억 현금 회수', cls:'pos'},
+        ],
+        chartId:'mc-wc-burden', chartFn:()=>miniChart('mc-wc-burden', sep.map(d=>d.fy), sep.map(d=>(d.currentAssets-d.cashEnding)/d.revenue*100), '운전자본 부담률 %', '#ef4444')
+      }
+    },
+  ];
+
+  const IMPROVES = [
+    {
+      title:'① 마진 구조 분해 분석 우선',
+      body:'<strong>실행:</strong> 매출원가 1,178억의 항목별 분해(직접재료/직접노무/외주가공/감가상각)를 분기별 추적. 판관비 1,558억의 고정/변동 분리(인건비·임차료·광고선전비). <strong>목표:</strong> OP% 13% 복귀 = 영업이익 +80억 효과.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '매출원가 구성요소 분해 — 제품/상품/기타 매출원가, 직접재료비·직접노무비·외주가공비·감가상각 비중 분기별 모니터링',
+          '판매관리비 24개 항목 중 변동성 Top 5 추적 — 급여(199억)·판매수수료(1,011억)·지급임차료(95억)·운반비(34억)·광고선전비(40억)',
+          '월별 손익 시뮬레이션 — 매출 ±5%·원가 ±1pt·판관비 ±2% 시나리오',
+          '브랜드/채널별 기여이익 산출 (관리회계 보완)',
+        ],
+        targets:[
+          {lbl:'목표 OP%',val:'13.0% (현재 10.4%)'},
+          {lbl:'필요 마진 회복폭',val:'+2.6pt'},
+          {lbl:'영업이익 영향',val:'+79억 (매출 3,041억 기준)', cls:'pos'},
+          {lbl:'근거 매출원가',val:'1,178억 (FY2025)'},
+          {lbl:'근거 판관비',val:'1,545억 (FY2025)'},
+        ]
+      }
+    },
+    {
+      title:'② 종속기업 포트폴리오 재편',
+      body:'<strong>실행:</strong> (a) 인동(상해) — 수년 누적 손실, 추가 자본투입 vs 청산/매각 의사결정. (b) INDONG FN VINA — 자산 122억 회수 곡선 분기별 KPI화 + 손실 3년 한도 설정. (c) NEW YORK INC — 지분법 효과 재평가. <strong>목표:</strong> 지분법손실 30억/년 → 0 또는 흑자.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '인동(상해)복장유한공사 — FY2016 연결 시점 순손실 -15.7억, FY2017 -24.7억. 누적 손실 추이 평가 + 자본투입 한도 결정',
+          'INDONG FN VINA (베트남) — FY2025 신규 연결. 자산 122억·매출 ?·영업손실 -29억. 가동률 KPI화 + 3년 흑전 한도 설정',
+          'INDONG FN NEW YORK INC — 외감 미대상, 지분법 적용. 효과 재평가 + 청산 검토',
+          '연결 손익 vs 별도 손익 격차 분기별 분리 보고',
+        ],
+        targets:[
+          {lbl:'현재 지분법손실',val:'-30억/년 (FY24·25)', cls:'neg'},
+          {lbl:'목표 (3년 내)',val:'0 또는 흑자 전환', cls:'pos'},
+          {lbl:'영업이익 영향',val:'+30~60억 회복', cls:'pos'},
+          {lbl:'관련 자산',val:'INDONG VINA 122억 회수 곡선'},
+        ]
+      }
+    },
+    {
+      title:'③ 자본 배분 정책 재검토',
+      body:'<strong>실행:</strong> 배당성향 85%+ 유지 vs 30~50% 정상화 후 차액(약 60~100억)을 (a) 베트남 자산 회수 가속 (b) 디지털 투자 (c) 매도가능증권 등 운용자산 확대로 전환. <strong>목표:</strong> 자기자본 연 10%+ 증가 회복.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '배당성향 정상화 — 현 98% → 50% 시 사내유보 +100억/년',
+          '확보 자금 용도 우선순위 — ① 베트남 가동률 가속 ② 운전자본 효율화 ③ 매도가능증권 운용 ④ 자기주식 매입 등',
+          '5년 배당정책 가이드라인 수립 — 순이익의 30~50% 박스권',
+          '재무계획 + 자본예산 + 배당정책 통합 의사결정 프레임',
+        ],
+        targets:[
+          {lbl:'현 배당성향',val:'98% (FY2025)', cls:'neg'},
+          {lbl:'정상화 목표',val:'30~50%'},
+          {lbl:'재투자 가용액',val:'+60~100억/년', cls:'pos'},
+          {lbl:'자기자본 증가율 목표',val:'+10%/년 (현재 정체)'},
+        ]
+      }
+    },
+    {
+      title:'④ 운전자본 효율화 (감춰진 레버)',
+      body:'<strong>실행:</strong> 유동자산 1,361억 중 재고+매출채권 구성비 점검. 재고일수 단축·매출채권 회수 가속화로 운전자본 100억 회수 시 영업현금흐름 +100억. <strong>목표:</strong> 운전자본 부담률 -3pt.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '재고자산 분기 모니터링 — 시즌 진척률·재고일수·평가충당금 변화 추적',
+          '매출채권 회수 — 채널별 매출채권 회수기간(DSO) 측정 + 회수 가속',
+          '매입채무 결제 — 매입채무 회전기간 협상 가능 영역 점검',
+          'CCC(현금전환주기) = DSO + DIO - DPO 목표 설정',
+        ],
+        targets:[
+          {lbl:'유동자산 (FY2025)',val:'1,361억'},
+          {lbl:'운전자본 부담률 현재',val:'40~45% 추정'},
+          {lbl:'목표 부담률',val:'-3pt 개선'},
+          {lbl:'영업현금흐름 영향',val:'+100억', cls:'pos'},
+        ]
+      }
+    },
+    {
+      title:'⑤ 손익 변동성 관리',
+      body:'<strong>실행:</strong> 영업외비용 변동성 큼 — FY2018·FY2024 외환차손·외화환산손실 합계 20억+. 외환 익스포저(베트남 VND·미국 USD·중국 CNY) 헤지 전략 점검. <strong>목표:</strong> 영업외손익 변동폭 ±20억 이내.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '외환 익스포저 분석 — 통화별 자산/부채 갭, 매출/매입 갭',
+          '헤지 정책 수립 — 선물환·통화옵션·내추럴 헤지(외화 자산-부채 매칭)',
+          '환위험 시뮬레이션 — 환율 ±10% 시나리오의 손익 영향',
+          '외환 리스크 보고 — 분기별 외화환산손익·외환차손익 trend 모니터링',
+        ],
+        targets:[
+          {lbl:'FY2024 영업외비용',val:'75억', cls:'neg'},
+          {lbl:'FY2025 영업외비용',val:'76억', cls:'neg'},
+          {lbl:'주요 외환 종속',val:'VND(베트남)·USD(미국)·CNY(중국)'},
+          {lbl:'목표 영업외 변동폭',val:'±20억 이내'},
+        ]
+      }
+    },
+    {
+      title:'⑥ 성장 동력 재점화 — 매출 모멘텀 회복',
+      body:'<strong>실행:</strong> FY2022~2025 매출 YoY +23%→+14%→+5.6%→+0.85% 둔화 곡선. 신규 카테고리·D2C 채널·해외 진출 모델 재정비를 통한 매출 가속 옵션 점검. <strong>목표:</strong> 연 매출 성장률 +5% 이상 복귀.',
+      cls:'acc',
+      detail:{
+        actions:[
+          '브랜드/카테고리 포트폴리오 — 기존 브랜드 라이프사이클 분석 + 신규 라인 ROI 시나리오',
+          'D2C·온라인 채널 비중 확대 — 판매수수료 의존도(1,011억, 매출 33%) 완화 + 마진 자체 확보',
+          '해외 진출 모델 재정비 — 베트남(생산)·중국·미국(판매) 역할 재설계, 손실 3년 회수 가능 구조 확인',
+          '신규 매출 채널 KPI — 채널별 매출 기여도 + 신규 채널 손익분기 도달 기간',
+        ],
+        targets:[
+          {lbl:'FY2025 매출 YoY',val:'+0.85%', cls:'neg'},
+          {lbl:'목표 매출 성장률',val:'+5.0% 이상/년', cls:'pos'},
+          {lbl:'필요 신규 매출',val:'+150억/년 (3,041억 기준)'},
+          {lbl:'판매수수료 의존도',val:'33% (매출 대비)'},
+          {lbl:'D2C 비중 확대 목표',val:'채널 다각화 KPI ★★★'},
+        ]
+      }
+    },
+  ];
+
+  function buildCard(c){
+    const detailHtml = c.detail.summary ? `
+      <div class="ins-detail">
+        <h5>근거 데이터</h5>
+        ${c.detail.summary.map(s=>`<div class="data-row"><span class="lbl">${s.lbl}</span><span class="val ${s.cls||''}">${s.val}</span></div>`).join('')}
+        ${c.detail.chartId?`<h5>연도별 추이</h5><div class="mini-chart"><canvas id="${c.detail.chartId}"></canvas></div>`:''}
+      </div>` : `
+      <div class="ins-detail">
+        <h5>실행안</h5>
+        <ul class="action-list">${(c.detail.actions||[]).map(a=>`<li>${a}</li>`).join('')}</ul>
+        <h5>근거 수치 · 목표</h5>
+        ${(c.detail.targets||[]).map(s=>`<div class="data-row"><span class="lbl">${s.lbl}</span><span class="val ${s.cls||''}">${s.val}</span></div>`).join('')}
+      </div>`;
+    return `<div class="ins-card ${c.cls} expandable" data-chart="${c.detail.chartId||''}" role="button" tabindex="0" aria-expanded="false">
+      <div class="ins-title">${c.title}<span class="caret"><span class="caret-arrow" aria-hidden="true">▶</span>자세히</span></div>
+      <div class="ins-body">${c.body}</div>
+      ${detailHtml}
+    </div>`;
+  }
+
+  document.getElementById('strength-grid').innerHTML = STRENGTHS.map(buildCard).join('');
+  document.getElementById('weakness-grid').innerHTML = WEAKNESSES.map(buildCard).join('');
+  document.getElementById('improve-grid').innerHTML = IMPROVES.map(buildCard).join('');
+
+  // expansion handlers (click + keyboard)
+  document.querySelectorAll('.ins-card.expandable').forEach((card)=>{
+    const toggle = (e)=>{
+      if(e.target.tagName==='A') return;
+      card.classList.toggle('open');
+      card.setAttribute('aria-expanded', card.classList.contains('open'));
+      const chartId = card.dataset.chart;
+      if(card.classList.contains('open') && chartId && !card._chartDrawn){
+        const all = [...STRENGTHS, ...WEAKNESSES];
+        const found = all.find(x=>x.detail && x.detail.chartId===chartId);
+        if(found && found.detail.chartFn){ found.detail.chartFn(); card._chartDrawn = true; }
+      }
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown',(e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggle(e); }
+    });
+  });
+}
+
+function miniChart(id, labels, data, label, color){
+  const el = document.getElementById(id); if(!el) return;
+  new Chart(el,{
+    type:'line',
+    data:{labels, datasets:[{label, data, borderColor:color, backgroundColor:color+'22', fill:true, tension:0.25, borderWidth:2, pointRadius:2}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>`${c.formattedValue}`}}},
+      scales:{y:{grid:{color:'#f3f4f6'},ticks:{font:{size:9}}},x:{ticks:{font:{size:9}}}}
+    }
+  });
+}
+
+function renderAll(){
+  renderInsightGrid();
+  renderKPIs(); renderChart1(); renderChartBS(); renderChartEq(); renderChartMargin();
+  renderChartSGAMix(); renderChartCostRatio();
+  renderEffKPIs(); renderChartROE(); renderChartTurnover();
+  renderChartCF();
+  renderChartAssetMix(); renderChartNonCurRatio();
+  renderChartWC(); renderChartInvTurnover();
+  renderChartDividend(); renderChartCurLiab();
+  renderChartEquityMethod(); renderChartSepCon();
+  renderInsightCards();
+  renderStrategyCards();
+  renderYearGrid();
+}
+renderAll();
+
+// To-top button visibility
+(function(){
+  const btn = document.getElementById('to-top');
+  window.addEventListener('scroll',()=>{
+    btn.classList.toggle('show', window.scrollY > 600);
+  });
+})();
+</script>
+</body>
+</html>

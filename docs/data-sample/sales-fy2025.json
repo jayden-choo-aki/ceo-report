@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "company": "주식회사 인동에프엔",
+    "fiscalYear": 2025,
+    "currency": "KRW",
+    "unit": "원",
+    "asOf": "2025-12-31",
+    "note": "샘플 데이터 — 총매출/영업이익은 audit-report financial-data.json과 일치, 세부 분해는 brands.json의 share/channelMix 기반 추정. 분기 splits는 한국 패션업 일반 시즌성(S/S 44%, F/W 56%) 적용",
+    "rounding": "각 차원 합계는 ±1% 오차 허용 (반올림)",
+    "recommendUpdate": true
+  },
+  "totals": {
+    "revenueKrw": 304000000000,
+    "operatingProfitKrw": 31600000000,
+    "grossProfitKrw": 167200000000,
+    "grossMarginPct": 55.0,
+    "operatingMarginPct": 10.4,
+    "yoyRevenuePct": 0.8,
+    "yoyOperatingProfitPct": -11.7
+  },
+  "byQuarter": [
+    {
+      "quarter": "2025-Q1",
+      "label": "1-3월 (S/S 런칭)",
+      "revenueKrw": 66600000000,
+      "operatingProfitKrw": 6000000000,
+      "grossMarginPct": 57.0,
+      "operatingMarginPct": 9.0,
+      "note": "S/S 정상가 매출 비중 높음"
+    },
+    {
+      "quarter": "2025-Q2",
+      "label": "4-6월 (S/S 클리어런스)",
+      "revenueKrw": 70300000000,
+      "operatingProfitKrw": 2500000000,
+      "grossMarginPct": 51.0,
+      "operatingMarginPct": 3.6,
+      "note": "마크다운 압박, 이익률 최저"
+    },
+    {
+      "quarter": "2025-Q3",
+      "label": "7-9월 (F/W 런칭)",
+      "revenueKrw": 81700000000,
+      "operatingProfitKrw": 9000000000,
+      "grossMarginPct": 58.0,
+      "operatingMarginPct": 11.0,
+      "note": "아우터 입고, 정상가 비중 회복"
+    },
+    {
+      "quarter": "2025-Q4",
+      "label": "10-12월 (F/W + 연말)",
+      "revenueKrw": 85400000000,
+      "operatingProfitKrw": 14100000000,
+      "grossMarginPct": 54.0,
+      "operatingMarginPct": 16.5,
+      "note": "최대 매출·최대 이익 분기"
+    }
+  ],
+  "byBrand": [
+    {
+      "brandId": "shesmiss",
+      "revenueKrw": 139800000000,
+      "operatingProfitKrw": 19580000000,
+      "grossMarginPct": 56.5,
+      "operatingMarginPct": 14.0,
+      "yoyRevenuePct": -0.5,
+      "yoyOperatingProfitPct": -3.2,
+      "share": 0.46,
+      "quarterly": [
+        { "quarter": "2025-Q1", "revenueKrw": 30800000000, "unitsSold": 110000 },
+        { "quarter": "2025-Q2", "revenueKrw": 32200000000, "unitsSold": 118000 },
+        { "quarter": "2025-Q3", "revenueKrw": 37700000000, "unitsSold": 96000 },
+        { "quarter": "2025-Q4", "revenueKrw": 39100000000, "unitsSold": 92000 }
+      ]
+    },
+    {
+      "brandId": "list",
+      "revenueKrw": 97300000000,
+      "operatingProfitKrw": 9700000000,
+      "grossMarginPct": 54.0,
+      "operatingMarginPct": 10.0,
+      "yoyRevenuePct": 9.2,
+      "yoyOperatingProfitPct": 18.5,
+      "share": 0.32,
+      "quarterly": [
+        { "quarter": "2025-Q1", "revenueKrw": 22400000000, "unitsSold": 124000 },
+        { "quarter": "2025-Q2", "revenueKrw": 23400000000, "unitsSold": 132000 },
+        { "quarter": "2025-Q3", "revenueKrw": 25300000000, "unitsSold": 108000 },
+        { "quarter": "2025-Q4", "revenueKrw": 26200000000, "unitsSold": 103000 }
+      ]
+    },
+    {
+      "brandId": "sistina",
+      "revenueKrw": 66900000000,
+      "operatingProfitKrw": 2320000000,
+      "grossMarginPct": 53.5,
+      "operatingMarginPct": 3.5,
+      "yoyRevenuePct": -4.5,
+      "yoyOperatingProfitPct": -28.4,
+      "share": 0.22,
+      "quarterly": [
+        { "quarter": "2025-Q1", "revenueKrw": 13400000000, "unitsSold": 32000 },
+        { "quarter": "2025-Q2", "revenueKrw": 14700000000, "unitsSold": 36000 },
+        { "quarter": "2025-Q3", "revenueKrw": 18700000000, "unitsSold": 28000 },
+        { "quarter": "2025-Q4", "revenueKrw": 20100000000, "unitsSold": 30000 }
+      ]
+    }
+  ],
+  "byChannel": [
+    {
+      "channel": "백화점",
+      "revenueKrw": 170000000000,
+      "share": 0.559,
+      "yoyRevenuePct": -2.3,
+      "storeCount": 122,
+      "note": "전년 대비 감소. 백화점 객수 둔화"
+    },
+    {
+      "channel": "아울렛",
+      "revenueKrw": 54000000000,
+      "share": 0.178,
+      "yoyRevenuePct": 4.1,
+      "storeCount": 31,
+      "note": "재고 소진 채널 — 마진은 낮으나 회전 빠름"
+    },
+    {
+      "channel": "DFmall",
+      "revenueKrw": 67500000000,
+      "share": 0.222,
+      "yoyRevenuePct": 15.3,
+      "storeCount": 3,
+      "note": "성장 견인 채널. LIST가 디지털 전환 주도"
+    },
+    {
+      "channel": "해외",
+      "revenueKrw": 12500000000,
+      "share": 0.041,
+      "yoyRevenuePct": 22.8,
+      "storeCount": 15,
+      "note": "절대 규모 작지만 고성장 — 4,500억 매출목표 핵심 축"
+    }
+  ],
+  "byBrandChannel": [
+    { "brandId": "shesmiss", "channel": "백화점", "revenueKrw": 81000000000, "share": 0.580 },
+    { "brandId": "shesmiss", "channel": "아울렛", "revenueKrw": 25200000000, "share": 0.180 },
+    { "brandId": "shesmiss", "channel": "DFmall", "revenueKrw": 28000000000, "share": 0.200 },
+    { "brandId": "shesmiss", "channel": "해외", "revenueKrw": 5600000000, "share": 0.040 },
+    { "brandId": "list", "channel": "백화점", "revenueKrw": 40800000000, "share": 0.420 },
+    { "brandId": "list", "channel": "아울렛", "revenueKrw": 19500000000, "share": 0.200 },
+    { "brandId": "list", "channel": "DFmall", "revenueKrw": 32000000000, "share": 0.329 },
+    { "brandId": "list", "channel": "해외", "revenueKrw": 5000000000, "share": 0.051 },
+    { "brandId": "sistina", "channel": "백화점", "revenueKrw": 48200000000, "share": 0.720 },
+    { "brandId": "sistina", "channel": "아울렛", "revenueKrw": 9300000000, "share": 0.139 },
+    { "brandId": "sistina", "channel": "DFmall", "revenueKrw": 7500000000, "share": 0.112 },
+    { "brandId": "sistina", "channel": "해외", "revenueKrw": 2000000000, "share": 0.030 }
+  ],
+  "byBrandCategory": [
+    { "brandId": "shesmiss", "categoryId": "outer", "revenueKrw": 36300000000, "shareWithinBrand": 0.260, "yoyRevenuePct": 2.1 },
+    { "brandId": "shesmiss", "categoryId": "top", "revenueKrw": 30800000000, "shareWithinBrand": 0.220, "yoyRevenuePct": -1.5 },
+    { "brandId": "shesmiss", "categoryId": "dress", "revenueKrw": 29300000000, "shareWithinBrand": 0.210, "yoyRevenuePct": -2.0 },
+    { "brandId": "shesmiss", "categoryId": "bottom", "revenueKrw": 26600000000, "shareWithinBrand": 0.190, "yoyRevenuePct": 1.2 },
+    { "brandId": "shesmiss", "categoryId": "accessory", "revenueKrw": 16800000000, "shareWithinBrand": 0.120, "yoyRevenuePct": -3.5 },
+    { "brandId": "list", "categoryId": "outer", "revenueKrw": 17500000000, "shareWithinBrand": 0.180, "yoyRevenuePct": 12.0 },
+    { "brandId": "list", "categoryId": "top", "revenueKrw": 25300000000, "shareWithinBrand": 0.260, "yoyRevenuePct": 8.5 },
+    { "brandId": "list", "categoryId": "dress", "revenueKrw": 21400000000, "shareWithinBrand": 0.220, "yoyRevenuePct": 14.2 },
+    { "brandId": "list", "categoryId": "bottom", "revenueKrw": 23400000000, "shareWithinBrand": 0.240, "yoyRevenuePct": 6.8 },
+    { "brandId": "list", "categoryId": "accessory", "revenueKrw": 9700000000, "shareWithinBrand": 0.100, "yoyRevenuePct": 5.5 },
+    { "brandId": "sistina", "categoryId": "outer", "revenueKrw": 20000000000, "shareWithinBrand": 0.299, "yoyRevenuePct": -3.8 },
+    { "brandId": "sistina", "categoryId": "top", "revenueKrw": 13400000000, "shareWithinBrand": 0.200, "yoyRevenuePct": -5.2 },
+    { "brandId": "sistina", "categoryId": "dress", "revenueKrw": 17400000000, "shareWithinBrand": 0.260, "yoyRevenuePct": -4.0 },
+    { "brandId": "sistina", "categoryId": "bottom", "revenueKrw": 9400000000, "shareWithinBrand": 0.141, "yoyRevenuePct": -6.1 },
+    { "brandId": "sistina", "categoryId": "accessory", "revenueKrw": 6700000000, "shareWithinBrand": 0.100, "yoyRevenuePct": -2.8 }
+  ],
+  "byCategory": [
+    { "categoryId": "outer", "revenueKrw": 73800000000, "share": 0.243, "yoyRevenuePct": 2.3 },
+    { "categoryId": "top", "revenueKrw": 69500000000, "share": 0.229, "yoyRevenuePct": 1.1 },
+    { "categoryId": "dress", "revenueKrw": 68100000000, "share": 0.224, "yoyRevenuePct": 1.8 },
+    { "categoryId": "bottom", "revenueKrw": 59400000000, "share": 0.196, "yoyRevenuePct": 0.5 },
+    { "categoryId": "accessory", "revenueKrw": 33200000000, "share": 0.109, "yoyRevenuePct": -1.2 }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "asOf": "2025-12-31",
+    "note": "여성복 표준 카테고리 트리. 실 ERP 카테고리 코드와 매핑 필요 시 mapping 필드 추가 권장",
+    "recommendUpdate": true
+  },
+  "categories": [
+    {
+      "id": "outer",
+      "nameKo": "아우터",
+      "nameEn": "Outerwear",
+      "seasonality": "F/W 집중",
+      "marginTier": "high",
+      "subcategories": [
+        { "id": "outer-coat", "nameKo": "코트", "exampleSku": "캐시미어 더블브레스트 코트" },
+        { "id": "outer-jacket", "nameKo": "재킷", "exampleSku": "테일러드 트위드 재킷" },
+        { "id": "outer-padding", "nameKo": "패딩", "exampleSku": "구스다운 롱 패딩" },
+        { "id": "outer-vest", "nameKo": "베스트", "exampleSku": "퀼팅 베스트" },
+        { "id": "outer-jumper", "nameKo": "점퍼", "exampleSku": "보머 점퍼" }
+      ]
+    },
+    {
+      "id": "top",
+      "nameKo": "탑",
+      "nameEn": "Top",
+      "seasonality": "연중",
+      "marginTier": "mid",
+      "subcategories": [
+        { "id": "top-blouse", "nameKo": "블라우스", "exampleSku": "실크 블렌드 셔링 블라우스" },
+        { "id": "top-shirt", "nameKo": "셔츠", "exampleSku": "코튼 옥스포드 셔츠" },
+        { "id": "top-knit", "nameKo": "니트", "exampleSku": "캐시미어 라운드 니트" },
+        { "id": "top-tshirt", "nameKo": "티셔츠", "exampleSku": "프리미엄 코튼 베이직 티" },
+        { "id": "top-hood", "nameKo": "후드/스웻", "exampleSku": "오버핏 후드티" }
+      ]
+    },
+    {
+      "id": "dress",
+      "nameKo": "원피스",
+      "nameEn": "Dress",
+      "seasonality": "S/S·간절기 집중",
+      "marginTier": "high",
+      "subcategories": [
+        { "id": "dress-onepiece", "nameKo": "원피스", "exampleSku": "플리츠 셔츠 원피스" },
+        { "id": "dress-jumpsuit", "nameKo": "점프수트", "exampleSku": "테일러드 와이드 점프수트" },
+        { "id": "dress-twopiece", "nameKo": "투피스", "exampleSku": "트위드 셋업 투피스" }
+      ]
+    },
+    {
+      "id": "bottom",
+      "nameKo": "하의",
+      "nameEn": "Bottom",
+      "seasonality": "연중",
+      "marginTier": "mid",
+      "subcategories": [
+        { "id": "bottom-skirt", "nameKo": "스커트", "exampleSku": "A라인 미디 스커트" },
+        { "id": "bottom-pants", "nameKo": "팬츠", "exampleSku": "와이드 슬랙스" },
+        { "id": "bottom-denim", "nameKo": "데님", "exampleSku": "하이라이즈 스트레이트 데님" },
+        { "id": "bottom-leggings", "nameKo": "레깅스", "exampleSku": "프리미엄 레깅스" }
+      ]
+    },
+    {
+      "id": "accessory",
+      "nameKo": "액세서리",
+      "nameEn": "Accessory",
+      "seasonality": "연중",
+      "marginTier": "low",
+      "subcategories": [
+        { "id": "accessory-bag", "nameKo": "가방", "exampleSku": "레더 토트백" },
+        { "id": "accessory-scarf", "nameKo": "스카프", "exampleSku": "실크 트윌 스카프" },
+        { "id": "accessory-belt", "nameKo": "벨트", "exampleSku": "버클 가죽 벨트" },
+        { "id": "accessory-hat", "nameKo": "모자", "exampleSku": "베레모" },
+        { "id": "accessory-socks", "nameKo": "양말/스타킹", "exampleSku": "쉬어 스타킹" }
+      ]
+    }
+  ]
+}

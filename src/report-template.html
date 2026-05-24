@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>(주)인동에프엔 — CEO Summary Report</title>
+
+  <!-- Pretendard (본문 한글) -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+  />
+  <!-- JetBrains Mono (숫자 전용) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+  />
+
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text: #0a0a0a;
+      --color-text-muted: #6b7280;
+      --color-text-faint: #9ca3af;
+      --color-border: #e5e7eb;
+      --color-border-strong: #d1d5db;
+      --color-accent: #635bff;
+      --color-positive: #10b981;
+      --color-negative: #ef4444;
+
+      /* Brand colors — 임시 / 추후 브랜드 가이드 반영 */
+      --color-shesmiss: #1a1a2e;
+      --color-list: #e91e63;
+      --color-sistina: #7c2d3a;
+
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+        BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 64px 40px 96px;
+    }
+
+    /* Header */
+    header.report-header {
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 32px;
+      margin-bottom: 56px;
+    }
+    .meta-label {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin: 12px 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .report-info {
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+
+    /* Section */
+    section.section {
+      margin-bottom: 64px;
+    }
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      margin: 0 0 24px;
+    }
+    .section-h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 24px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Executive Summary key messages */
+    .key-messages {
+      display: grid;
+      gap: 16px;
+    }
+    .msg {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 16px;
+      padding: 20px 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .msg:last-child {
+      border-bottom: 1px solid var(--color-border);
+    }
+    .msg-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--color-accent);
+      font-weight: 700;
+      padding-top: 4px;
+    }
+    .msg p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .msg p strong {
+      font-weight: 600;
+    }
+
+    /* KPI Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .kpi-card {
+      padding: 20px 20px 16px;
+      border-right: 1px solid var(--color-border);
+    }
+    .kpi-card:last-child {
+      border-right: none;
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .kpi-unit {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .kpi-delta {
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .kpi-delta.positive {
+      color: var(--color-positive);
+    }
+    .kpi-delta.negative {
+      color: var(--color-negative);
+    }
+    .kpi-delta.neutral {
+      color: var(--color-text-muted);
+    }
+    .kpi-sparkline {
+      display: block;
+      margin-top: 10px;
+      width: 100%;
+      height: 24px;
+    }
+
+    /* Chart island container */
+    .chart-island {
+      margin-top: 32px;
+      width: 100%;
+    }
+
+    /* Table */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      font-size: 14px;
+    }
+    .data-table thead th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--color-text);
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    .data-table tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .data-table td.num,
+    .data-table th.num {
+      text-align: right;
+    }
+
+    /* Brand row */
+    .brand-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .brand-card {
+      padding: 20px;
+      border-top: 3px solid var(--color-border);
+      background: #fafafa;
+      border-radius: 4px;
+    }
+    .brand-card.shesmiss {
+      border-top-color: var(--color-shesmiss);
+    }
+    .brand-card.list {
+      border-top-color: var(--color-list);
+    }
+    .brand-card.sistina {
+      border-top-color: var(--color-sistina);
+    }
+    .brand-name {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+    .brand-position {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+      margin-bottom: 16px;
+    }
+
+    /* Channel grid */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .channel-cell {
+      padding: 16px;
+      border-right: 1px solid var(--color-border);
+    }
+    .channel-cell:last-child {
+      border-right: none;
+    }
+    .channel-name {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+    .channel-share {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Strategy issues */
+    .issue-list {
+      display: grid;
+      gap: 24px;
+    }
+    .issue {
+      padding: 20px 24px;
+      border-left: 3px solid var(--color-accent);
+      background: #fafafa;
+    }
+    .issue-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    .issue-body {
+      font-size: 14px;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    /* TBD marker */
+    .data-tbd {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--color-accent);
+      background: #f0efff;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: 500;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* Footer */
+    footer.report-footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--color-border);
+      font-size: 12px;
+      color: var(--color-text-faint);
+    }
+
+    /* Print */
+    @media print {
+      @page {
+        margin: 16mm 14mm;
+      }
+      body {
+        font-size: 10pt;
+      }
+      .container {
+        padding: 0;
+        max-width: none;
+      }
+      h1 {
+        font-size: 22pt;
+      }
+      .section-h2 {
+        font-size: 14pt;
+      }
+      section.section {
+        page-break-inside: avoid;
+        margin-bottom: 24pt;
+      }
+      .data-table thead {
+        display: table-header-group;
+      }
+      .chart-island {
+        page-break-inside: avoid;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .container {
+        padding: 32px 20px 64px;
+      }
+      .kpi-row,
+      .channel-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .kpi-card:nth-child(2),
+      .channel-cell:nth-child(2) {
+        border-right: none;
+      }
+      .brand-row {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- =============== HEADER =============== -->
+    <header class="report-header">
+      <div class="meta-label">CEO SUMMARY · 2026년 X월</div>
+      <h1>(주)인동에프엔 — 경영현황 보고서</h1>
+      <div class="report-info">
+        발행일 YYYY-MM-DD · 작성: TODO · 데이터 기준일 YYYY-MM-DD
+      </div>
+    </header>
+
+    <!-- =============== 1. EXECUTIVE SUMMARY =============== -->
+    <section class="section">
+      <div class="section-title">01 · Executive Summary</div>
+      <h2 class="section-h2">이번 달 핵심 메시지 3가지</h2>
+
+      <div class="key-messages">
+        <div class="msg">
+          <span class="msg-label">TOP 1</span>
+          <p>
+            <strong>매출 성장은 지속(+0.8% YoY)되나 영업이익률은 3년 연속 하락</strong>해
+            FY23 14.6% → FY25 10.4%로 4.2pp 축소. 마진 압박 원인 진단 시급. <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+        <div class="msg">
+          <span class="msg-label">TOP 2</span>
+          <p>
+            <strong>4,500억 매출 목표 대비 달성률 67.6%</strong>. 글로벌 공급망
+            전략의 구체 진척과 신규 채널 매출 기여도 점검 필요. <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+        <div class="msg">
+          <span class="msg-label">TOP 3</span>
+          <p>
+            <strong>이번 달 핵심 이슈 (TBD)</strong> — 매주/매월 갱신 영역.
+            <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 2. 재무 스냅샷 =============== -->
+    <section class="section">
+      <div class="section-title">02 · 재무 스냅샷</div>
+      <h2 class="section-h2">매출·이익·마진</h2>
+
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">매출 (FY25)</div>
+          <div class="kpi-value num"><span id="kpi-revenue">3,040</span><span class="kpi-unit">억원</span></div>
+          <div class="kpi-delta positive num" id="kpi-revenue-delta">+0.8% YoY</div>
+          <svg class="kpi-sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#0a0a0a"
+              stroke-width="1.5"
+              points="0,18 30,13 60,7 90,4 120,3"
+            />
+          </svg>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">영업이익 (FY25)</div>
+          <div class="kpi-value num"><span id="kpi-op">316</span><span class="kpi-unit">억원</span></div>
+          <div class="kpi-delta negative num" id="kpi-op-delta">−11.7% YoY</div>
+          <svg class="kpi-sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#ef4444"
+              stroke-width="1.5"
+              points="0,16 30,7 60,4 90,10 120,14"
+            />
+          </svg>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">영업이익률</div>
+          <div class="kpi-value num"><span id="kpi-margin">10.4</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta negative num" id="kpi-margin-delta">−1.5pp YoY</div>
+          <svg class="kpi-sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#ef4444"
+              stroke-width="1.5"
+              points="0,13 30,4 60,5 90,11 120,15"
+            />
+          </svg>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">목표 4,500억 달성률</div>
+          <div class="kpi-value num"><span id="kpi-target">67.6</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral num" id="kpi-target-delta">남은 1,460억</div>
+          <svg class="kpi-sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <rect id="kpi-target-bar-fill" x="0" y="10" width="81" height="6" fill="#635bff" />
+            <rect id="kpi-target-bar-rest" x="81" y="10" width="39" height="6" fill="#e5e7eb" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- 인터랙티브 차트 island: 5년 매출·영업이익 추이 -->
+      <div id="chart-revenue-trend" class="chart-island" style="height: 320px"></div>
+
+      <!-- 5년 시계열 표 -->
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>회계연도</th>
+            <th class="num">매출 (억원)</th>
+            <th class="num">영업이익 (억원)</th>
+            <th class="num">영업이익률</th>
+            <th class="num">순이익 (억원)</th>
+            <th class="num">자산 (억원)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FY2021</td>
+            <td class="num">2,039</td>
+            <td class="num">225</td>
+            <td class="num">11.0%</td>
+            <td class="num">176</td>
+            <td class="num">1,369</td>
+          </tr>
+          <tr>
+            <td>FY2022</td>
+            <td class="num">2,505</td>
+            <td class="num">390</td>
+            <td class="num">15.6%</td>
+            <td class="num">308</td>
+            <td class="num">1,581</td>
+          </tr>
+          <tr>
+            <td>FY2023</td>
+            <td class="num">2,853</td>
+            <td class="num">417</td>
+            <td class="num">14.6%</td>
+            <td class="num">341</td>
+            <td class="num">1,765</td>
+          </tr>
+          <tr>
+            <td>FY2024</td>
+            <td class="num">3,015</td>
+            <td class="num">358</td>
+            <td class="num">11.9%</td>
+            <td class="num">236</td>
+            <td class="num">1,951</td>
+          </tr>
+          <tr>
+            <td>FY2025</td>
+            <td class="num">3,040</td>
+            <td class="num">316</td>
+            <td class="num">10.4%</td>
+            <td class="num">204</td>
+            <td class="num">1,809</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- =============== 3. 브랜드별 성과 =============== -->
+    <section class="section">
+      <div class="section-title">03 · 브랜드별 성과</div>
+      <h2 class="section-h2" id="brand-section-title">
+        SHESMISS · LIST · SISTINA
+      </h2>
+
+      <div class="brand-row">
+        <div class="brand-card shesmiss">
+          <div class="brand-name">SHESMISS</div>
+          <div class="brand-position">모던 컨템포러리</div>
+          <div class="kpi-label">매출 비중</div>
+          <div class="kpi-value num"><span id="brand-shesmiss-share">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral" id="brand-shesmiss-meta">YoY — · sell-through —</div>
+        </div>
+        <div class="brand-card list">
+          <div class="brand-name">LIST</div>
+          <div class="brand-position">영 컨템포러리</div>
+          <div class="kpi-label">매출 비중</div>
+          <div class="kpi-value num"><span id="brand-list-share">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral" id="brand-list-meta">YoY — · sell-through —</div>
+        </div>
+        <div class="brand-card sistina">
+          <div class="brand-name">SISTINA</div>
+          <div class="brand-position">뉴 클래식 & 시크</div>
+          <div class="kpi-label">매출 비중</div>
+          <div class="kpi-value num"><span id="brand-sistina-share">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral" id="brand-sistina-meta">YoY — · sell-through —</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 4. 채널 성과 =============== -->
+    <section class="section">
+      <div class="section-title">04 · 채널 성과</div>
+      <h2 class="section-h2" id="channel-section-title">
+        채널 mix & 효율
+      </h2>
+
+      <div class="channel-grid">
+        <div class="channel-cell">
+          <div class="channel-name">백화점</div>
+          <div class="channel-share num"><span id="channel-dept-share">—</span>%</div>
+          <div class="kpi-delta num" id="channel-dept-yoy" style="font-size:11px">YoY —</div>
+        </div>
+        <div class="channel-cell">
+          <div class="channel-name">아울렛</div>
+          <div class="channel-share num"><span id="channel-outlet-share">—</span>%</div>
+          <div class="kpi-delta num" id="channel-outlet-yoy" style="font-size:11px">YoY —</div>
+        </div>
+        <div class="channel-cell">
+          <div class="channel-name">DFmall (자사몰)</div>
+          <div class="channel-share num"><span id="channel-dfmall-share">—</span>%</div>
+          <div class="kpi-delta num" id="channel-dfmall-yoy" style="font-size:11px">YoY —</div>
+        </div>
+        <div class="channel-cell">
+          <div class="channel-name">해외</div>
+          <div class="channel-share num"><span id="channel-overseas-share">—</span>%</div>
+          <div class="kpi-delta num" id="channel-overseas-yoy" style="font-size:11px">YoY —</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 5. 재고·공급망 =============== -->
+    <section class="section">
+      <div class="section-title">05 · 재고·공급망 헬스</div>
+      <h2 class="section-h2" id="inventory-section-title">
+        회전·sell-through·마크다운
+      </h2>
+
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">재고자산회전율</div>
+          <div class="kpi-value num"><span id="kpi-turnover">—</span><span class="kpi-unit">회/년</span></div>
+          <div class="kpi-delta neutral">업계 4~8회</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Sell-Through Rate</div>
+          <div class="kpi-value num"><span id="kpi-sellthrough">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral">시즌 누적</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">마크다운율</div>
+          <div class="kpi-value num"><span id="kpi-markdown">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral">정상가 vs 세일</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">재고 일수</div>
+          <div class="kpi-value num"><span id="kpi-doh">—</span><span class="kpi-unit">일</span></div>
+          <div class="kpi-delta neutral">DOH</div>
+        </div>
+      </div>
+
+      <!-- 재고 알림 (red/yellow 알림 자동 노출) -->
+      <div id="inventory-alerts" class="issue-list" style="margin-top: 28px"></div>
+    </section>
+
+    <!-- =============== 6. 고객·디지털 =============== -->
+    <section class="section">
+      <div class="section-title">06 · 고객·디지털 (DFmall)</div>
+      <h2 class="section-h2">
+        전환·AOV·재구매 <span class="data-tbd">DATA TBD</span>
+      </h2>
+
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">자사몰 전환율 (CVR)</div>
+          <div class="kpi-value num">—<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral">e-com 평균 ~2%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">AOV (객단가)</div>
+          <div class="kpi-value num">—<span class="kpi-unit">원</span></div>
+          <div class="kpi-delta neutral">YoY TBD</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">재구매율</div>
+          <div class="kpi-value num">—<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral">90일 기준</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">신규 회원</div>
+          <div class="kpi-value num">—</div>
+          <div class="kpi-delta neutral">월간</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 7. 전략 이슈 Top 3 =============== -->
+    <section class="section">
+      <div class="section-title">07 · 전략 이슈 (Top 3)</div>
+      <h2 class="section-h2">이번 분기 의사결정 대기 항목</h2>
+
+      <div class="issue-list">
+        <div class="issue">
+          <div class="issue-title">① 글로벌 공급망 강화 진척</div>
+          <p class="issue-body">
+            4,500억 목표 달성의 핵심 축. 신규 진출 시장·OEM 파트너·물류 거점
+            현황과 매출 기여 시점. <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+        <div class="issue">
+          <div class="issue-title">② 마진 압박 원인 진단</div>
+          <p class="issue-body">
+            영업이익률 FY23 14.6% → FY25 10.4%로 4.2pp 하락. 매출원가율
+            상승인지 판관비율 증가인지 분해 필요. <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+        <div class="issue">
+          <div class="issue-title">③ ESG / 지속가능성</div>
+          <p class="issue-body">
+            "합리적 가격 + 신뢰받는 품질 + 지속가능성" 모토 대비 실제 진척
+            지표. <span class="data-tbd">TBD</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 8. 부록 =============== -->
+    <section class="section">
+      <div class="section-title">08 · 부록</div>
+      <h2 class="section-h2">
+        SKU·매장 디테일 <span class="data-tbd">DATA TBD</span>
+      </h2>
+      <p style="color: var(--color-text-muted); font-size: 14px">
+        Best/Worst SKU, 매장별 매출, 컬렉션 라이프사이클 진척 등 상세 데이터.
+        고밀도 표 형식(부록 전용 시각 스타일) 적용 예정.
+      </p>
+    </section>
+
+    <!-- =============== FOOTER =============== -->
+    <footer class="report-footer">
+      <div>
+        출처: DART 감사보고서 (FY2021~FY2025) · Catch 외감 데이터 · 자체 보도(Fpost)
+      </div>
+      <div style="margin-top: 6px">
+        본 보고서는 (주)인동에프엔 내부 의사결정용. 외부 공유 금지.
+      </div>
+    </footer>
+  </div>
+
+  <!-- ECharts (인터랙티브 차트 island) -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+  <!-- ======================= DATA BINDING ======================= -->
+  <script>
+    /**
+     * 데이터 소스
+     * - 정적 파일(`docs/data-sample/*.json`)을 fetch로 로드
+     * - 파일 프로토콜(`file://`)에서는 CORS로 차단됨 → 로컬 서버 권장:
+     *     python3 -m http.server 8000  → http://localhost:8000/src/report-template.html
+     */
+    const DATA_BASE = "../docs/data-sample";
+    const AUDIT_BASE = "../docs/audit-report";
+
+    const fmt억 = (won) => Math.round(won / 1e8).toLocaleString("ko-KR");
+    const fmtPct = (n, d = 1) => Number(n).toFixed(d);
+    const fmtDelta = (pct, suffix = "% YoY") => {
+      const sign = pct > 0 ? "+" : pct < 0 ? "−" : "";
+      return `${sign}${Math.abs(pct).toFixed(1)}${suffix}`;
+    };
+    const deltaClass = (n) =>
+      n > 0 ? "positive" : n < 0 ? "negative" : "neutral";
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+    function setDeltaClass(id, n) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove("positive", "negative", "neutral");
+      el.classList.add(deltaClass(n));
+    }
+    function showLoadError(msg) {
+      const banner = document.createElement("div");
+      banner.style.cssText =
+        "background:#fef2f2;color:#991b1b;padding:12px 16px;margin-bottom:24px;font-size:13px;border:1px solid #fecaca;border-radius:4px";
+      banner.innerHTML = `<strong>데이터 로드 실패</strong><br>${msg}`;
+      document.querySelector(".container").prepend(banner);
+    }
+
+    async function loadJson(path) {
+      const resp = await fetch(path);
+      if (!resp.ok) throw new Error(`${path}: ${resp.status}`);
+      return await resp.json();
+    }
+
+    async function loadAll() {
+      try {
+        const [sales, inventory, brands, audit] = await Promise.all([
+          loadJson(`${DATA_BASE}/sales-fy2025.json`),
+          loadJson(`${DATA_BASE}/inventory-fy2025.json`),
+          loadJson(`${DATA_BASE}/brands.json`),
+          loadJson(`${AUDIT_BASE}/financial-data.json`).catch(() => null),
+        ]);
+        return { sales, inventory, brands, audit };
+      } catch (e) {
+        showLoadError(
+          `<code>file://</code>로 직접 열 때 CORS로 차단됩니다.<br>터미널에서 <code>python3 -m http.server 8000</code> 실행 후 <a href="http://localhost:8000/src/report-template.html">http://localhost:8000/src/report-template.html</a> 로 접속하세요. (${e.message})`
+        );
+        return null;
+      }
+    }
+
+    function renderTotals(sales) {
+      const t = sales.totals;
+      setText("kpi-revenue", fmt억(t.revenueKrw));
+      setText("kpi-revenue-delta", fmtDelta(t.yoyRevenuePct));
+      setDeltaClass("kpi-revenue-delta", t.yoyRevenuePct);
+
+      setText("kpi-op", fmt억(t.operatingProfitKrw));
+      setText("kpi-op-delta", fmtDelta(t.yoyOperatingProfitPct));
+      setDeltaClass("kpi-op-delta", t.yoyOperatingProfitPct);
+
+      setText("kpi-margin", fmtPct(t.operatingMarginPct));
+      // 영업이익률 pp 변화: FY24 11.9% → FY25 10.4% = -1.5pp (audit-report에서 계산 가능 시 자동화)
+      setText("kpi-margin-delta", "−1.5pp YoY");
+      setDeltaClass("kpi-margin-delta", -1.5);
+
+      const targetKrw = 450000000000;
+      const achievementPct = (t.revenueKrw / targetKrw) * 100;
+      setText("kpi-target", fmtPct(achievementPct));
+      setText(
+        "kpi-target-delta",
+        `남은 ${fmt억(targetKrw - t.revenueKrw)}억`
+      );
+      const barWidth = Math.round((achievementPct / 100) * 120);
+      const fill = document.getElementById("kpi-target-bar-fill");
+      const rest = document.getElementById("kpi-target-bar-rest");
+      if (fill && rest) {
+        fill.setAttribute("width", barWidth);
+        rest.setAttribute("x", barWidth);
+        rest.setAttribute("width", 120 - barWidth);
+      }
+    }
+
+    function renderBrands(sales, inventory) {
+      sales.byBrand.forEach((b) => {
+        const inv = inventory.byBrand.find((x) => x.brandId === b.brandId);
+        const sellThrough = inv ? fmtPct(inv.sellThroughPctSeasonEnd) : "—";
+        setText(`brand-${b.brandId}-share`, Math.round(b.share * 100));
+        const metaId = `brand-${b.brandId}-meta`;
+        setText(
+          metaId,
+          `YoY ${fmtDelta(b.yoyRevenuePct, "%")} · sell-through ${sellThrough}%`
+        );
+        setDeltaClass(metaId, b.yoyRevenuePct);
+      });
+    }
+
+    function renderChannels(sales) {
+      const map = {
+        백화점: "dept",
+        아울렛: "outlet",
+        DFmall: "dfmall",
+        해외: "overseas",
+      };
+      sales.byChannel.forEach((c) => {
+        const id = map[c.channel];
+        if (!id) return;
+        setText(`channel-${id}-share`, fmtPct(c.share * 100));
+        const yoyId = `channel-${id}-yoy`;
+        setText(yoyId, `YoY ${fmtDelta(c.yoyRevenuePct, "%")}`);
+        setDeltaClass(yoyId, c.yoyRevenuePct);
+      });
+    }
+
+    function renderInventory(inventory) {
+      const t = inventory.totals;
+      setText("kpi-turnover", fmtPct(t.inventoryTurnover));
+      setText("kpi-sellthrough", fmtPct(t.sellThroughPctSeasonEnd));
+      setText("kpi-markdown", fmtPct(t.markdownRatePct));
+      setText("kpi-doh", t.daysOnHand);
+
+      // 알림 (high/medium만 표시)
+      const alertsHost = document.getElementById("inventory-alerts");
+      if (!alertsHost) return;
+      const visible = inventory.alerts.filter((a) =>
+        ["high", "medium"].includes(a.level)
+      );
+      alertsHost.innerHTML = visible
+        .map((a) => {
+          const color = a.level === "high" ? "#ef4444" : "#f59e0b";
+          return `
+          <div class="issue" style="border-left-color:${color}">
+            <div class="issue-title">[${a.level.toUpperCase()}] ${a.scope}</div>
+            <p class="issue-body"><strong>${a.metric}</strong> — ${
+              a.actionRequired
+            }</p>
+          </div>`;
+        })
+        .join("");
+    }
+
+    function renderRevenueTrendChart(audit) {
+      // 5년 시계열 — audit-report financial-data.json 사용 (FY21~FY25)
+      // audit 데이터가 separate 배열로 들어옴, FY21~FY25만 추출
+      let years, revenue, opProfit;
+      if (audit && audit.separate) {
+        const recent = audit.separate.filter((r) =>
+          [2021, 2022, 2023, 2024, 2025].includes(r.fy)
+        );
+        years = recent.map((r) => `FY${String(r.fy).slice(2)}`);
+        revenue = recent.map((r) => Math.round(r.revenue / 1e8));
+        opProfit = recent.map((r) => Math.round(r.operatingProfit / 1e8));
+      } else {
+        // fallback (audit 로드 실패 시)
+        years = ["FY21", "FY22", "FY23", "FY24", "FY25"];
+        revenue = [2039, 2505, 2853, 3015, 3040];
+        opProfit = [225, 390, 417, 358, 316];
+      }
+
+      const chart = echarts.init(
+        document.getElementById("chart-revenue-trend")
+      );
+      chart.setOption({
+        grid: { left: 50, right: 50, top: 40, bottom: 40 },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          textStyle: {
+            fontFamily: "JetBrains Mono, monospace",
+            fontSize: 12,
+          },
+        },
+        legend: {
+          data: ["매출 (억원)", "영업이익 (억원)"],
+          bottom: 0,
+          textStyle: { fontFamily: "Pretendard Variable, sans-serif" },
+        },
+        xAxis: {
+          type: "category",
+          data: years,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: "#e5e7eb" } },
+          axisLabel: {
+            color: "#6b7280",
+            fontFamily: "JetBrains Mono, monospace",
+          },
+        },
+        yAxis: [
+          {
+            type: "value",
+            name: "매출",
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: "#f3f4f6" } },
+            axisLabel: {
+              color: "#6b7280",
+              fontFamily: "JetBrains Mono, monospace",
+            },
+          },
+          {
+            type: "value",
+            name: "영업이익",
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { show: false },
+            axisLabel: {
+              color: "#6b7280",
+              fontFamily: "JetBrains Mono, monospace",
+            },
+          },
+        ],
+        series: [
+          {
+            name: "매출 (억원)",
+            type: "bar",
+            data: revenue,
+            itemStyle: { color: "#0a0a0a", borderRadius: [2, 2, 0, 0] },
+            barWidth: "40%",
+          },
+          {
+            name: "영업이익 (억원)",
+            type: "line",
+            yAxisIndex: 1,
+            data: opProfit,
+            itemStyle: { color: "#635bff" },
+            lineStyle: { color: "#635bff", width: 2 },
+            symbol: "circle",
+            symbolSize: 7,
+          },
+        ],
+      });
+      window.addEventListener("resize", () => chart.resize());
+    }
+
+    function renderDataStatusBanner(sales) {
+      if (!sales.metadata.recommendUpdate) return;
+      const banner = document.createElement("div");
+      banner.style.cssText =
+        "background:#fffbeb;color:#92400e;padding:10px 14px;margin-bottom:24px;font-size:12px;border:1px solid #fde68a;border-radius:4px";
+      banner.innerHTML = `<strong>샘플 데이터 표시 중</strong> · 기준일 ${sales.metadata.asOf} · 실 데이터 연결 시 <code>docs/data-sample/*.json</code>의 <code>recommendUpdate: false</code>로 변경`;
+      document.querySelector(".container").prepend(banner);
+    }
+
+    // ====== 부트스트랩 ======
+    (async () => {
+      const data = await loadAll();
+      if (!data) {
+        // 데이터 없으면 fallback 차트만 그리기 (정적 5년 추이)
+        renderRevenueTrendChart(null);
+        return;
+      }
+      renderDataStatusBanner(data.sales);
+      renderTotals(data.sales);
+      renderBrands(data.sales, data.inventory);
+      renderChannels(data.sales);
+      renderInventory(data.inventory);
+      renderRevenueTrendChart(data.audit);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "company": "주식회사 인동에프엔",
+    "fiscalYear": 2025,
+    "currency": "KRW",
+    "asOfDate": "2025-12-31",
+    "note": "샘플 데이터 — 25SS는 종료(최종 수치), 25FW는 진행 중(Q4 말 기준 잠정). 재고자산 총액·회전율은 패션 업계 일반 벤치마크(4-6회) 적용",
+    "healthCriteria": {
+      "green": "sellThrough ≥ 80%, daysOnHand ≤ 75",
+      "yellow": "sellThrough 60-80%, daysOnHand 75-120",
+      "red": "sellThrough < 60% OR daysOnHand > 120"
+    },
+    "recommendUpdate": true
+  },
+  "totals": {
+    "inventoryValueKrw": 35000000000,
+    "inventoryTurnover": 4.5,
+    "daysOnHand": 81,
+    "markdownRatePct": 32.5,
+    "sellThroughPctSeasonEnd": 75.4,
+    "yoyInventoryValuePct": 6.2,
+    "alert": "재고 YoY +6.2% — 매출 YoY +0.8% 대비 과다. 마크다운 압박 지속"
+  },
+  "byBrand": [
+    {
+      "brandId": "shesmiss",
+      "inventoryValueKrw": 16100000000,
+      "inventoryTurnover": 4.8,
+      "daysOnHand": 76,
+      "sellThroughPctSeasonEnd": 75.2,
+      "markdownRatePct": 31.0,
+      "yoyInventoryValuePct": 3.5,
+      "healthStatus": "yellow",
+      "note": "안정. 25FW 아우터 정상가 비중 양호"
+    },
+    {
+      "brandId": "list",
+      "inventoryValueKrw": 11200000000,
+      "inventoryTurnover": 5.6,
+      "daysOnHand": 65,
+      "sellThroughPctSeasonEnd": 82.4,
+      "markdownRatePct": 26.5,
+      "yoyInventoryValuePct": 12.0,
+      "healthStatus": "green",
+      "note": "회전 빠름. DFmall 채널이 sell-through 견인"
+    },
+    {
+      "brandId": "sistina",
+      "inventoryValueKrw": 7700000000,
+      "inventoryTurnover": 3.8,
+      "daysOnHand": 96,
+      "sellThroughPctSeasonEnd": 67.8,
+      "markdownRatePct": 41.5,
+      "yoyInventoryValuePct": 8.8,
+      "healthStatus": "red",
+      "note": "회전 느림, 마크다운 의존도 높음. 백화점 의존 + 영(young) 시도 실패 누적"
+    }
+  ],
+  "byBrandCategorySeason": [
+    { "brandId": "shesmiss", "categoryId": "outer", "season": "25FW", "initialIntakeUnits": 18500, "reorderUnits": 3200, "soldUnits": 14800, "remainingUnits": 6900, "sellThroughPct": 68.2, "markdownRatePct": 12.0, "daysOnHand": 58, "healthStatus": "green", "status": "진행 중" },
+    { "brandId": "shesmiss", "categoryId": "top", "season": "25FW", "initialIntakeUnits": 32000, "reorderUnits": 1800, "soldUnits": 24500, "remainingUnits": 9300, "sellThroughPct": 72.5, "markdownRatePct": 18.5, "daysOnHand": 62, "healthStatus": "yellow", "status": "진행 중" },
+    { "brandId": "shesmiss", "categoryId": "dress", "season": "25FW", "initialIntakeUnits": 14200, "reorderUnits": 600, "soldUnits": 9800, "remainingUnits": 5000, "sellThroughPct": 66.2, "markdownRatePct": 22.0, "daysOnHand": 88, "healthStatus": "yellow", "status": "진행 중" },
+    { "brandId": "shesmiss", "categoryId": "bottom", "season": "25FW", "initialIntakeUnits": 22000, "reorderUnits": 2400, "soldUnits": 17800, "remainingUnits": 6600, "sellThroughPct": 73.0, "markdownRatePct": 17.0, "daysOnHand": 60, "healthStatus": "green", "status": "진행 중" },
+    { "brandId": "shesmiss", "categoryId": "outer", "season": "25SS", "initialIntakeUnits": 9800, "reorderUnits": 800, "soldUnits": 8400, "remainingUnits": 2200, "sellThroughPct": 79.2, "markdownRatePct": 38.5, "daysOnHand": 124, "healthStatus": "red", "status": "종료·이월" },
+    { "brandId": "shesmiss", "categoryId": "dress", "season": "25SS", "initialIntakeUnits": 16500, "reorderUnits": 2200, "soldUnits": 15900, "remainingUnits": 2800, "sellThroughPct": 85.0, "markdownRatePct": 32.0, "daysOnHand": 64, "healthStatus": "green", "status": "종료" },
+
+    { "brandId": "list", "categoryId": "outer", "season": "25FW", "initialIntakeUnits": 15800, "reorderUnits": 4200, "soldUnits": 16500, "remainingUnits": 3500, "sellThroughPct": 82.5, "markdownRatePct": 8.0, "daysOnHand": 38, "healthStatus": "green", "status": "진행 중" },
+    { "brandId": "list", "categoryId": "top", "season": "25FW", "initialIntakeUnits": 38500, "reorderUnits": 5800, "soldUnits": 34200, "remainingUnits": 10100, "sellThroughPct": 77.2, "markdownRatePct": 14.5, "daysOnHand": 48, "healthStatus": "green", "status": "진행 중" },
+    { "brandId": "list", "categoryId": "bottom", "season": "25FW", "initialIntakeUnits": 28000, "reorderUnits": 3200, "soldUnits": 24500, "remainingUnits": 6700, "sellThroughPct": 78.5, "markdownRatePct": 12.0, "daysOnHand": 52, "healthStatus": "green", "status": "진행 중" },
+    { "brandId": "list", "categoryId": "top", "season": "25SS", "initialIntakeUnits": 42000, "reorderUnits": 7500, "soldUnits": 44800, "remainingUnits": 4700, "sellThroughPct": 90.5, "markdownRatePct": 22.0, "daysOnHand": 32, "healthStatus": "green", "status": "종료" },
+
+    { "brandId": "sistina", "categoryId": "outer", "season": "25FW", "initialIntakeUnits": 6800, "reorderUnits": 200, "soldUnits": 4500, "remainingUnits": 2500, "sellThroughPct": 64.3, "markdownRatePct": 18.0, "daysOnHand": 102, "healthStatus": "yellow", "status": "진행 중" },
+    { "brandId": "sistina", "categoryId": "dress", "season": "25FW", "initialIntakeUnits": 7200, "reorderUnits": 0, "soldUnits": 4200, "remainingUnits": 3000, "sellThroughPct": 58.3, "markdownRatePct": 28.0, "daysOnHand": 132, "healthStatus": "red", "status": "진행 중" },
+    { "brandId": "sistina", "categoryId": "top", "season": "25SS", "initialIntakeUnits": 12000, "reorderUnits": 500, "soldUnits": 7800, "remainingUnits": 4700, "sellThroughPct": 62.4, "markdownRatePct": 48.0, "daysOnHand": 178, "healthStatus": "red", "status": "종료·이월" },
+    { "brandId": "sistina", "categoryId": "dress", "season": "25SS", "initialIntakeUnits": 8400, "reorderUnits": 0, "soldUnits": 4800, "remainingUnits": 3600, "sellThroughPct": 57.1, "markdownRatePct": 55.0, "daysOnHand": 196, "healthStatus": "red", "status": "종료·이월" }
+  ],
+  "agingByBrand": [
+    { "brandId": "shesmiss", "buckets": [
+        { "ageRange": "0-30일",   "valueKrw": 5800000000, "share": 0.360 },
+        { "ageRange": "31-90일",  "valueKrw": 6400000000, "share": 0.398 },
+        { "ageRange": "91-180일", "valueKrw": 2900000000, "share": 0.180 },
+        { "ageRange": "181-365일","valueKrw":  800000000, "share": 0.050 },
+        { "ageRange": "365일 초과","valueKrw": 200000000, "share": 0.012 }
+      ]
+    },
+    { "brandId": "list", "buckets": [
+        { "ageRange": "0-30일",   "valueKrw": 4800000000, "share": 0.429 },
+        { "ageRange": "31-90일",  "valueKrw": 4500000000, "share": 0.402 },
+        { "ageRange": "91-180일", "valueKrw": 1500000000, "share": 0.134 },
+        { "ageRange": "181-365일","valueKrw":  350000000, "share": 0.031 },
+        { "ageRange": "365일 초과","valueKrw":  50000000, "share": 0.004 }
+      ]
+    },
+    { "brandId": "sistina", "buckets": [
+        { "ageRange": "0-30일",   "valueKrw": 2100000000, "share": 0.273 },
+        { "ageRange": "31-90일",  "valueKrw": 2400000000, "share": 0.312 },
+        { "ageRange": "91-180일", "valueKrw": 1800000000, "share": 0.234 },
+        { "ageRange": "181-365일","valueKrw": 1100000000, "share": 0.143 },
+        { "ageRange": "365일 초과","valueKrw":  300000000, "share": 0.039 }
+      ]
+    }
+  ],
+  "markdownTrend": [
+    { "quarter": "2025-Q1", "plannedPct": 12.0, "actualPct": 14.5, "deviation": 2.5 },
+    { "quarter": "2025-Q2", "plannedPct": 38.0, "actualPct": 44.5, "deviation": 6.5 },
+    { "quarter": "2025-Q3", "plannedPct": 10.0, "actualPct": 11.0, "deviation": 1.0 },
+    { "quarter": "2025-Q4", "plannedPct": 30.0, "actualPct": 36.0, "deviation": 6.0 }
+  ],
+  "alerts": [
+    {
+      "level": "high",
+      "scope": "sistina/25SS/dress",
+      "metric": "sellThrough 57.1%, 196일 재고",
+      "actionRequired": "Q1 2026 클리어런스 확대 + 차기 시즌 입고량 30% 축소 검토"
+    },
+    {
+      "level": "high",
+      "scope": "sistina/25SS/top",
+      "metric": "sellThrough 62.4%, 178일 재고",
+      "actionRequired": "아울렛 이관 우선 처리"
+    },
+    {
+      "level": "medium",
+      "scope": "sistina/25FW/dress",
+      "metric": "현재 sellThrough 58.3%, 132일 재고",
+      "actionRequired": "남은 25FW 시즌 동안 정상가 판매 부진 — 12월 추가 프로모션 검토"
+    },
+    {
+      "level": "medium",
+      "scope": "shesmiss/25SS/outer",
+      "metric": "마크다운률 38.5%, 124일 재고",
+      "actionRequired": "S/S 아우터 입고량 자체가 과다 — 다음 25SS 입고 계획 시 -15% 검토"
+    },
+    {
+      "level": "low",
+      "scope": "전체/markdownTrend Q2·Q4",
+      "metric": "계획 대비 +6%p 초과",
+      "actionRequired": "마크다운 의사결정 권한·트리거 룰 점검"
+    }
+  ]
+}
