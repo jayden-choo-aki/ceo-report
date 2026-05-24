@@ -106,7 +106,7 @@
     .section-h2 {
       font-size: 24px;
       font-weight: 700;
-      margin: 0 0 24px;
+      margin: 0 0 32px;
       letter-spacing: -0.01em;
     }
 
@@ -163,10 +163,10 @@
       letter-spacing: 0.02em;
     }
     .kpi-value {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      line-height: 1.1;
+      line-height: 1.15;
     }
     .kpi-unit {
       font-size: 14px;
@@ -236,19 +236,20 @@
       gap: 16px;
     }
     .brand-card {
-      padding: 20px;
-      border-top: 3px solid var(--color-border);
-      background: #fafafa;
+      padding: 20px 20px 20px 24px;
+      border-left: 6px solid var(--color-border);
+      background: #ffffff;
       border-radius: 4px;
+      box-shadow: 0 0 0 1px var(--color-border);
     }
     .brand-card.shesmiss {
-      border-top-color: var(--color-shesmiss);
+      border-left-color: var(--color-shesmiss);
     }
     .brand-card.list {
-      border-top-color: var(--color-list);
+      border-left-color: var(--color-list);
     }
     .brand-card.sistina {
-      border-top-color: var(--color-sistina);
+      border-left-color: var(--color-sistina);
     }
     .brand-name {
       font-weight: 700;
@@ -283,8 +284,9 @@
       margin-bottom: 6px;
     }
     .channel-share {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 600;
+      line-height: 1.15;
     }
 
     /* Strategy issues */
@@ -315,6 +317,32 @@
       letter-spacing: 0.04em;
       color: var(--color-accent);
       background: #f0efff;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: 500;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    /* 추정치 출처 표시 (data-sample 기반 섹션) */
+    .data-estimated {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      background: var(--color-border);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: 500;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    /* 감사 출처 표시 (audit-report 기반 섹션) */
+    .data-audited {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--color-positive);
+      background: #ecfdf5;
       padding: 2px 8px;
       border-radius: 3px;
       font-weight: 500;
@@ -435,7 +463,7 @@
     <!-- =============== 2. 재무 스냅샷 =============== -->
     <section class="section">
       <div class="section-title">02 · 재무 스냅샷</div>
-      <h2 class="section-h2">매출·이익·마진</h2>
+      <h2 class="section-h2">매출·이익·마진 <span class="data-audited">감사 (DART)</span></h2>
 
       <div class="kpi-row">
         <div class="kpi-card">
@@ -514,7 +542,7 @@
     <section class="section">
       <div class="section-title">03 · 브랜드별 성과</div>
       <h2 class="section-h2" id="brand-section-title">
-        SHESMISS · LIST · SISTINA
+        SHESMISS · LIST · SISTINA <span class="data-estimated">추정 (data-sample)</span>
       </h2>
 
       <div class="brand-row">
@@ -546,7 +574,7 @@
     <section class="section">
       <div class="section-title">04 · 채널 성과</div>
       <h2 class="section-h2" id="channel-section-title">
-        채널 mix & 효율
+        채널 mix & 효율 <span class="data-estimated">추정 (data-sample)</span>
       </h2>
 
       <div class="channel-grid">
@@ -577,7 +605,7 @@
     <section class="section">
       <div class="section-title">05 · 재고·공급망 헬스</div>
       <h2 class="section-h2" id="inventory-section-title">
-        회전·sell-through·마크다운
+        회전·sell-through·마크다운 <span class="data-estimated">추정 (data-sample)</span>
       </h2>
 
       <div class="kpi-row">
@@ -683,7 +711,7 @@
     <!-- =============== 8. 부록 =============== -->
     <section class="section">
       <div class="section-title">08 · 부록</div>
-      <h2 class="section-h2">SKU·매장 디테일</h2>
+      <h2 class="section-h2">SKU·매장 디테일 <span class="data-estimated">추정 (data-sample)</span></h2>
 
       <h3 style="font-size: 15px; margin-top: 8px; margin-bottom: 8px; font-weight: 600">
         Best 10 SKU
