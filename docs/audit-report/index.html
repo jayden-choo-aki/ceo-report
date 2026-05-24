@@ -367,6 +367,13 @@ footer a{color:var(--accent);text-decoration:none}
     <h2>수익성 · 마진 트렌드</h2>
     <p class="lead">매출총이익률·영업이익률·순이익률 추이. 패션업 글로벌 평균 GP% 56.88%(NYU Stern), OP% 우수기업 10%+.</p>
     <div class="chart-wrap">
+      <div class="chart-toolbar" id="margin-toolbar">
+        <button class="chip active" data-key="gpm">매출총이익률</button>
+        <button class="chip active" data-key="opm">영업이익률</button>
+        <button class="chip active" data-key="npm">순이익률</button>
+        <button class="chip" data-key="corm">매출원가율</button>
+        <button class="chip" data-key="sgam">판관비율</button>
+      </div>
       <div class="chart-box"><canvas id="chart-margin"></canvas></div>
       <p class="chart-note"><strong>해석:</strong> FY2022~2023 OP% 14~15%로 역대 최고 구간 (글로벌 패션 우수기업 10%+ 통과). FY2024~2025 OP% 11~12%로 하락 — 매출원가율 36→38% 악화 + 판관비율 49→51% 동반 상승이 누적된 결과.<br/><strong>시사점:</strong> 1pt 마진 회복 = 약 30억 영업이익. 매출 성장보다 마진 복원의 ROI 우위. 매출원가율과 판관비율 양 트랙 동시 개선이 필수.</p>
     </div>
@@ -672,6 +679,9 @@ function renderChart1(){
 document.getElementById('chart1-toolbar').addEventListener('click',(e)=>{
   if(e.target.classList.contains('chip')){ e.target.classList.toggle('active'); renderChart1(); }
 });
+document.getElementById('margin-toolbar').addEventListener('click',(e)=>{
+  if(e.target.classList.contains('chip')){ e.target.classList.toggle('active'); renderChartMargin(); }
+});
 
 // --- Chart B/S Stacked ---
 let chartBS;
@@ -719,14 +729,19 @@ let chartMg;
 function renderChartMargin(){
   const arr = dataset();
   const labels = arr.map(d=>d.fy);
+  const series = {
+    gpm:{label:'매출총이익률', color:C.grossProfit, fn:d=>d.grossProfit/d.revenue*100},
+    opm:{label:'영업이익률', color:C.operatingProfit, fn:d=>d.operatingProfit/d.revenue*100},
+    npm:{label:'순이익률', color:C.netProfit, fn:d=>d.netProfit/d.revenue*100},
+    corm:{label:'매출원가율', color:'#ef4444', fn:d=>d.costOfSales/d.revenue*100},
+    sgam:{label:'판관비율', color:'#a855f7', fn:d=>d.sgaExpenses/d.revenue*100},
+  };
+  const active = Array.from(document.querySelectorAll('#margin-toolbar .chip.active')).map(b=>b.dataset.key);
+  const datasets = active.map(k=>({label:series[k].label, data:arr.map(series[k].fn), borderColor:series[k].color, backgroundColor:series[k].color+'22', borderWidth:2, tension:0.25, pointRadius:2, fill:false}));
   if(chartMg) chartMg.destroy();
   chartMg = new Chart(document.getElementById('chart-margin'),{
     type:'line',
-    data:{labels, datasets:[
-      {label:'매출총이익률', data:arr.map(d=>d.grossProfit/d.revenue*100), borderColor:C.grossProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
-      {label:'영업이익률', data:arr.map(d=>d.operatingProfit/d.revenue*100), borderColor:C.operatingProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
-      {label:'순이익률', data:arr.map(d=>d.netProfit/d.revenue*100), borderColor:C.netProfit, borderWidth:2, tension:0.25, pointRadius:2, fill:false},
-    ]},
+    data:{labels, datasets},
     options:{
       responsive:true,maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
