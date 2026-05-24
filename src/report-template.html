@@ -330,6 +330,32 @@
       margin: 0;
     }
 
+    /* 진척 progress bar (07 전략 이슈 표) */
+    .progress {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar {
+      display: inline-block;
+      width: 60px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      display: block;
+      height: 100%;
+      background: var(--color-accent);
+    }
+    .progress-fill.high {
+      background: var(--color-positive);
+    }
+    .progress-fill.low {
+      background: var(--color-negative);
+    }
+
     /* TBD marker */
     .data-tbd {
       display: inline-block;
@@ -700,31 +726,34 @@
     <section class="section">
       <div class="section-title">06 · 고객·디지털 (DFmall)</div>
       <h2 class="section-h2">
-        전환·AOV·재구매 <span class="data-tbd">DATA TBD</span>
+        전환·AOV·재구매 <span class="data-tbd">데이터 연결 대기</span>
       </h2>
 
-      <div class="kpi-row">
+      <div class="kpi-row kpi-row-sm">
         <div class="kpi-card">
           <div class="kpi-label">자사몰 전환율 (CVR)</div>
           <div class="kpi-value num">—<span class="kpi-unit">%</span></div>
-          <div class="kpi-delta neutral">e-com 평균 ~2%</div>
+          <div class="kpi-delta neutral" style="font-size:11px">e-com 평균 ~2%</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">AOV (객단가)</div>
           <div class="kpi-value num">—<span class="kpi-unit">원</span></div>
-          <div class="kpi-delta neutral">YoY TBD</div>
+          <div class="kpi-delta neutral" style="font-size:11px">YoY TBD</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">재구매율</div>
           <div class="kpi-value num">—<span class="kpi-unit">%</span></div>
-          <div class="kpi-delta neutral">90일 기준</div>
+          <div class="kpi-delta neutral" style="font-size:11px">90일 기준</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">신규 회원</div>
           <div class="kpi-value num">—</div>
-          <div class="kpi-delta neutral">월간</div>
+          <div class="kpi-delta neutral" style="font-size:11px">월간</div>
         </div>
       </div>
+      <p style="margin-top: 12px; font-size: 12px; color: var(--color-text-faint)">
+        ERP + GA 연결 후 채워질 영역. 자사몰 채널은 매출 YoY +15.3% (FY25, 67.5억) 성장으로 4,500억 목표의 핵심 리버.
+      </p>
     </section>
 
     <!-- =============== 7. 전략 이슈 Top 3 =============== -->
@@ -732,29 +761,68 @@
       <div class="section-title">07 · 전략 이슈 (Top 3)</div>
       <h2 class="section-h2">이번 분기 의사결정 대기 항목</h2>
 
-      <div class="issue-list">
-        <div class="issue">
-          <div class="issue-title">① 글로벌 공급망 강화 진척</div>
-          <p class="issue-body">
-            4,500억 목표 달성의 핵심 축. 신규 진출 시장·OEM 파트너·물류 거점
-            현황과 매출 기여 시점. <span class="data-tbd">TBD</span>
-          </p>
-        </div>
-        <div class="issue">
-          <div class="issue-title">② 마진 압박 원인 진단</div>
-          <p class="issue-body">
-            영업이익률 FY23 14.6% → FY25 10.4%로 4.2pp 하락. 매출원가율
-            상승인지 판관비율 증가인지 분해 필요. <span class="data-tbd">TBD</span>
-          </p>
-        </div>
-        <div class="issue">
-          <div class="issue-title">③ ESG / 지속가능성</div>
-          <p class="issue-body">
-            "합리적 가격 + 신뢰받는 품질 + 지속가능성" 모토 대비 실제 진척
-            지표. <span class="data-tbd">TBD</span>
-          </p>
-        </div>
+      <div style="overflow-x: auto">
+        <table class="data-table" id="strategy-issues-table">
+          <thead>
+            <tr>
+              <th style="width: 32px" class="num">#</th>
+              <th>이슈</th>
+              <th>카테고리</th>
+              <th>담당</th>
+              <th>기한</th>
+              <th>진척</th>
+              <th>다음 마일스톤</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">1</td>
+              <td><strong>마진 압박 원인 진단</strong><br><span style="font-size:12px;color:var(--color-text-muted)">FY23 14.6% → FY25 10.4% (−4.2pp). 판관비율 +0.68pp 상승이 주원인</span></td>
+              <td>마진</td>
+              <td>CFO</td>
+              <td>FY26-Q1</td>
+              <td>
+                <div class="progress">
+                  <span class="progress-bar"><span class="progress-fill" style="width: 60%"></span></span>
+                  <span class="num" style="font-size:12px">60%</span>
+                </div>
+              </td>
+              <td><span style="font-size:13px">판관비 구성 분해 (인건비·광고비·임차료) — Q1 종료 전</span></td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td><strong>글로벌 공급망 강화 진척</strong><br><span style="font-size:12px;color:var(--color-text-muted)">해외 채널 매출 YoY +22.8% (125억). 4,500억 목표의 핵심 축</span></td>
+              <td>성장</td>
+              <td>TBD</td>
+              <td>FY26-Q2</td>
+              <td>
+                <div class="progress">
+                  <span class="progress-bar"><span class="progress-fill" style="width: 25%"></span></span>
+                  <span class="num" style="font-size:12px">25%</span>
+                </div>
+              </td>
+              <td><span style="font-size:13px">중국 1호점(베이징 SKP) 손익 분석 + 일본 추가 매장 후보 선정</span></td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td><strong>ESG / 지속가능성</strong><br><span style="font-size:12px;color:var(--color-text-muted)">"합리적 가격 + 신뢰받는 품질 + 지속가능성" 모토 대비 실적 지표</span></td>
+              <td>ESG</td>
+              <td>TBD</td>
+              <td>FY26-Q4</td>
+              <td>
+                <div class="progress">
+                  <span class="progress-bar"><span class="progress-fill low" style="width: 10%"></span></span>
+                  <span class="num" style="font-size:12px">10%</span>
+                </div>
+              </td>
+              <td><span style="font-size:13px">감사보고서 ESG 공시 기준 검토 + KPI 정의</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <p style="margin-top: 12px; font-size: 12px; color: var(--color-text-faint)">
+        진척률·담당·마일스톤은 매월 의사결정 회의에서 갱신. 데이터는 매월 갱신 영역(TBD).
+      </p>
     </section>
 
     <!-- =============== 8. 부록 =============== -->
