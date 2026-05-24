@@ -394,10 +394,10 @@
   <div class="container">
     <!-- =============== HEADER =============== -->
     <header class="report-header">
-      <div class="meta-label">CEO SUMMARY · 2026년 X월</div>
+      <div class="meta-label" id="report-meta-label">CEO SUMMARY</div>
       <h1>(주)인동에프엔 — 경영현황 보고서</h1>
-      <div class="report-info">
-        발행일 YYYY-MM-DD · 작성: TODO · 데이터 기준일 YYYY-MM-DD
+      <div class="report-info" id="report-meta-info">
+        발행일 — · 데이터 기준일 —
       </div>
     </header>
 
@@ -410,15 +410,16 @@
         <div class="msg">
           <span class="msg-label">TOP 1</span>
           <p>
-            <strong>매출 성장은 지속(+0.8% YoY)되나 영업이익률은 3년 연속 하락</strong>해
-            FY23 14.6% → FY25 10.4%로 4.2pp 축소. 마진 압박 원인 진단 시급. <span class="data-tbd">TBD</span>
+            <strong>매출 성장은 지속(<span id="exec-yoy-revenue" class="num">+0.8%</span> YoY)되나 영업이익률은 3년 연속 하락</strong>해
+            FY23 <span id="exec-margin-fy23" class="num">14.6%</span> → FY25 <span id="exec-margin-fy25" class="num">10.4%</span>로
+            <span id="exec-margin-delta" class="num">4.2pp</span> 축소. 마진 압박 원인 진단 시급.
           </p>
         </div>
         <div class="msg">
           <span class="msg-label">TOP 2</span>
           <p>
-            <strong>4,500억 매출 목표 대비 달성률 67.6%</strong>. 글로벌 공급망
-            전략의 구체 진척과 신규 채널 매출 기여도 점검 필요. <span class="data-tbd">TBD</span>
+            <strong>4,500억 매출 목표 대비 달성률 <span id="exec-target-pct" class="num">67.6%</span></strong>. 글로벌 공급망
+            전략의 구체 진척과 신규 채널 매출 기여도 점검 필요.
           </p>
         </div>
         <div class="msg">
@@ -494,7 +495,7 @@
       <div id="chart-quarterly" class="chart-island" style="height: 300px; margin-top: 24px"></div>
 
       <!-- 5년 시계열 표 -->
-      <table class="data-table">
+      <table class="data-table" id="fy-history-table">
         <thead>
           <tr>
             <th>회계연도</th>
@@ -505,48 +506,7 @@
             <th class="num">자산 (억원)</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>FY2021</td>
-            <td class="num">2,039</td>
-            <td class="num">225</td>
-            <td class="num">11.0%</td>
-            <td class="num">176</td>
-            <td class="num">1,369</td>
-          </tr>
-          <tr>
-            <td>FY2022</td>
-            <td class="num">2,505</td>
-            <td class="num">390</td>
-            <td class="num">15.6%</td>
-            <td class="num">308</td>
-            <td class="num">1,581</td>
-          </tr>
-          <tr>
-            <td>FY2023</td>
-            <td class="num">2,853</td>
-            <td class="num">417</td>
-            <td class="num">14.6%</td>
-            <td class="num">341</td>
-            <td class="num">1,765</td>
-          </tr>
-          <tr>
-            <td>FY2024</td>
-            <td class="num">3,015</td>
-            <td class="num">358</td>
-            <td class="num">11.9%</td>
-            <td class="num">236</td>
-            <td class="num">1,951</td>
-          </tr>
-          <tr>
-            <td>FY2025</td>
-            <td class="num">3,040</td>
-            <td class="num">316</td>
-            <td class="num">10.4%</td>
-            <td class="num">204</td>
-            <td class="num">1,809</td>
-          </tr>
-        </tbody>
+        <tbody></tbody>
       </table>
     </section>
 
@@ -841,6 +801,21 @@
       document.querySelector(".container").prepend(banner);
     }
 
+    function findFy(audit, fy) {
+      if (!audit || !audit.separate) return null;
+      return audit.separate.find((r) => r.fy === fy) || null;
+    }
+    function marginPctFromRow(row) {
+      if (!row || !row.revenue) return null;
+      return (row.operatingProfit / row.revenue) * 100;
+    }
+    function computeMarginDeltaPp(audit, currentMarginPct) {
+      const prev = findFy(audit, 2024);
+      const prevMargin = marginPctFromRow(prev);
+      if (prevMargin == null) return null;
+      return currentMarginPct - prevMargin;
+    }
+
     async function loadJson(path) {
       const resp = await fetch(path);
       if (!resp.ok) throw new Error(`${path}: ${resp.status}`);
@@ -867,7 +842,7 @@
       }
     }
 
-    function renderTotals(sales) {
+    function renderTotals(sales, audit) {
       const t = sales.totals;
       setText("kpi-revenue", fmt억(t.revenueKrw));
       setText("kpi-revenue-delta", fmtDelta(t.yoyRevenuePct));
@@ -878,9 +853,16 @@
       setDeltaClass("kpi-op-delta", t.yoyOperatingProfitPct);
 
       setText("kpi-margin", fmtPct(t.operatingMarginPct));
-      // 영업이익률 pp 변화: FY24 11.9% → FY25 10.4% = -1.5pp (audit-report에서 계산 가능 시 자동화)
-      setText("kpi-margin-delta", "−1.5pp YoY");
-      setDeltaClass("kpi-margin-delta", -1.5);
+      // 영업이익률 pp 변화: audit-report FY24→FY25 자동 계산
+      const marginDeltaPp = computeMarginDeltaPp(audit, t.operatingMarginPct);
+      if (marginDeltaPp !== null) {
+        const sign = marginDeltaPp > 0 ? "+" : marginDeltaPp < 0 ? "−" : "";
+        setText(
+          "kpi-margin-delta",
+          `${sign}${Math.abs(marginDeltaPp).toFixed(1)}pp YoY`
+        );
+        setDeltaClass("kpi-margin-delta", marginDeltaPp);
+      }
 
       const targetKrw = 450000000000;
       const achievementPct = (t.revenueKrw / targetKrw) * 100;
@@ -1322,6 +1304,62 @@
       }
     }
 
+    function renderHeader(sales) {
+      const asOf = sales.metadata && sales.metadata.asOf;
+      const today = new Date();
+      const yyyyMm = `${today.getFullYear()}년 ${today.getMonth() + 1}월`;
+      const issueDate = today.toISOString().slice(0, 10);
+      setText("report-meta-label", `CEO SUMMARY · ${yyyyMm}`);
+      const info = document.getElementById("report-meta-info");
+      if (info) {
+        info.textContent = `발행일 ${issueDate} · 데이터 기준일 ${asOf || "—"}`;
+      }
+    }
+
+    function renderFyHistory(audit) {
+      const tbody = document.querySelector("#fy-history-table tbody");
+      if (!tbody || !audit || !audit.separate) return;
+      const rows = audit.separate
+        .filter((r) => r.fy >= 2021 && r.fy <= 2025)
+        .sort((a, b) => a.fy - b.fy);
+      const fmt = (n) => Math.round(n / 1e8).toLocaleString("ko-KR");
+      tbody.innerHTML = rows
+        .map((r) => {
+          const margin = (r.operatingProfit / r.revenue) * 100;
+          return `
+            <tr>
+              <td>FY${r.fy}</td>
+              <td class="num">${fmt(r.revenue)}</td>
+              <td class="num">${fmt(r.operatingProfit)}</td>
+              <td class="num">${margin.toFixed(1)}%</td>
+              <td class="num">${fmt(r.netProfit)}</td>
+              <td class="num">${fmt(r.totalAssets)}</td>
+            </tr>`;
+        })
+        .join("");
+    }
+
+    function renderExecSummary(sales, audit) {
+      const t = sales.totals;
+      // TOP 1 — 매출 YoY
+      const yoyText = `${t.yoyRevenuePct > 0 ? "+" : t.yoyRevenuePct < 0 ? "−" : ""}${Math.abs(t.yoyRevenuePct).toFixed(1)}%`;
+      setText("exec-yoy-revenue", yoyText);
+
+      // TOP 1 — FY23 / FY25 영업이익률, 그 차이
+      const fy23 = marginPctFromRow(findFy(audit, 2023));
+      const fy25Margin = t.operatingMarginPct;
+      if (fy23 != null) {
+        setText("exec-margin-fy23", `${fy23.toFixed(1)}%`);
+        setText("exec-margin-fy25", `${fy25Margin.toFixed(1)}%`);
+        setText("exec-margin-delta", `${(fy23 - fy25Margin).toFixed(1)}pp`);
+      }
+
+      // TOP 2 — 4,500억 달성률
+      const targetKrw = 450000000000;
+      const pct = (t.revenueKrw / targetKrw) * 100;
+      setText("exec-target-pct", `${pct.toFixed(1)}%`);
+    }
+
     function renderDataStatusBanner(sales) {
       if (!sales.metadata.recommendUpdate) return;
       const banner = document.createElement("div");
@@ -1339,8 +1377,11 @@
         renderRevenueTrendChart(null);
         return;
       }
+      renderHeader(data.sales);
       renderDataStatusBanner(data.sales);
-      renderTotals(data.sales);
+      renderExecSummary(data.sales, data.audit);
+      renderTotals(data.sales, data.audit);
+      renderFyHistory(data.audit);
       renderBrands(data.sales, data.inventory);
       renderChannels(data.sales);
       renderInventory(data.inventory);
