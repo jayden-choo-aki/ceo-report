@@ -490,6 +490,9 @@
       <!-- 인터랙티브 차트 island: 5년 매출·영업이익 추이 -->
       <div id="chart-revenue-trend" class="chart-island" style="height: 320px"></div>
 
+      <!-- 분기별 매출·영업이익률 (시즌성 시각화) -->
+      <div id="chart-quarterly" class="chart-island" style="height: 300px; margin-top: 24px"></div>
+
       <!-- 5년 시계열 표 -->
       <table class="data-table">
         <thead>
@@ -642,6 +645,18 @@
 
       <!-- 재고 알림 (red/yellow 알림 자동 노출) -->
       <div id="inventory-alerts" class="issue-list" style="margin-top: 28px"></div>
+
+      <!-- 마크다운 계획 vs 실적 -->
+      <h3 class="section-h2" style="font-size: 16px; margin-top: 40px; margin-bottom: 12px">
+        마크다운 — 계획 vs 실적
+      </h3>
+      <div id="chart-markdown" class="chart-island" style="height: 260px"></div>
+
+      <!-- 재고 aging — 브랜드별 100% 스택바 -->
+      <h3 class="section-h2" style="font-size: 16px; margin-top: 36px; margin-bottom: 12px">
+        재고 aging — 브랜드별 노후도
+      </h3>
+      <div id="chart-aging" class="chart-island" style="height: 220px"></div>
     </section>
 
     <!-- =============== 6. 고객·디지털 =============== -->
@@ -708,13 +723,70 @@
     <!-- =============== 8. 부록 =============== -->
     <section class="section">
       <div class="section-title">08 · 부록</div>
-      <h2 class="section-h2">
-        SKU·매장 디테일 <span class="data-tbd">DATA TBD</span>
-      </h2>
-      <p style="color: var(--color-text-muted); font-size: 14px">
-        Best/Worst SKU, 매장별 매출, 컬렉션 라이프사이클 진척 등 상세 데이터.
-        고밀도 표 형식(부록 전용 시각 스타일) 적용 예정.
-      </p>
+      <h2 class="section-h2">SKU·매장 디테일</h2>
+
+      <h3 style="font-size: 15px; margin-top: 8px; margin-bottom: 8px; font-weight: 600">
+        Best 10 SKU
+      </h3>
+      <div style="overflow-x: auto">
+        <table class="data-table" id="table-best-sku">
+          <thead>
+            <tr>
+              <th style="width: 32px" class="num">#</th>
+              <th>브랜드</th>
+              <th>상품명</th>
+              <th>시즌</th>
+              <th class="num">단가</th>
+              <th class="num">판매수량</th>
+              <th class="num">매출</th>
+              <th class="num">Sell-Through</th>
+              <th class="num">마진율</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size: 15px; margin-top: 32px; margin-bottom: 8px; font-weight: 600">
+        Worst 5 SKU — 액션 대상
+      </h3>
+      <div style="overflow-x: auto">
+        <table class="data-table" id="table-worst-sku">
+          <thead>
+            <tr>
+              <th style="width: 32px" class="num">#</th>
+              <th>브랜드</th>
+              <th>상품명</th>
+              <th>시즌</th>
+              <th class="num">Sell-Through</th>
+              <th class="num">마진율</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size: 15px; margin-top: 32px; margin-bottom: 8px; font-weight: 600">
+        매장 Top 10 — 연매출 기준
+      </h3>
+      <div style="overflow-x: auto">
+        <table class="data-table" id="table-top-stores">
+          <thead>
+            <tr>
+              <th style="width: 32px" class="num">#</th>
+              <th>매장</th>
+              <th>브랜드</th>
+              <th>채널</th>
+              <th>도시</th>
+              <th class="num">연매출 (억원)</th>
+              <th>등급</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="appendix-store-meta" style="margin-top: 12px; font-size: 12px; color: var(--color-text-faint)"></p>
     </section>
 
     <!-- =============== FOOTER =============== -->
@@ -777,13 +849,16 @@
 
     async function loadAll() {
       try {
-        const [sales, inventory, brands, audit] = await Promise.all([
-          loadJson(`${DATA_BASE}/sales-fy2025.json`),
-          loadJson(`${DATA_BASE}/inventory-fy2025.json`),
-          loadJson(`${DATA_BASE}/brands.json`),
-          loadJson(`${AUDIT_BASE}/financial-data.json`).catch(() => null),
-        ]);
-        return { sales, inventory, brands, audit };
+        const [sales, inventory, brands, sku, stores, audit] =
+          await Promise.all([
+            loadJson(`${DATA_BASE}/sales-fy2025.json`),
+            loadJson(`${DATA_BASE}/inventory-fy2025.json`),
+            loadJson(`${DATA_BASE}/brands.json`),
+            loadJson(`${DATA_BASE}/top-sku-fy2025.json`),
+            loadJson(`${DATA_BASE}/stores.json`),
+            loadJson(`${AUDIT_BASE}/financial-data.json`).catch(() => null),
+          ]);
+        return { sales, inventory, brands, sku, stores, audit };
       } catch (e) {
         showLoadError(
           `<code>file://</code>로 직접 열 때 CORS로 차단됩니다.<br>터미널에서 <code>python3 -m http.server 8000</code> 실행 후 <a href="http://localhost:8000/src/report-template.html">http://localhost:8000/src/report-template.html</a> 로 접속하세요. (${e.message})`
@@ -975,6 +1050,278 @@
       window.addEventListener("resize", () => chart.resize());
     }
 
+    function renderQuarterlyChart(sales) {
+      const host = document.getElementById("chart-quarterly");
+      if (!host || !sales.byQuarter) return;
+      const labels = sales.byQuarter.map((q) => q.quarter.replace("2025-", ""));
+      const revenue = sales.byQuarter.map((q) => Math.round(q.revenueKrw / 1e8));
+      const opMargin = sales.byQuarter.map((q) =>
+        Number(q.operatingMarginPct.toFixed(1))
+      );
+      const tooltipNotes = Object.fromEntries(
+        sales.byQuarter.map((q) => [q.quarter.replace("2025-", ""), q.note || ""])
+      );
+      const chart = echarts.init(host);
+      chart.setOption({
+        grid: { left: 50, right: 50, top: 30, bottom: 50 },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          textStyle: { fontFamily: "JetBrains Mono, monospace", fontSize: 12 },
+          formatter: (params) => {
+            const q = params[0].axisValue;
+            const lines = params
+              .map((p) => `${p.marker} ${p.seriesName}: <b>${p.value}</b>`)
+              .join("<br>");
+            const note = tooltipNotes[q] ? `<br><span style="color:#6b7280;font-size:11px">${tooltipNotes[q]}</span>` : "";
+            return `<b>${q}</b><br>${lines}${note}`;
+          },
+        },
+        legend: {
+          data: ["매출 (억원)", "영업이익률 (%)"],
+          bottom: 0,
+          textStyle: { fontFamily: "Pretendard Variable, sans-serif" },
+        },
+        xAxis: {
+          type: "category",
+          data: labels,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: "#e5e7eb" } },
+          axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace" },
+        },
+        yAxis: [
+          {
+            type: "value",
+            name: "매출",
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: "#f3f4f6" } },
+            axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace" },
+          },
+          {
+            type: "value",
+            name: "이익률 %",
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace", formatter: "{value}%" },
+          },
+        ],
+        series: [
+          {
+            name: "매출 (억원)",
+            type: "bar",
+            data: revenue,
+            itemStyle: { color: "#0a0a0a", borderRadius: [2, 2, 0, 0] },
+            barWidth: "44%",
+          },
+          {
+            name: "영업이익률 (%)",
+            type: "line",
+            yAxisIndex: 1,
+            data: opMargin,
+            itemStyle: { color: "#635bff" },
+            lineStyle: { color: "#635bff", width: 2 },
+            symbol: "circle",
+            symbolSize: 7,
+            label: {
+              show: true,
+              position: "top",
+              formatter: "{c}%",
+              fontFamily: "JetBrains Mono, monospace",
+              fontSize: 11,
+              color: "#635bff",
+            },
+          },
+        ],
+      });
+      window.addEventListener("resize", () => chart.resize());
+    }
+
+    function renderMarkdownTrendChart(inventory) {
+      const host = document.getElementById("chart-markdown");
+      if (!host || !inventory.markdownTrend) return;
+      const labels = inventory.markdownTrend.map((q) =>
+        q.quarter.replace("2025-", "")
+      );
+      const planned = inventory.markdownTrend.map((q) => q.plannedPct);
+      const actual = inventory.markdownTrend.map((q) => q.actualPct);
+      const chart = echarts.init(host);
+      chart.setOption({
+        grid: { left: 50, right: 24, top: 30, bottom: 50 },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          textStyle: { fontFamily: "JetBrains Mono, monospace", fontSize: 12 },
+          valueFormatter: (v) => `${v}%`,
+        },
+        legend: {
+          data: ["계획", "실적"],
+          bottom: 0,
+          textStyle: { fontFamily: "Pretendard Variable, sans-serif" },
+        },
+        xAxis: {
+          type: "category",
+          data: labels,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: "#e5e7eb" } },
+          axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace" },
+        },
+        yAxis: {
+          type: "value",
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: "#f3f4f6" } },
+          axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace", formatter: "{value}%" },
+        },
+        series: [
+          {
+            name: "계획",
+            type: "bar",
+            data: planned,
+            itemStyle: { color: "#d1d5db", borderRadius: [2, 2, 0, 0] },
+            barGap: "10%",
+          },
+          {
+            name: "실적",
+            type: "bar",
+            data: actual,
+            itemStyle: { color: "#ef4444", borderRadius: [2, 2, 0, 0] },
+          },
+        ],
+      });
+      window.addEventListener("resize", () => chart.resize());
+    }
+
+    function renderAgingChart(inventory) {
+      const host = document.getElementById("chart-aging");
+      if (!host || !inventory.agingByBrand) return;
+      const buckets = ["0-30일", "31-90일", "91-180일", "181-365일", "365일 초과"];
+      const colors = ["#10b981", "#84cc16", "#f59e0b", "#f97316", "#ef4444"];
+      const brandLabel = { shesmiss: "SHESMISS", list: "LIST", sistina: "SISTINA" };
+      const yAxis = inventory.agingByBrand.map((b) => brandLabel[b.brandId] || b.brandId);
+      const series = buckets.map((bucket, i) => ({
+        name: bucket,
+        type: "bar",
+        stack: "total",
+        itemStyle: { color: colors[i] },
+        label: {
+          show: true,
+          formatter: (p) => (p.value >= 8 ? `${p.value}%` : ""),
+          fontFamily: "JetBrains Mono, monospace",
+          fontSize: 11,
+          color: i >= 2 ? "#fff" : "#0a0a0a",
+        },
+        data: inventory.agingByBrand.map((b) => {
+          const m = b.buckets.find((x) => x.ageRange === bucket);
+          return m ? Math.round(m.share * 1000) / 10 : 0;
+        }),
+      }));
+      const chart = echarts.init(host);
+      chart.setOption({
+        grid: { left: 90, right: 24, top: 20, bottom: 40 },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          textStyle: { fontFamily: "JetBrains Mono, monospace", fontSize: 12 },
+          valueFormatter: (v) => `${v}%`,
+        },
+        legend: {
+          data: buckets,
+          bottom: 0,
+          textStyle: { fontFamily: "Pretendard Variable, sans-serif", fontSize: 11 },
+        },
+        xAxis: {
+          type: "value",
+          max: 100,
+          axisLabel: { color: "#6b7280", fontFamily: "JetBrains Mono, monospace", formatter: "{value}%" },
+          splitLine: { lineStyle: { color: "#f3f4f6" } },
+        },
+        yAxis: {
+          type: "category",
+          data: yAxis,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: "#e5e7eb" } },
+          axisLabel: { color: "#0a0a0a", fontWeight: 600 },
+        },
+        series,
+      });
+      window.addEventListener("resize", () => chart.resize());
+    }
+
+    function renderAppendix(sku, stores) {
+      const brandLabel = { shesmiss: "SHESMISS", list: "LIST", sistina: "SISTINA" };
+      const fmtKrw = (n) => n.toLocaleString("ko-KR");
+      const fmt억Decimal = (n) => (n / 1e8).toFixed(1);
+
+      // Best 10
+      const bestTbody = document.querySelector("#table-best-sku tbody");
+      if (bestTbody && sku.bestSellers) {
+        bestTbody.innerHTML = sku.bestSellers
+          .map(
+            (r) => `
+            <tr>
+              <td class="num">${r.rank}</td>
+              <td>${brandLabel[r.brandId] || r.brandId}</td>
+              <td>${r.name}</td>
+              <td>${r.season}</td>
+              <td class="num">${fmtKrw(r.priceKrw)}</td>
+              <td class="num">${fmtKrw(r.unitsSold)}</td>
+              <td class="num">${fmt억Decimal(r.revenueKrw)}억</td>
+              <td class="num">${r.sellThroughPct.toFixed(1)}%</td>
+              <td class="num">${r.marginPct.toFixed(1)}%</td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      // Worst 5
+      const worstTbody = document.querySelector("#table-worst-sku tbody");
+      if (worstTbody && sku.worstSellers) {
+        worstTbody.innerHTML = sku.worstSellers
+          .map(
+            (r) => `
+            <tr>
+              <td class="num">${r.rank}</td>
+              <td>${brandLabel[r.brandId] || r.brandId}</td>
+              <td>${r.name}</td>
+              <td>${r.season}</td>
+              <td class="num" style="color:#ef4444;font-weight:600">${r.sellThroughPct.toFixed(1)}%</td>
+              <td class="num">${r.marginPct.toFixed(1)}%</td>
+              <td>${r.status}</td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      // Top 10 stores by annualRevenueKrw
+      const topStores = [...(stores.stores || [])]
+        .filter((s) => s.annualRevenueKrw != null)
+        .sort((a, b) => b.annualRevenueKrw - a.annualRevenueKrw)
+        .slice(0, 10);
+      const storesTbody = document.querySelector("#table-top-stores tbody");
+      if (storesTbody) {
+        storesTbody.innerHTML = topStores
+          .map(
+            (s, i) => `
+            <tr>
+              <td class="num">${i + 1}</td>
+              <td>${s.name}</td>
+              <td>${brandLabel[s.brandId] || s.brandId}</td>
+              <td>${s.channel}</td>
+              <td>${s.city || "—"}</td>
+              <td class="num">${fmt억Decimal(s.annualRevenueKrw)}</td>
+              <td>${s.tier}</td>
+            </tr>`
+          )
+          .join("");
+      }
+      const meta = document.getElementById("appendix-store-meta");
+      if (meta && stores.metadata) {
+        meta.textContent = `샘플 ${stores.metadata.sampleSize}개 매장 중 상위 10개 · 전체 매장 추정 ${stores.metadata.totalStoresEstimate}개`;
+      }
+    }
+
     function renderDataStatusBanner(sales) {
       if (!sales.metadata.recommendUpdate) return;
       const banner = document.createElement("div");
@@ -998,6 +1345,10 @@
       renderChannels(data.sales);
       renderInventory(data.inventory);
       renderRevenueTrendChart(data.audit);
+      renderQuarterlyChart(data.sales);
+      renderMarkdownTrendChart(data.inventory);
+      renderAgingChart(data.inventory);
+      renderAppendix(data.sku, data.stores);
     })();
   </script>
 </body>
