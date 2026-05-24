@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>인동에프엔 일실적 · 2026-05-23(토)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --line: #e5e9f2;
+    --ink: #1a2235;
+    --muted: #6b7589;
+    --brand: #2f6bff;
+    --good: #1aa472;
+    --bad: #d94646;
+    --warn: #d97706;
+    --soft: #f0f3fb;
+    --navy: #0f1c3f;
+    --gold: #c9a55a;
+    --gold-soft: #f3ead3;
+    --shesmiss: #2f6bff;
+    --list: #8b5cf6;
+    --sistina: #ec4899;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 28px 24px 64px; }
+
+  .head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 24px;
+  }
+  .head h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -0.5px; }
+  .head .meta { color: var(--muted); font-size: 13px; }
+  .head .tag {
+    display: inline-block; background: var(--soft); color: var(--brand);
+    padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-right: 6px;
+  }
+  .stamp { text-align: right; color: var(--muted); font-size: 12px; }
+  .stamp .big { font-size: 18px; color: var(--ink); font-weight: 700; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .kpi .label { color: var(--muted); font-size: 12.5px; margin-bottom: 6px; }
+  .kpi .value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .kpi .sub-value { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi .delta { font-size: 12px; margin-top: 6px; font-weight: 600; }
+  .delta.up { color: var(--good); }
+  .delta.down { color: var(--bad); }
+
+  .row { display: grid; gap: 14px; margin-bottom: 20px; }
+  .row.r-2 { grid-template-columns: 1.4fr 1fr; }
+  .row.r-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .card h2 { font-size: 14px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+  .card h2 .sub { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .chart-box { position: relative; height: 280px; }
+  .chart-box.sm { height: 220px; }
+  .chart-box.lg { height: 360px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 8px; text-align: right; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: var(--soft); color: var(--muted); font-weight: 600; font-size: 12px; }
+  tr.total td { font-weight: 700; background: #fafbfd; border-top: 2px solid var(--ink); }
+  .pos { color: var(--good); font-weight: 600; }
+  .neg { color: var(--bad); font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .pill.s { background: rgba(47,107,255,.1); color: var(--shesmiss); }
+  .pill.l { background: rgba(139,92,246,.1); color: var(--list); }
+  .pill.a { background: rgba(236,72,153,.1); color: var(--sistina); }
+
+  .brand-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+  .brand-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .brand-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .brand-card .brand-name { font-size: 16px; font-weight: 700; }
+  .brand-card .daily { font-size: 24px; font-weight: 800; margin: 4px 0 2px; letter-spacing: -0.5px; }
+  .brand-card .daily-label { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+  .progress { height: 8px; background: var(--soft); border-radius: 999px; overflow: hidden; margin: 6px 0 10px; }
+  .progress > div { height: 100%; border-radius: 999px; }
+  .brand-card .progress-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .brand-card .progress-row b { color: var(--ink); }
+  .brand-card .meta-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  .footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 24px; }
+  .footer a { color: var(--brand); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div>
+      <div>
+        <span class="tag">일일 보고서</span>
+        <span class="tag" style="background:#fff4e0;color:#d97706;">VAT 포함</span>
+      </div>
+      <h1>인동에프엔 · 일실적 보고서</h1>
+      <div class="meta">2026년 05월 23일 (토) · 쉬즈미스 · 리스트 · 시스티나 통합</div>
+    </div>
+    <div class="stamp">
+      <div class="big">₩ 1,110,389,500</div>
+      <div>당일 합계 매출</div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">일실적 합계</div>
+      <div class="value">11.10억</div>
+      <div class="sub-value">1,110,389,500원</div>
+    </div>
+    <div class="kpi">
+      <div class="label">월목표</div>
+      <div class="value">338.20억</div>
+      <div class="sub-value">33,820,000,000원</div>
+    </div>
+    <div class="kpi">
+      <div class="label">월실적</div>
+      <div class="value">201.15억</div>
+      <div class="sub-value">20,114,969,694원</div>
+    </div>
+    <div class="kpi">
+      <div class="label">월 달성률</div>
+      <div class="value" style="color:var(--warn);">59.48%</div>
+      <div class="sub-value">목표 대비 -137.05억</div>
+    </div>
+    <div class="kpi">
+      <div class="label">전년대비 (누적)</div>
+      <div class="value" style="color:var(--bad);">-8.49%</div>
+      <div class="delta down">▼ -118억 (-11.83억)</div>
+    </div>
+  </div>
+
+  <!-- Brand summary cards -->
+  <div class="brand-grid">
+    <div class="brand-card">
+      <div class="top">
+        <div class="brand-name">쉬즈미스 <span class="pill s">SHESMISS</span></div>
+        <div style="font-size:11px;color:var(--muted);">코드 S</div>
+      </div>
+      <div class="daily">₩ 517,996,800</div>
+      <div class="daily-label">일실적 (당일 합계의 46.6%)</div>
+      <div class="progress"><div style="width:57.73%; background:var(--shesmiss);"></div></div>
+      <div class="progress-row"><span>월 달성률</span><b>57.73%</b></div>
+      <div class="meta-row"><span>월목표</span><b style="color:var(--ink);">173.70억</b></div>
+      <div class="meta-row"><span>월실적</span><b style="color:var(--ink);">100.28억</b></div>
+      <div class="meta-row"><span>전년대비</span><b class="neg">-10.4% (-72억)</b></div>
+    </div>
+
+    <div class="brand-card">
+      <div class="top">
+        <div class="brand-name">리스트 <span class="pill l">LIST</span></div>
+        <div style="font-size:11px;color:var(--muted);">코드 T</div>
+      </div>
+      <div class="daily">₩ 437,107,100</div>
+      <div class="daily-label">일실적 (당일 합계의 39.4%)</div>
+      <div class="progress"><div style="width:63.42%; background:var(--list);"></div></div>
+      <div class="progress-row"><span>월 달성률</span><b>63.42%</b></div>
+      <div class="meta-row"><span>월목표</span><b style="color:var(--ink);">114.25억</b></div>
+      <div class="meta-row"><span>월실적</span><b style="color:var(--ink);">72.46억</b></div>
+      <div class="meta-row"><span>전년대비</span><b class="neg">-8.89% (-46억)</b></div>
+    </div>
+
+    <div class="brand-card">
+      <div class="top">
+        <div class="brand-name">시스티나 <span class="pill a">SISTINA</span></div>
+        <div style="font-size:11px;color:var(--muted);">코드 A</div>
+      </div>
+      <div class="daily">₩ 155,285,600</div>
+      <div class="daily-label">일실적 (당일 합계의 14.0%)</div>
+      <div class="progress"><div style="width:56.53%; background:var(--sistina);"></div></div>
+      <div class="progress-row"><span>월 달성률</span><b>56.53%</b></div>
+      <div class="meta-row"><span>월목표</span><b style="color:var(--ink);">50.25억</b></div>
+      <div class="meta-row"><span>월실적</span><b style="color:var(--ink);">28.41억</b></div>
+      <div class="meta-row"><span>전년대비</span><b class="neg">-0.13% (-0억)</b></div>
+    </div>
+  </div>
+
+  <!-- Charts row 1 -->
+  <div class="row r-2">
+    <div class="card">
+      <h2>팀별 일실적 (브랜드 × 팀) <span class="sub">단위: 백만원</span></h2>
+      <div class="chart-box lg"><canvas id="chartTeam"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>브랜드별 일실적 비중 <span class="sub">전체 11.10억 中</span></h2>
+      <div class="chart-box lg"><canvas id="chartShare"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts row 2 -->
+  <div class="row r-2">
+    <div class="card">
+      <h2>월목표 vs 월실적 <span class="sub">단위: 억원</span></h2>
+      <div class="chart-box"><canvas id="chartGoal"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>전년 누적 vs 금년 누적 <span class="sub">단위: 억원</span></h2>
+      <div class="chart-box"><canvas id="chartYoY"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Team detail table -->
+  <div class="card" style="margin-bottom:20px;">
+    <h2>팀별 일실적 상세</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>브랜드</th>
+          <th>1팀</th>
+          <th>2팀</th>
+          <th>3팀</th>
+          <th>4팀</th>
+          <th>일실적</th>
+          <th>1팀비중</th>
+          <th>최고팀</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill s">쉬즈미스</span></td>
+          <td>115,338,800</td>
+          <td>69,897,700</td>
+          <td>227,733,200</td>
+          <td>105,027,100</td>
+          <td><b>517,996,800</b></td>
+          <td>22.3%</td>
+          <td>3팀 (44.0%)</td>
+        </tr>
+        <tr>
+          <td><span class="pill l">리스트</span></td>
+          <td>99,733,400</td>
+          <td>24,332,800</td>
+          <td>230,817,100</td>
+          <td>82,223,800</td>
+          <td><b>437,107,100</b></td>
+          <td>22.8%</td>
+          <td>3팀 (52.8%)</td>
+        </tr>
+        <tr>
+          <td><span class="pill a">시스티나</span></td>
+          <td>49,541,000</td>
+          <td>3,646,000</td>
+          <td>25,389,200</td>
+          <td>76,709,400</td>
+          <td><b>155,285,600</b></td>
+          <td>31.9%</td>
+          <td>4팀 (49.4%)</td>
+        </tr>
+        <tr class="total">
+          <td>합계</td>
+          <td>264,613,200</td>
+          <td>97,876,500</td>
+          <td>483,939,500</td>
+          <td>263,960,300</td>
+          <td>1,110,389,500</td>
+          <td>23.8%</td>
+          <td>3팀 (43.6%)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Monthly/Yearly detail table -->
+  <div class="card" style="margin-bottom:20px;">
+    <h2>월·연 누적 상세</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>브랜드</th>
+          <th>월목표</th>
+          <th>월실적</th>
+          <th>월달성률</th>
+          <th>전년누적</th>
+          <th>금년누적</th>
+          <th>전년대비</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill s">쉬즈미스</span></td>
+          <td>17,370,000,000</td>
+          <td>10,028,416,936</td>
+          <td>57.73%</td>
+          <td>69,486,009,802</td>
+          <td>62,262,183,475</td>
+          <td class="neg">-10.40% (-72억)</td>
+        </tr>
+        <tr>
+          <td><span class="pill l">리스트</span></td>
+          <td>11,425,000,000</td>
+          <td>7,245,913,878</td>
+          <td>63.42%</td>
+          <td>51,653,313,592</td>
+          <td>47,063,345,013</td>
+          <td class="neg">-8.89% (-46억)</td>
+        </tr>
+        <tr>
+          <td><span class="pill a">시스티나</span></td>
+          <td>5,025,000,000</td>
+          <td>2,840,638,880</td>
+          <td>56.53%</td>
+          <td>18,340,674,556</td>
+          <td>18,316,539,423</td>
+          <td class="neg">-0.13% (-0억)</td>
+        </tr>
+        <tr class="total">
+          <td>합계</td>
+          <td>33,820,000,000</td>
+          <td>20,114,969,694</td>
+          <td>59.48%</td>
+          <td>139,479,997,950</td>
+          <td>127,642,067,911</td>
+          <td class="neg">-8.49% (-118억)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    데이터 출처: <a href="https://m.indongfn.co.kr/MEIS" target="_blank">INNOS · m.indongfn.co.kr/MEIS</a> · 단위: 원 (VAT 포함) · 생성: 2026-05-24
+  </div>
+
+</div>
+
+<script>
+const fmtMil = v => v.toLocaleString('ko-KR');
+const palette = {
+  shesmiss: '#2f6bff',
+  list: '#8b5cf6',
+  sistina: '#ec4899',
+  target: '#cbd5e1',
+  actual: '#2f6bff',
+  prev: '#cbd5e1',
+  curr: '#2f6bff'
+};
+
+// 1. Team grouped bar chart (단위: 백만원)
+new Chart(document.getElementById('chartTeam'), {
+  type: 'bar',
+  data: {
+    labels: ['1팀','2팀','3팀','4팀'],
+    datasets: [
+      { label:'쉬즈미스', data:[115.34, 69.90, 227.73, 105.03], backgroundColor: palette.shesmiss, borderRadius:6 },
+      { label:'리스트',   data:[99.73, 24.33, 230.82, 82.22],   backgroundColor: palette.list,     borderRadius:6 },
+      { label:'시스티나', data:[49.54, 3.65, 25.39, 76.71],     backgroundColor: palette.sistina,  borderRadius:6 }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'top', labels:{boxWidth:12, padding:14, font:{size:12}}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}백만원`}}
+    },
+    scales:{
+      y:{ beginAtZero:true, ticks:{callback:v=>v+'M'}, grid:{color:'#eef1f7'} },
+      x:{ grid:{display:false} }
+    }
+  }
+});
+
+// 2. Brand share doughnut
+new Chart(document.getElementById('chartShare'), {
+  type: 'doughnut',
+  data: {
+    labels:['쉬즈미스','리스트','시스티나'],
+    datasets:[{
+      data:[517996800, 437107100, 155285600],
+      backgroundColor:[palette.shesmiss, palette.list, palette.sistina],
+      borderWidth:0
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{
+      legend:{position:'bottom', labels:{boxWidth:12, padding:14, font:{size:12}}},
+      tooltip:{callbacks:{label:c=>{
+        const t=c.dataset.data.reduce((a,b)=>a+b,0);
+        const p=(c.parsed/t*100).toFixed(1);
+        return `${c.label}: ${(c.parsed/1e8).toFixed(2)}억 (${p}%)`;
+      }}}
+    }
+  }
+});
+
+// 3. Goal vs Actual (억원)
+new Chart(document.getElementById('chartGoal'), {
+  type:'bar',
+  data:{
+    labels:['쉬즈미스','리스트','시스티나','합계'],
+    datasets:[
+      { label:'월목표', data:[173.70, 114.25, 50.25, 338.20], backgroundColor: palette.target, borderRadius:6 },
+      { label:'월실적', data:[100.28, 72.46, 28.41, 201.15], backgroundColor: palette.actual, borderRadius:6 }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'top', labels:{boxWidth:12, padding:14, font:{size:12}}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}억원`}}
+    },
+    scales:{
+      y:{ beginAtZero:true, ticks:{callback:v=>v+'억'}, grid:{color:'#eef1f7'} },
+      x:{ grid:{display:false} }
+    }
+  }
+});
+
+// 4. YoY accumulated (억원)
+new Chart(document.getElementById('chartYoY'), {
+  type:'bar',
+  data:{
+    labels:['쉬즈미스','리스트','시스티나','합계'],
+    datasets:[
+      { label:'전년누적', data:[694.86, 516.53, 183.41, 1394.80], backgroundColor: palette.prev, borderRadius:6 },
+      { label:'금년누적', data:[622.62, 470.63, 183.17, 1276.42], backgroundColor: palette.curr, borderRadius:6 }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'top', labels:{boxWidth:12, padding:14, font:{size:12}}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}억원`}}
+    },
+    scales:{
+      y:{ beginAtZero:true, ticks:{callback:v=>v+'억'}, grid:{color:'#eef1f7'} },
+      x:{ grid:{display:false} }
+    }
+  }
+});
+</script>
+</body>
+</html>

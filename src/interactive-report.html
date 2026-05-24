@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>패션 매장 인터랙티브 보고서</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --line: #e5e9f2;
+    --ink: #1a2235;
+    --muted: #6b7589;
+    --brand: #2f6bff;
+    --brand-soft: #e6efff;
+    --good: #1aa472;
+    --bad: #d94646;
+    --warn: #d97706;
+    --soft: #f0f3fb;
+    --navy: #0f1c3f;
+    --gold: #c9a55a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Top bar */
+  header.top {
+    background: #fff; border-bottom: 1px solid var(--line);
+    padding: 14px 28px; position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 24px;
+  }
+  header.top .logo {
+    font-size: 14px; font-weight: 700; letter-spacing: 1px;
+    color: var(--navy); white-space: nowrap;
+  }
+  header.top .logo span { color: var(--gold); }
+  header.top nav.crumbs {
+    display: flex; align-items: center; gap: 6px; font-size: 13px;
+    flex: 1; overflow-x: auto;
+  }
+  header.top nav.crumbs a {
+    color: var(--muted); text-decoration: none; padding: 4px 8px; border-radius: 6px;
+    white-space: nowrap;
+  }
+  header.top nav.crumbs a:hover { background: var(--soft); color: var(--brand); }
+  header.top nav.crumbs a.current { color: var(--ink); font-weight: 600; }
+  header.top nav.crumbs .sep { color: #c0c6d4; font-size: 12px; }
+  header.top .home-btn {
+    background: var(--brand); color: #fff; text-decoration: none;
+    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  }
+
+  main.wrap { max-width: 1380px; margin: 0 auto; padding: 28px 24px 64px; }
+
+  /* Common */
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px;
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    font-size: 15px; margin: 0 0 14px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .card h2 .sub { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  /* KPI */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 18px;
+  }
+  .kpi-grid.k4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+  }
+  .kpi .label { color: var(--muted); font-size: 12.5px; margin-bottom: 6px; }
+  .kpi .value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .kpi .sub-value { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi .delta { font-size: 12px; margin-top: 6px; }
+  .delta.up { color: var(--good); }
+  .delta.down { color: var(--bad); }
+
+  /* Page title */
+  .page-title {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+  }
+  .page-title h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -0.5px; }
+  .page-title .desc { color: var(--muted); font-size: 13px; }
+  .page-title .badge {
+    display: inline-block; background: var(--brand-soft); color: var(--brand);
+    padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; margin-right: 6px;
+  }
+
+  /* Hub entries (home) */
+  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .hub-card {
+    background: linear-gradient(135deg, #fff 0%, #f6f8fd 100%);
+    border: 1px solid var(--line); border-radius: 14px; padding: 32px 36px;
+    cursor: pointer; transition: all 0.18s; text-decoration: none; color: var(--ink);
+    display: block;
+  }
+  .hub-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,28,63,0.08); border-color: var(--brand); }
+  .hub-card .h-icon { font-size: 26px; margin-bottom: 14px; }
+  .hub-card .h-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--navy); }
+  .hub-card .h-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px; }
+  .hub-card .h-stats {
+    display: flex; gap: 24px; padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .hub-card .h-stats .s {
+    font-size: 12px; color: var(--muted);
+  }
+  .hub-card .h-stats .s b { display: block; color: var(--ink); font-size: 18px; margin-top: 2px; }
+
+  /* Categories grid (level 2) */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .cat {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 22px 24px; cursor: pointer; transition: all 0.18s; text-decoration: none; color: var(--ink);
+    display: block;
+  }
+  .cat:hover { border-color: var(--brand); box-shadow: 0 4px 14px rgba(47,107,255,0.08); }
+  .cat .c-head {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+  }
+  .cat .c-dot { width: 12px; height: 12px; border-radius: 4px; }
+  .cat .c-name { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .cat .c-count { font-size: 11.5px; color: var(--muted); background: var(--soft); padding: 3px 8px; border-radius: 99px; }
+  .cat .c-rev { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .cat .c-row {
+    display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted);
+    padding-top: 12px; margin-top: 12px; border-top: 1px dashed var(--line);
+  }
+  .cat .c-row b { color: var(--ink); }
+  .cat .bar { height: 6px; background: var(--soft); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+  .cat .bar > span { display: block; height: 100%; }
+
+  /* SKU grid (level 3) */
+  .sku-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .pcard {
+    border: 1px solid var(--line); border-radius: 12px; background: #fff;
+    overflow: hidden; display: flex; flex-direction: column;
+    cursor: pointer; transition: all 0.18s; text-decoration: none; color: var(--ink);
+  }
+  .pcard:hover { border-color: var(--brand); box-shadow: 0 4px 14px rgba(47,107,255,0.08); transform: translateY(-2px); }
+  .pcard .pimg {
+    background: linear-gradient(135deg, #f7f8fb 0%, #eef1f7 100%);
+    aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;
+    position: relative; border-bottom: 1px solid var(--line);
+  }
+  .pcard .pimg svg { width: 75%; height: 88%; }
+  .pcard .rk-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--ink); color: #fff; font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .pcard .pinfo { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .pcard .pcode { font-size: 11px; color: var(--muted); }
+  .pcard .pname { font-size: 13px; font-weight: 600; line-height: 1.35; height: 36px; overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .pcard .pprice { font-size: 14px; font-weight: 700; }
+  .pcard .pstats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    padding-top: 8px; border-top: 1px dashed var(--line); font-size: 11px;
+  }
+  .pcard .pstats .k { color: var(--muted); }
+  .pcard .pstats .v { color: var(--ink); font-weight: 600; }
+
+  /* Store grid */
+  .store-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .scard {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+    cursor: pointer; transition: all 0.18s; text-decoration: none; color: var(--ink);
+    display: block;
+  }
+  .scard:hover { border-color: var(--brand); box-shadow: 0 4px 14px rgba(47,107,255,0.08); }
+  .scard .s-head {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+  }
+  .scard .s-name { font-size: 15px; font-weight: 700; }
+  .scard .s-code { font-size: 10.5px; color: var(--muted); }
+  .scard .s-rev { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .scard .s-row {
+    display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);
+    margin-top: 6px;
+  }
+  .scard .s-row b { color: var(--ink); }
+  .scard .s-bar { height: 5px; background: var(--soft); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+  .scard .s-bar > span { display: block; height: 100%; }
+
+  /* Badges */
+  .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green { background: #e6f7ef; color: var(--good); }
+  .badge.red   { background: #fce8e8; color: var(--bad); }
+  .badge.amber { background: #fef3e0; color: var(--warn); }
+  .badge.gray  { background: var(--soft); color: var(--muted); }
+  .badge.blue  { background: var(--brand-soft); color: var(--brand); }
+
+  /* Grid layouts */
+  .row { display: grid; gap: 14px; margin-bottom: 18px; }
+  .row.r-2 { grid-template-columns: 1.4fr 1fr; }
+  .row.r-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .chart-box { position: relative; height: 280px; }
+  .chart-box.sm { height: 220px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+  th { color: var(--muted); font-weight: 500; background: var(--soft); }
+  tbody tr.clickable { cursor: pointer; }
+  tbody tr.clickable:hover { background: #fafbfd; color: var(--brand); }
+  tr:last-child td { border-bottom: none; }
+  td.up { color: var(--good); }
+  td.down { color: var(--bad); }
+
+  /* SKU detail header */
+  .sku-detail-head {
+    display: grid; grid-template-columns: 240px 1fr; gap: 28px;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 24px;
+    margin-bottom: 18px;
+  }
+  .sku-detail-head .big-img {
+    aspect-ratio: 1 / 1; background: linear-gradient(135deg,#f7f8fb,#eef1f7);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+  }
+  .sku-detail-head .big-img svg { width: 80%; height: 88%; }
+  .sku-detail-head .meta-tags { display: flex; gap: 6px; margin-bottom: 6px; }
+  .sku-detail-head h2.name { font-size: 26px; margin: 0 0 8px; letter-spacing: -0.5px; }
+  .sku-detail-head .desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+  .sku-detail-head .stat-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .sku-detail-head .stat-row .s { }
+  .sku-detail-head .stat-row .s .k { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+  .sku-detail-head .stat-row .s .v { font-size: 20px; font-weight: 700; }
+
+  /* Color dot */
+  .color-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  @media (max-width: 1100px) {
+    .kpi-grid, .kpi-grid.k4 { grid-template-columns: repeat(2, 1fr); }
+    .hub-grid, .cat-grid, .sku-grid, .store-grid, .row.r-2, .row.r-3 { grid-template-columns: 1fr; }
+    .sku-detail-head { grid-template-columns: 1fr; }
+  }
+
+  /* ============ 진입 / 호버 애니메이션 ============ */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(47,107,255,0); }
+    50%      { box-shadow: 0 0 0 8px rgba(47,107,255,0.06); }
+  }
+
+  /* 진입 시 단계적으로 떠오름 */
+  .stagger > * {
+    opacity: 0; animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.04s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.10s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.16s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.22s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.28s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.34s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.40s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.46s; }
+  .stagger > *:nth-child(n+9) { animation-delay: 0.52s; }
+
+  /* 페이지 본문 진입 */
+  main.wrap.entering { animation: fade-in 0.35s ease-out; }
+
+  /* KPI: hover 살짝 떠오름 + 값에 그라데이션 글로우 */
+  .kpi {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s, border-color 0.2s;
+  }
+  .kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15,28,63,0.08);
+    border-color: rgba(47,107,255,0.25);
+  }
+  .kpi .value {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--brand) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+  .kpi .value.is-bad {
+    background: linear-gradient(135deg, var(--bad) 0%, #b73838 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Card hover (interactive 그리드들) */
+  .card { transition: box-shadow 0.18s; }
+  .card:hover { box-shadow: 0 4px 14px rgba(15,28,63,0.05); }
+
+  /* Hub 카드 진입 강조 */
+  .hub-card { animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .hub-card:nth-child(2) { animation-delay: 0.08s; }
+
+  /* SKU 카드 hover */
+  .pcard .pimg svg { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .pcard:hover .pimg svg { transform: scale(1.06) rotate(-1.5deg); }
+
+  /* 매장 카드 진행률 바: 진입 시 0→target 너비 애니메이션 */
+  .scard .s-bar > span, .cat .bar > span {
+    transform-origin: left;
+    animation: bar-grow 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes bar-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* 차트 컨테이너 진입 시 살짝 떠오름 */
+  .chart-box { animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.15s; }
+
+  /* 브레드크럼 진입 */
+  header.top nav.crumbs a { transition: background 0.15s, color 0.15s; }
+
+  /* 클릭 가능한 테이블 행에 호버 강조 */
+  tbody tr.clickable { transition: background 0.15s, color 0.15s, transform 0.12s; }
+  tbody tr.clickable:hover { transform: translateX(2px); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="logo">OO <span>FASHION</span> · INTERACTIVE</div>
+  <nav class="crumbs" id="crumbs"></nav>
+  <a href="#home" class="home-btn">홈</a>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<script>
+/* ===========================================================
+ *  1. 데이터 생성 (시드 기반)
+ * =========================================================== */
+function mulberry32(seed) {
+  return function() {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+}
+const rand = mulberry32(20260424);
+function gaussian(mean, sd) {
+  let u = 0, v = 0;
+  while (u === 0) u = rand();
+  while (v === 0) v = rand();
+  return mean + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+const pick = (arr) => arr[Math.floor(rand() * arr.length)];
+
+const fmtKRW   = (v) => '₩ ' + Math.round(v).toLocaleString('ko-KR');
+const fmtNum   = (v) => v.toLocaleString('ko-KR');
+const fmtEok   = (v) => '₩ ' + (v/100000000).toFixed(2) + '억';
+const fmtMan   = (v) => Math.round(v/10000).toLocaleString('ko-KR') + '만';
+
+/* 카테고리 */
+const categories = [
+  { key:'out',    name:'아우터',   color:'#2f6bff', basePrice: 280000, share: 0.311 },
+  { key:'top',    name:'상의',     color:'#1aa472', basePrice: 78000,  share: 0.248 },
+  { key:'bottom', name:'하의',     color:'#d97706', basePrice: 98000,  share: 0.184 },
+  { key:'dress',  name:'원피스',   color:'#ec4899', basePrice: 138000, share: 0.134 },
+  { key:'acc',    name:'액세서리', color:'#8b5cf6', basePrice: 65000,  share: 0.078 },
+  { key:'etc',    name:'기타',     color:'#6b7280', basePrice: 88000,  share: 0.045 }
+];
+
+/* SKU 템플릿 (카테고리별 8개 = 48 SKU) */
+const skuTemplates = {
+  out: [
+    {n:'클래식 트렌치 코트',  f:'클래식', fab:'개버딘'},
+    {n:'캐시미어 울 코트',    f:'롱',     fab:'캐시미어울'},
+    {n:'라이더 레더 자켓',    f:'슬림',   fab:'양가죽'},
+    {n:'더블 블레이저',       f:'더블',   fab:'울'},
+    {n:'케이블 카디건',       f:'박시',   fab:'울 혼방'},
+    {n:'덕 다운 패딩',        f:'미디',   fab:'덕다운'},
+    {n:'나일론 윈드브레이커', f:'레귤러', fab:'나일론'},
+    {n:'바시티 봄버 자켓',    f:'크롭',   fab:'폴리혼방'}
+  ],
+  top: [
+    {n:'옥스포드 셔츠',       f:'레귤러', fab:'코튼'},
+    {n:'실크 블라우스',       f:'슬림',   fab:'실크'},
+    {n:'캐시미어 라운드 니트',f:'슬림',   fab:'캐시미어'},
+    {n:'프리미엄 코튼 티셔츠',f:'레귤러', fab:'슈피마코튼'},
+    {n:'폴로 니트 셔츠',      f:'클래식', fab:'코튼'},
+    {n:'오버핏 후드티',       f:'오버',   fab:'코튼 기모'},
+    {n:'베이직 맨투맨',       f:'레귤러', fab:'코튼'},
+    {n:'리브 크롭 탑',        f:'크롭',   fab:'스판덱스'}
+  ],
+  bottom: [
+    {n:'테일러드 슬랙스',     f:'레귤러', fab:'울 혼방'},
+    {n:'와이드 데님 팬츠',    f:'와이드', fab:'데님'},
+    {n:'스키니 진',           f:'스키니', fab:'스트레치 데님'},
+    {n:'플레어 미디 스커트',  f:'플레어', fab:'폴리혼방'},
+    {n:'프리츠 미니 스커트',  f:'A라인',  fab:'폴리'},
+    {n:'카고 와이드 팬츠',    f:'와이드', fab:'코튼'},
+    {n:'치노 슬림 팬츠',      f:'슬림',   fab:'코튼'},
+    {n:'리브 레깅스',         f:'슬림',   fab:'나일론 스판'}
+  ],
+  dress: [
+    {n:'플로럴 시폰 미디',    f:'A라인',     fab:'시폰'},
+    {n:'린넨 슬리브리스',     f:'H라인',     fab:'린넨'},
+    {n:'코튼 데일리',         f:'A라인',     fab:'코튼'},
+    {n:'니트 롱 슬립',        f:'슬립',      fab:'니트'},
+    {n:'새틴 슬립',           f:'슬립',      fab:'새틴'},
+    {n:'데님 셔츠',           f:'셔츠',      fab:'데님'},
+    {n:'트위드 미니',         f:'H라인',     fab:'트위드'},
+    {n:'머메이드 롱',         f:'머메이드',  fab:'저지'}
+  ],
+  acc: [
+    {n:'레더 숄더백',         f:'미디',   fab:'소가죽'},
+    {n:'캔버스 크로스백',     f:'미니',   fab:'캔버스'},
+    {n:'실크 트윌리 스카프',  f:'-',      fab:'실크'},
+    {n:'캐시미어 머플러',     f:'롱',     fab:'캐시미어'},
+    {n:'레더 벨트',           f:'슬림',   fab:'소가죽'},
+    {n:'울 버킷햇',           f:'-',      fab:'울'},
+    {n:'레더 글러브',         f:'-',      fab:'양가죽'},
+    {n:'메탈 선글라스',       f:'-',      fab:'메탈/아세테이트'}
+  ],
+  etc: [
+    {n:'라운지 세트업',       f:'레귤러', fab:'코튼 모달'},
+    {n:'실크 잠옷 세트',      f:'레귤러', fab:'실크'},
+    {n:'스웻 라운지 팬츠',    f:'레귤러', fab:'코튼'},
+    {n:'비치 커버업',         f:'-',      fab:'레이온'},
+    {n:'기모 내복 세트',      f:'-',      fab:'코튼'},
+    {n:'홈웨어 원피스',       f:'A라인',  fab:'모달'},
+    {n:'캐시미어 양말',       f:'-',      fab:'캐시미어'},
+    {n:'면 마스크 세트',      f:'-',      fab:'코튼'}
+  ]
+};
+
+const colors = [
+  { name:'블랙',   hex:'#1a1a1a' },
+  { name:'화이트', hex:'#f4f4f4' },
+  { name:'베이지', hex:'#d9c7a7' },
+  { name:'네이비', hex:'#1f2d52' },
+  { name:'카키',   hex:'#7c8559' },
+  { name:'그레이', hex:'#9aa0ad' },
+  { name:'핑크',   hex:'#f4b6c2' },
+  { name:'버건디', hex:'#7c2d3a' }
+];
+
+/* SKU 생성 */
+const skus = [];
+let skuIdx = 1;
+categories.forEach(cat => {
+  skuTemplates[cat.key].forEach(t => {
+    const col = pick(colors);
+    const price = Math.max(15000, Math.round(gaussian(cat.basePrice, cat.basePrice*0.22)/1000)*1000);
+    const baseQty = gaussian(900, 380);
+    const popularity = Math.max(0.4, gaussian(1.0, 0.35));
+    const qty = Math.max(40, Math.round(baseQty * popularity));
+    const revenue = qty * price;
+    const stock = Math.max(0, Math.round(gaussian(qty * 0.5, qty * 0.4)));
+    const stockRate = +((stock/(stock+qty))*100).toFixed(1);
+    const turnover = stock === 0 ? 99 : +(qty/(stock + qty*0.3)).toFixed(2);
+    const mom = +gaussian(7, 18).toFixed(1);
+    const margin = +gaussian(0.18, 0.05).toFixed(3); // 영업이익률
+    const profit = Math.round(revenue * margin);
+
+    skus.push({
+      code: cat.key.toUpperCase() + '-' + String(skuIdx).padStart(3,'0'),
+      idx: skuIdx,
+      category: cat.key,
+      categoryName: cat.name,
+      name: `${t.fab} ${t.n}`,
+      shortName: t.n,
+      fabric: t.fab,
+      fit: t.f,
+      colorName: col.name,
+      colorHex: col.hex,
+      price, qty, revenue, profit, margin, stock, stockRate, turnover, mom,
+      _popularity: popularity
+    });
+    skuIdx++;
+  });
+});
+
+/* 매장/상권 (대시보드와 동일 구조) */
+const regions = [
+  { key:'gangnam',  name:'강남상권',   count:14, multi:1.30 },
+  { key:'hongdae',  name:'홍대상권',   count:11, multi:1.10 },
+  { key:'myeongdong', name:'명동상권', count:9,  multi:1.20 },
+  { key:'jamsil',   name:'잠실상권',   count:10, multi:1.05 },
+  { key:'seomyeon', name:'부산서면',   count:11, multi:1.00 },
+  { key:'haeundae', name:'부산해운대', count:8,  multi:1.05 },
+  { key:'daegu',    name:'대구동성로', count:10, multi:0.92 },
+  { key:'gwangju',  name:'광주충장로', count:9,  multi:0.88 },
+  { key:'daejeon',  name:'대전둔산',   count:9,  multi:0.90 },
+  { key:'bupyeong', name:'인천부평',   count:9,  multi:0.85 }
+];
+
+const stores = [];
+let stIdx = 1;
+const managerNames = ['김지현','박민수','이서연','정유진','최현우','강수민','윤지호','한지원','오현석','문서영'];
+regions.forEach(r => {
+  for (let i = 1; i <= r.count; i++) {
+    const baseRev = gaussian(240, 70) * r.multi;
+    const revenue = Math.max(40, baseRev) * 1_000_000;
+    const margin = Math.max(-0.04, gaussian(0.145, 0.05));
+    const profit = revenue * margin;
+    const momRev = gaussian(6, 8);
+    const goalRate = Math.max(50, gaussian(98, 14));
+    const area = Math.round(gaussian(140, 35));
+    const staff = Math.max(3, Math.round(gaussian(7, 2)));
+    const shortName = r.name.replace('상권','').replace('부산','부산 ').replace('대구','대구 ').replace('광주','광주 ').replace('대전','대전 ').replace('인천','인천 ');
+    stores.push({
+      code: 'ST-' + String(stIdx).padStart(3,'0'),
+      idx: stIdx,
+      regionKey: r.key,
+      regionName: r.name,
+      name: shortName + i + '호점',
+      manager: pick(managerNames),
+      area, staff,
+      revenue: Math.round(revenue/10000)*10000,
+      profit: Math.round(profit/10000)*10000,
+      margin: +(margin*100).toFixed(1),
+      momRev: +momRev.toFixed(1),
+      goalRate: +goalRate.toFixed(1),
+      _multi: r.multi
+    });
+    stIdx++;
+  }
+});
+
+/* 매장 순위 (매출 기준) */
+const sortedStores = [...stores].sort((a,b)=> b.revenue - a.revenue);
+sortedStores.forEach((s,i)=> s.rank = i+1);
+stores.forEach(s => {
+  if (s.profit < 0) s.status = 'bad';
+  else if (s.goalRate >= 100) s.status = 'good';
+  else s.status = 'warn';
+});
+
+/* SKU 순위 */
+const sortedSkus = [...skus].sort((a,b)=> b.revenue - a.revenue);
+sortedSkus.forEach((s,i)=> s.rank = i+1);
+skus.forEach(s => {
+  if (s.turnover >= 1.5 && s.stock < s.qty * 0.4) s.statusKey = 'reorder';
+  else if (s.turnover < 0.5 && s.stock > s.qty * 1.2) s.statusKey = 'discount';
+  else if (s.rank <= 6) s.statusKey = 'best';
+  else s.statusKey = 'watch';
+});
+
+/* 매장 × SKU 판매수량 행렬 (시드 기반, 결정적) */
+function storeSkuQty(store, sku) {
+  // store와 sku의 idx를 시드로 결합
+  const seed = store.idx * 137 + sku.idx * 91;
+  const r = mulberry32(seed);
+  const base = sku.qty / 100; // 평균 매장당 판매
+  const variation = (0.4 + r() * 1.6) * store._multi * sku._popularity;
+  // 카테고리별 매장 적합도 (약간의 노이즈)
+  return Math.max(0, Math.round(base * variation));
+}
+function storeSkuRevenue(store, sku) {
+  return storeSkuQty(store, sku) * sku.price;
+}
+
+/* 카테고리 집계 */
+const catAgg = categories.map(c => {
+  const list = skus.filter(s => s.category === c.key);
+  return {
+    ...c,
+    skuCount: list.length,
+    qty: list.reduce((a,s)=>a+s.qty,0),
+    revenue: list.reduce((a,s)=>a+s.revenue,0),
+    profit: list.reduce((a,s)=>a+s.profit,0)
+  };
+});
+const totalCatRev = catAgg.reduce((a,c)=>a+c.revenue,0);
+
+/* 상권 집계 */
+const regionAgg = regions.map(r => {
+  const list = stores.filter(s => s.regionKey === r.key);
+  return {
+    ...r,
+    storeCount: list.length,
+    revenue: list.reduce((a,s)=>a+s.revenue,0),
+    profit: list.reduce((a,s)=>a+s.profit,0),
+    avgMargin: +(list.reduce((a,s)=>a+s.margin,0)/list.length).toFixed(1),
+    goodCount: list.filter(s=>s.status==='good').length,
+    badCount: list.filter(s=>s.status==='bad').length
+  };
+});
+
+const totalStoreRev = stores.reduce((a,s)=>a+s.revenue,0);
+const totalStoreProfit = stores.reduce((a,s)=>a+s.profit,0);
+
+/* ===========================================================
+ *  2. SVG 일러스트 (의상)
+ * =========================================================== */
+function dressSVG(fit, color) {
+  const stroke = '#2a2f45';
+  const shadow = 'rgba(0,0,0,0.18)';
+  const hemY = 160;
+  let topW, waistW, hemW;
+  switch (fit) {
+    case 'A라인': topW=70; waistW=64; hemW=130; break;
+    case 'H라인': topW=70; waistW=70; hemW=78;  break;
+    case '머메이드': topW=66; waistW=58; hemW=110; break;
+    case '슬립':  topW=56; waistW=60; hemW=90; break;
+    case '셔츠':  topW=74; waistW=68; hemW=100; break;
+    case '와이드': topW=66; waistW=68; hemW=120; break;
+    case '슬림':  topW=64; waistW=60; hemW=70;  break;
+    case '오버':  topW=88; waistW=88; hemW=92;  break;
+    case '크롭':  topW=72; waistW=72; hemW=72;  break;
+    default:      topW=70; waistW=64; hemW=110;
+  }
+  const cx=100, topY=28, waistY=78;
+  const body = `M ${cx-topW/2} ${topY} L ${cx-waistW/2} ${waistY} L ${cx-hemW/2} ${hemY} L ${cx+hemW/2} ${hemY} L ${cx+waistW/2} ${waistY} L ${cx+topW/2} ${topY} Z`;
+  return `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <path d="${body}" fill="${color}" stroke="${stroke}" stroke-width="0.8" stroke-linejoin="round"/>
+      <ellipse cx="${cx}" cy="${topY+1}" rx="10" ry="3.5" fill="${shadow}" opacity="0.35"/>
+    </svg>`;
+}
+// 카테고리별 대표 일러스트 (단순)
+function genericSVG(category, color) {
+  const stroke = '#2a2f45';
+  if (category === 'out') {
+    // 코트
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 60 30 L 50 50 L 35 60 L 35 170 L 165 170 L 165 60 L 150 50 L 140 30 L 130 50 L 100 60 L 70 50 Z"
+        fill="${color}" stroke="${stroke}" stroke-width="0.8" stroke-linejoin="round"/>
+      <line x1="100" y1="60" x2="100" y2="170" stroke="${stroke}" stroke-width="0.6" stroke-dasharray="3 3"/>
+      <circle cx="95" cy="85" r="2" fill="${stroke}"/><circle cx="95" cy="105" r="2" fill="${stroke}"/>
+      <circle cx="95" cy="125" r="2" fill="${stroke}"/>
+    </svg>`;
+  }
+  if (category === 'top') {
+    // 셔츠/탑
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 70 40 L 50 55 L 35 75 L 50 90 L 60 80 L 60 160 L 140 160 L 140 80 L 150 90 L 165 75 L 150 55 L 130 40 L 115 55 L 100 60 L 85 55 Z"
+        fill="${color}" stroke="${stroke}" stroke-width="0.8" stroke-linejoin="round"/>
+      <path d="M 85 55 L 100 75 L 115 55" fill="none" stroke="${stroke}" stroke-width="0.6"/>
+    </svg>`;
+  }
+  if (category === 'bottom') {
+    // 팬츠/스커트
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 60 30 L 60 50 L 50 175 L 95 175 L 100 80 L 105 175 L 150 175 L 140 50 L 140 30 Z"
+        fill="${color}" stroke="${stroke}" stroke-width="0.8" stroke-linejoin="round"/>
+      <line x1="100" y1="30" x2="100" y2="80" stroke="${stroke}" stroke-width="0.6"/>
+    </svg>`;
+  }
+  if (category === 'dress') {
+    return dressSVG('A라인', color);
+  }
+  if (category === 'acc') {
+    // 가방
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 70 55 Q 100 25 130 55 L 130 75" fill="none" stroke="${stroke}" stroke-width="2.5"/>
+      <rect x="50" y="70" width="100" height="100" rx="8" fill="${color}" stroke="${stroke}" stroke-width="0.8"/>
+      <rect x="90" y="105" width="20" height="14" fill="${stroke}" opacity="0.3" rx="2"/>
+    </svg>`;
+  }
+  // etc
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="40" y="50" width="120" height="100" rx="10" fill="${color}" stroke="${stroke}" stroke-width="0.8"/>
+  </svg>`;
+}
+function skuSVG(sku) {
+  if (sku.category === 'dress') return dressSVG(sku.fit, sku.colorHex);
+  return genericSVG(sku.category, sku.colorHex);
+}
+
+/* ===========================================================
+ *  3. 라우터 & 브레드크럼
+ * =========================================================== */
+let activeCharts = [];
+function destroyCharts() {
+  activeCharts.forEach(c => { try { c.destroy(); } catch(e){} });
+  activeCharts = [];
+}
+function el(html) {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = html.trim();
+  return wrap.firstChild;
+}
+
+/* ===== 글로벌 차트 애니메이션 (멋있게) ===== */
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", sans-serif';
+Chart.defaults.color = '#6b7589';
+Chart.defaults.animation.duration = 1100;
+Chart.defaults.animation.easing = 'easeOutQuart';
+Chart.defaults.interaction.intersect = false;
+Chart.defaults.interaction.mode = 'index';
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15,28,63,0.92)';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '600' };
+Chart.defaults.plugins.tooltip.boxPadding = 4;
+Chart.defaults.elements.point.hoverRadius = 7;
+Chart.defaults.elements.bar.borderRadius = 5;
+
+/* 차트별 stagger / progressive 옵션 적용 */
+function chartAnim(type) {
+  if (type === 'bar') {
+    return {
+      animation: { duration: 950, easing: 'easeOutCubic',
+        delay: (ctx) => ctx.type==='data' ? ctx.dataIndex * 40 : 0 }
+    };
+  }
+  if (type === 'line') {
+    return {
+      animation: { duration: 1400, easing: 'easeOutQuart' },
+      animations: {
+        y: {
+          type: 'number', easing: 'easeOutQuart', duration: 900,
+          from: (ctx) => {
+            if (ctx.type !== 'data') return undefined;
+            const scale = ctx.chart.scales.y;
+            return scale ? scale.getPixelForValue(0) : 0;
+          },
+          delay: (ctx) => ctx.type==='data' ? ctx.dataIndex * 25 : 0
+        }
+      }
+    };
+  }
+  if (type === 'doughnut' || type === 'pie') {
+    return {
+      animation: { animateRotate: true, animateScale: true, duration: 1300, easing: 'easeOutCubic' }
+    };
+  }
+  if (type === 'scatter') {
+    return {
+      animation: { duration: 1100, easing: 'easeOutQuart',
+        delay: (ctx) => ctx.type==='data' ? Math.min(ctx.dataIndex * 8, 600) : 0 }
+    };
+  }
+  return {};
+}
+
+/* 차트 헬퍼 — 애니메이션 자동 적용 */
+function makeChart(canvasId, config) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+  const extra = chartAnim(config.type);
+  config.options = config.options || {};
+  if (extra.animation)  config.options.animation  = { ...(config.options.animation||{}),  ...extra.animation };
+  if (extra.animations) config.options.animations = { ...(config.options.animations||{}), ...extra.animations };
+  const c = new Chart(ctx, config);
+  activeCharts.push(c);
+  return c;
+}
+
+/* KPI / 큰 숫자 카운트업 */
+function animateValues(root) {
+  const targets = root.querySelectorAll('.kpi .value, .cat .c-rev, .scard .s-rev, .pcard .pprice');
+  targets.forEach(elx => {
+    const text = elx.textContent;
+    if (text.includes('/')) return;
+    if (elx.dataset.animated) return;
+    const match = text.match(/^([^\d\-]*)(-?[\d,]+\.?\d*)(.*)$/);
+    if (!match) return;
+    const prefix = match[1] || '';
+    const numStr = match[2];
+    const suffix = match[3] || '';
+    const target = parseFloat(numStr.replace(/,/g,''));
+    if (isNaN(target)) return;
+
+    const isInt = !numStr.includes('.');
+    elx.dataset.animated = '1';
+    const startT = performance.now();
+    const duration = 850;
+    function step(now) {
+      const t = Math.min(1, (now - startT) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = target * eased;
+      const vStr = isInt
+        ? Math.round(v).toLocaleString('ko-KR')
+        : (Math.abs(target) >= 100 ? v.toFixed(1) : v.toFixed(2));
+      elx.textContent = prefix + vStr + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function render(html, crumbs) {
+  destroyCharts();
+  const view = document.getElementById('view');
+  view.innerHTML = html;
+  // 진입 애니메이션 클래스
+  view.classList.remove('entering'); void view.offsetWidth; view.classList.add('entering');
+  view.querySelectorAll('.kpi-grid, .hub-grid, .cat-grid, .sku-grid, .store-grid, .stat-row, .promo-grid')
+      .forEach(g => g.classList.add('stagger'));
+  // KPI 카운터
+  requestAnimationFrame(() => animateValues(view));
+  renderCrumbs(crumbs);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+function renderCrumbs(items) {
+  const c = document.getElementById('crumbs');
+  c.innerHTML = items.map((it, i) => {
+    const isLast = i === items.length - 1;
+    const link = isLast
+      ? `<a class="current">${it.label}</a>`
+      : `<a href="#${it.href}">${it.label}</a>`;
+    const sep = isLast ? '' : '<span class="sep">›</span>';
+    return link + sep;
+  }).join('');
+}
+
+function route() {
+  const h = (location.hash || '#home').slice(1);
+  const parts = h.split('/').filter(Boolean);
+  if (parts.length === 0 || parts[0] === 'home') return viewHome();
+  if (parts[0] === 'products') {
+    if (parts.length === 1) return viewCategories();
+    if (parts.length === 2) return viewCategory(parts[1]);
+    if (parts.length === 3) return viewSku(parts[2]);
+  }
+  if (parts[0] === 'stores') {
+    if (parts.length === 1) return viewRegions();
+    if (parts.length === 2) return viewRegion(parts[1]);
+    if (parts.length === 3) return viewStore(parts[2]);
+  }
+  return viewHome();
+}
+window.addEventListener('hashchange', route);
+window.addEventListener('DOMContentLoaded', route);
+
+/* ===========================================================
+ *  4. 뷰: 홈 (HUB)
+ * =========================================================== */
+function viewHome() {
+  const lossCount = stores.filter(s=>s.status==='bad').length;
+  const goalCount = stores.filter(s=>s.status==='good').length;
+  const avgMargin = +(totalStoreProfit/totalStoreRev*100).toFixed(1);
+
+  const html = `
+    <div class="page-title">
+      <div>
+        <span class="badge">통합 대시보드</span>
+        <h1>2026년 4월 통합 보고서</h1>
+        <div class="desc">전국 100개 매장 · 6개 카테고리 · 48개 SKU · 작성 영업기획팀 · 2026.05.03</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">총 매출</div><div class="value">${fmtEok(totalStoreRev)}</div><div class="delta up">▲ 9.6% (전월)</div></div>
+      <div class="kpi"><div class="label">총 영업이익</div><div class="value">${fmtEok(totalStoreProfit)}</div><div class="delta up">▲ 13.4%</div></div>
+      <div class="kpi"><div class="label">평균 영업이익률</div><div class="value">${avgMargin}%</div><div class="sub-value">목표 15.0%</div></div>
+      <div class="kpi"><div class="label">목표 달성 매장</div><div class="value">${goalCount} / 100</div><div class="sub-value">달성률 ${goalCount}%</div></div>
+      <div class="kpi"><div class="label">적자 매장</div><div class="value">${lossCount}</div><div class="sub-value">즉시 조치 필요</div></div>
+    </div>
+
+    <div class="hub-grid">
+      <a href="#products" class="hub-card">
+        <div class="h-icon">📦</div>
+        <div class="h-title">품목별 분석으로 들어가기</div>
+        <div class="h-desc">카테고리(6개) → SKU(48개) → 매출/판매/이익/재고 상세까지 단계적으로 확인할 수 있습니다.</div>
+        <div class="h-stats">
+          <div class="s">카테고리<b>6개</b></div>
+          <div class="s">SKU<b>48개</b></div>
+          <div class="s">총 판매수량<b>${fmtNum(skus.reduce((a,s)=>a+s.qty,0))}개</b></div>
+        </div>
+      </a>
+      <a href="#stores" class="hub-card">
+        <div class="h-icon">🏬</div>
+        <div class="h-title">매장별 분석으로 들어가기</div>
+        <div class="h-desc">상권(10개) → 매장(100개) → 매장 매출/이익/카테고리별 매출/베스트셀러 SKU까지 드릴다운.</div>
+        <div class="h-stats">
+          <div class="s">상권<b>10개</b></div>
+          <div class="s">매장<b>100개</b></div>
+          <div class="s">평균 매장 매출<b>${fmtMan(totalStoreRev/100)}원</b></div>
+        </div>
+      </a>
+    </div>
+  `;
+  render(html, [{label:'홈', href:'home'}]);
+}
+
+/* ===========================================================
+ *  5. 뷰: 품목 카테고리 목록
+ * =========================================================== */
+function viewCategories() {
+  const html = `
+    <div class="page-title">
+      <div>
+        <span class="badge">품목 카테고리</span>
+        <h1>카테고리별 매출 현황</h1>
+        <div class="desc">카드를 클릭하면 해당 카테고리의 SKU 목록으로 이동합니다.</div>
+      </div>
+    </div>
+
+    <div class="cat-grid">
+      ${catAgg.map(c => {
+        const share = (c.revenue / totalCatRev * 100).toFixed(1);
+        const margin = (c.profit / c.revenue * 100).toFixed(1);
+        return `
+        <a href="#products/${c.key}" class="cat">
+          <div class="c-head">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="c-dot" style="background:${c.color}"></span>
+              <span class="c-name">${c.name}</span>
+            </div>
+            <span class="c-count">SKU ${c.skuCount}개</span>
+          </div>
+          <div class="c-rev">${fmtEok(c.revenue)}</div>
+          <div class="bar"><span style="width:${share}%;background:${c.color}"></span></div>
+          <div class="c-row"><span>매출 비중</span><b>${share}%</b></div>
+          <div class="c-row"><span>판매수량</span><b>${fmtNum(c.qty)}개</b></div>
+          <div class="c-row"><span>영업이익률</span><b>${margin}%</b></div>
+        </a>`;
+      }).join('')}
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h2>카테고리별 매출 비교</h2>
+      <div class="chart-box sm"><canvas id="catChart"></canvas></div>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'품목', href:'products'}
+  ]);
+
+  makeChart('catChart', {
+    type:'bar',
+    data:{
+      labels: catAgg.map(c=>c.name),
+      datasets:[
+        { label:'매출 (억)', data: catAgg.map(c=>+(c.revenue/100000000).toFixed(2)),
+          backgroundColor: catAgg.map(c=>c.color), borderRadius:5 }
+      ]
+    },
+    options:{ maintainAspectRatio:false, plugins:{ legend:{display:false}},
+      scales:{ x:{grid:{display:false}}, y:{grid:{color:'#eef1f7'},beginAtZero:true}}}
+  });
+}
+
+/* ===========================================================
+ *  6. 뷰: 카테고리 상세 (SKU 그리드)
+ * =========================================================== */
+function viewCategory(catKey) {
+  const cat = catAgg.find(c => c.key === catKey);
+  if (!cat) return viewCategories();
+  const list = skus.filter(s => s.category === catKey).sort((a,b)=> b.revenue - a.revenue);
+
+  const html = `
+    <div class="page-title">
+      <div>
+        <span class="badge" style="background:${cat.color}20;color:${cat.color};">${cat.name}</span>
+        <h1>${cat.name} 카테고리 상세</h1>
+        <div class="desc">SKU 카드를 클릭하면 해당 품목의 매출/판매/이익/재고 상세를 확인할 수 있습니다.</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid k4">
+      <div class="kpi"><div class="label">매출</div><div class="value">${fmtEok(cat.revenue)}</div><div class="sub-value">전사 비중 ${(cat.revenue/totalCatRev*100).toFixed(1)}%</div></div>
+      <div class="kpi"><div class="label">영업이익</div><div class="value">${fmtEok(cat.profit)}</div><div class="sub-value">이익률 ${(cat.profit/cat.revenue*100).toFixed(1)}%</div></div>
+      <div class="kpi"><div class="label">판매수량</div><div class="value">${fmtNum(cat.qty)}개</div><div class="sub-value">SKU ${cat.skuCount}개</div></div>
+      <div class="kpi"><div class="label">베스트 SKU</div><div class="value" style="font-size:16px;line-height:1.3">${list[0].shortName}</div><div class="sub-value">${list[0].code}</div></div>
+    </div>
+
+    <div class="card">
+      <h2>${cat.name} 전체 SKU <span class="sub">매출 기준 정렬 · 클릭하면 상세</span></h2>
+      <div class="sku-grid">
+        ${list.map(s => `
+          <a href="#products/${cat.key}/${s.code}" class="pcard">
+            <div class="pimg">
+              <span class="rk-badge">#${list.indexOf(s)+1}</span>
+              ${skuSVG(s)}
+            </div>
+            <div class="pinfo">
+              <div class="pcode">${s.code} · ${s.colorName}</div>
+              <div class="pname">${s.name}</div>
+              <div class="pprice">${fmtKRW(s.price)}</div>
+              <div class="pstats">
+                <div><span class="k">판매</span> <span class="v" style="float:right">${fmtNum(s.qty)}</span></div>
+                <div><span class="k">매출</span> <span class="v" style="float:right">${fmtMan(s.revenue)}</span></div>
+                <div><span class="k">재고</span> <span class="v" style="float:right">${fmtNum(s.stock)}</span></div>
+                <div><span class="k">재고율</span> <span class="v" style="float:right">${s.stockRate.toFixed(0)}%</span></div>
+              </div>
+            </div>
+          </a>`).join('')}
+      </div>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'품목', href:'products'},
+    {label:cat.name, href:'products/'+cat.key}
+  ]);
+}
+
+/* ===========================================================
+ *  7. 뷰: SKU 상세
+ * =========================================================== */
+function viewSku(skuCode) {
+  const s = skus.find(x => x.code === skuCode);
+  if (!s) return viewCategories();
+  const cat = catAgg.find(c => c.key === s.category);
+
+  // 매장별 판매 (상위 10)
+  const storeSales = stores.map(st => ({
+    store: st, qty: storeSkuQty(st, s), rev: storeSkuRevenue(st, s)
+  })).sort((a,b)=> b.rev - a.rev);
+  const top10 = storeSales.slice(0, 10);
+
+  // 6개월 추이 (시드 기반)
+  const trendR = mulberry32(s.idx * 17);
+  const months = ['2025.11','2025.12','2026.01','2026.02','2026.03','2026.04'];
+  const trendQty = months.map((_,i) => Math.round(s.qty * (0.75 + trendR()*0.5)));
+  trendQty[5] = s.qty; // 4월은 실측
+  const trendRev = trendQty.map(q => q * s.price);
+
+  const statusBadge = {
+    best:    '<span class="badge blue">베스트</span>',
+    reorder: '<span class="badge green">재주문 필요</span>',
+    discount:'<span class="badge red">할인 검토</span>',
+    watch:   '<span class="badge gray">관찰</span>'
+  }[s.statusKey];
+
+  const html = `
+    <div class="sku-detail-head">
+      <div class="big-img">${skuSVG(s)}</div>
+      <div>
+        <div class="meta-tags">
+          <span class="badge" style="background:${cat.color}20;color:${cat.color};">${cat.name}</span>
+          <span class="badge gray">${s.code}</span>
+          ${statusBadge}
+        </div>
+        <h2 class="name">${s.name}</h2>
+        <div class="desc">
+          <span class="color-dot" style="background:${s.colorHex}"></span>${s.colorName}
+          · 소재 ${s.fabric} · 핏 ${s.fit}
+          · 전사 순위 ${s.rank}위
+        </div>
+        <div class="stat-row">
+          <div class="s"><div class="k">판매가</div><div class="v">${fmtKRW(s.price)}</div></div>
+          <div class="s"><div class="k">월 판매수량</div><div class="v">${fmtNum(s.qty)}개</div></div>
+          <div class="s"><div class="k">월 매출</div><div class="v">${fmtMan(s.revenue)}원</div></div>
+          <div class="s"><div class="k">월 영업이익</div><div class="v">${fmtMan(s.profit)}원</div></div>
+        </div>
+        <div class="stat-row" style="margin-top:14px;">
+          <div class="s"><div class="k">현재 재고</div><div class="v">${fmtNum(s.stock)}개</div></div>
+          <div class="s"><div class="k">재고율</div><div class="v">${s.stockRate.toFixed(1)}%</div></div>
+          <div class="s"><div class="k">회전율</div><div class="v">${s.turnover}x</div></div>
+          <div class="s"><div class="k">전월 대비</div><div class="v ${s.mom>=0?'up':'down'}" style="color:${s.mom>=0?'var(--good)':'var(--bad)'}">${s.mom>=0?'▲':'▼'} ${Math.abs(s.mom)}%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row r-2">
+      <div class="card">
+        <h2>최근 6개월 매출/판매 추이</h2>
+        <div class="chart-box"><canvas id="skuTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>재고 vs 판매</h2>
+        <div class="chart-box"><canvas id="skuStock"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>이 SKU가 가장 잘 팔리는 매장 TOP 10 <span class="sub">매장명 클릭 → 매장 상세</span></h2>
+      <table>
+        <thead><tr><th>순위</th><th>매장</th><th>상권</th><th>판매수량</th><th>매출</th><th>매장 전체 매출 비중</th></tr></thead>
+        <tbody>
+          ${top10.map((x,i) => `
+            <tr class="clickable" onclick="location.hash='stores/${x.store.regionKey}/${x.store.code}'">
+              <td>${i+1}</td>
+              <td>${x.store.name}</td>
+              <td>${x.store.regionName}</td>
+              <td>${fmtNum(x.qty)}개</td>
+              <td>${fmtMan(x.rev)}원</td>
+              <td>${(x.rev/x.store.revenue*100).toFixed(1)}%</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'품목', href:'products'},
+    {label:cat.name, href:'products/'+cat.key},
+    {label:s.code+' '+s.shortName, href:'products/'+cat.key+'/'+s.code}
+  ]);
+
+  makeChart('skuTrend', {
+    type:'bar',
+    data:{
+      labels: months,
+      datasets:[
+        { label:'판매수량', data: trendQty, backgroundColor:'#b1c7ff', borderRadius:5, yAxisID:'y1' },
+        { label:'매출(만원)', data: trendRev.map(v=>Math.round(v/10000)), type:'line',
+          borderColor:'#1aa472', backgroundColor:'#1aa472', tension:0.35, borderWidth:2.5, yAxisID:'y2',
+          pointBackgroundColor:'#1aa472', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5 }
+      ]
+    },
+    options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+      scales:{ x:{grid:{display:false}},
+        y1:{position:'left', grid:{color:'#eef1f7'}, beginAtZero:true, title:{display:true,text:'수량'}},
+        y2:{position:'right', grid:{display:false}, beginAtZero:true, title:{display:true,text:'매출(만원)'}}
+      }
+    }
+  });
+  makeChart('skuStock', {
+    type:'doughnut',
+    data:{
+      labels:['판매','재고'],
+      datasets:[{ data:[s.qty, s.stock],
+        backgroundColor:['#2f6bff','#e5e9f2'],
+        hoverBackgroundColor:['#4f85ff','#d8dde9'],
+        borderWidth:0, hoverOffset: 8 }]
+    },
+    options:{ maintainAspectRatio:false, cutout:'66%',
+      plugins:{ legend:{position:'bottom'},
+        tooltip:{callbacks:{label:(c)=> c.label+': '+fmtNum(c.parsed)+'개'}}}}
+  });
+}
+
+/* ===========================================================
+ *  8. 뷰: 상권 목록
+ * =========================================================== */
+function viewRegions() {
+  const html = `
+    <div class="page-title">
+      <div>
+        <span class="badge">매장 상권</span>
+        <h1>상권별 매출 현황</h1>
+        <div class="desc">상권 카드를 클릭하면 해당 상권의 매장 목록으로 이동합니다.</div>
+      </div>
+    </div>
+
+    <div class="cat-grid">
+      ${regionAgg.sort((a,b)=>b.revenue-a.revenue).map(r => {
+        const share = (r.revenue / totalStoreRev * 100).toFixed(1);
+        const margin = (r.profit / r.revenue * 100).toFixed(1);
+        const goalRate = (r.goodCount/r.storeCount*100).toFixed(0);
+        return `
+        <a href="#stores/${r.key}" class="cat">
+          <div class="c-head">
+            <span class="c-name">${r.name}</span>
+            <span class="c-count">매장 ${r.storeCount}개</span>
+          </div>
+          <div class="c-rev">${fmtEok(r.revenue)}</div>
+          <div class="bar"><span style="width:${share}%;background:var(--brand)"></span></div>
+          <div class="c-row"><span>매출 비중</span><b>${share}%</b></div>
+          <div class="c-row"><span>평균 영업이익률</span><b>${margin}%</b></div>
+          <div class="c-row"><span>목표 달성 매장</span><b>${r.goodCount} / ${r.storeCount} (${goalRate}%)</b></div>
+          ${r.badCount > 0 ? `<div class="c-row"><span style="color:var(--bad)">적자 매장</span><b style="color:var(--bad)">${r.badCount}개</b></div>` : ''}
+        </a>`;
+      }).join('')}
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h2>상권별 매출 / 평균 영업이익률</h2>
+      <div class="chart-box"><canvas id="regChart"></canvas></div>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'매장', href:'stores'}
+  ]);
+
+  makeChart('regChart', {
+    type:'bar',
+    data:{
+      labels: regionAgg.map(r=>r.name),
+      datasets:[
+        { label:'매출(억)', data: regionAgg.map(r=>+(r.revenue/100000000).toFixed(1)),
+          backgroundColor:'#b1c7ff', hoverBackgroundColor:'#8aaaff', borderRadius:5, yAxisID:'y1' },
+        { label:'평균 영업이익률(%)', data: regionAgg.map(r=>r.avgMargin),
+          type:'line', borderColor:'#1aa472', backgroundColor:'#1aa472', tension:0.35,
+          borderWidth:2.5, yAxisID:'y2',
+          pointBackgroundColor:'#1aa472', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5 }
+      ]
+    },
+    options:{maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+      scales:{ x:{grid:{display:false}},
+        y1:{position:'left',grid:{color:'#eef1f7'},beginAtZero:true,title:{display:true,text:'매출(억)'}},
+        y2:{position:'right',grid:{display:false},beginAtZero:true,title:{display:true,text:'이익률(%)'}}}}
+  });
+}
+
+/* ===========================================================
+ *  9. 뷰: 상권 상세 (매장 그리드)
+ * =========================================================== */
+function viewRegion(regionKey) {
+  const r = regionAgg.find(x => x.key === regionKey);
+  if (!r) return viewRegions();
+  const list = stores.filter(s => s.regionKey === regionKey).sort((a,b)=> b.revenue - a.revenue);
+  const maxRev = list[0].revenue;
+
+  const html = `
+    <div class="page-title">
+      <div>
+        <span class="badge">${r.name}</span>
+        <h1>${r.name} 매장 현황</h1>
+        <div class="desc">매장 카드를 클릭하면 해당 매장의 상세 분석으로 이동합니다.</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid k4">
+      <div class="kpi"><div class="label">상권 매출</div><div class="value">${fmtEok(r.revenue)}</div><div class="sub-value">전사 비중 ${(r.revenue/totalStoreRev*100).toFixed(1)}%</div></div>
+      <div class="kpi"><div class="label">영업이익</div><div class="value">${fmtEok(r.profit)}</div><div class="sub-value">이익률 ${(r.profit/r.revenue*100).toFixed(1)}%</div></div>
+      <div class="kpi"><div class="label">매장 수</div><div class="value">${r.storeCount}개</div><div class="sub-value">목표 달성 ${r.goodCount}개</div></div>
+      <div class="kpi"><div class="label">평균 매장 매출</div><div class="value">${fmtMan(r.revenue/r.storeCount)}원</div><div class="sub-value">평균 이익률 ${r.avgMargin}%</div></div>
+    </div>
+
+    <div class="card">
+      <h2>${r.name} 매장 (${list.length}개) <span class="sub">매출 기준 정렬</span></h2>
+      <div class="store-grid">
+        ${list.map(s => {
+          const w = (s.revenue/maxRev*100).toFixed(0);
+          const badge =
+            s.status==='good'  ? '<span class="badge green">목표 달성</span>' :
+            s.status==='bad'   ? '<span class="badge red">적자</span>' :
+                                 '<span class="badge gray">목표 미달</span>';
+          return `
+          <a href="#stores/${regionKey}/${s.code}" class="scard">
+            <div class="s-head">
+              <div>
+                <div class="s-name">${s.name}</div>
+                <div class="s-code">${s.code} · 전사 ${s.rank}위</div>
+              </div>
+              ${badge}
+            </div>
+            <div class="s-rev">${fmtMan(s.revenue)}원</div>
+            <div class="s-bar"><span style="width:${w}%;background:${s.status==='bad'?'var(--bad)':'var(--brand)'}"></span></div>
+            <div class="s-row"><span>영업이익</span><b>${fmtMan(s.profit)}원 (${s.margin}%)</b></div>
+            <div class="s-row"><span>목표달성률</span><b>${s.goalRate}%</b></div>
+            <div class="s-row"><span>전월대비</span><b class="${s.momRev>=0?'up':'down'}" style="color:${s.momRev>=0?'var(--good)':'var(--bad)'}">${s.momRev>=0?'▲':'▼'} ${Math.abs(s.momRev)}%</b></div>
+          </a>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'매장', href:'stores'},
+    {label:r.name, href:'stores/'+r.key}
+  ]);
+}
+
+/* ===========================================================
+ *  10. 뷰: 매장 상세
+ * =========================================================== */
+function viewStore(storeCode) {
+  const st = stores.find(s => s.code === storeCode);
+  if (!st) return viewRegions();
+  const r = regionAgg.find(x => x.key === st.regionKey);
+
+  // 매장의 카테고리별 매출 (시드 기반 분배)
+  const catBreak = catAgg.map(c => {
+    // 카테고리 비중 × 매장 매출에 약간의 노이즈
+    const seed = st.idx * 53 + c.key.charCodeAt(0);
+    const noise = 0.7 + mulberry32(seed)() * 0.6;
+    const rev = st.revenue * (c.revenue / totalCatRev) * noise;
+    return { ...c, storeRev: rev };
+  });
+  const sumCat = catBreak.reduce((a,c)=>a+c.storeRev,0);
+  catBreak.forEach(c => c.storeRev = c.storeRev / sumCat * st.revenue); // 정규화
+
+  // 매장의 SKU별 판매
+  const storeSkuList = skus.map(s => ({
+    sku: s, qty: storeSkuQty(st, s), rev: storeSkuRevenue(st, s)
+  })).sort((a,b)=> b.rev - a.rev);
+  const top10sku = storeSkuList.slice(0, 10);
+
+  // 일별 매출 (30일)
+  const dayR = mulberry32(st.idx * 311);
+  const days = Array.from({length:30}, (_,i)=> (i+1) + '일');
+  const daily = days.map(() => Math.round(st.revenue / 30 * (0.6 + dayR()*0.9)));
+  const sumDaily = daily.reduce((a,v)=>a+v,0);
+  const normFactor = st.revenue / sumDaily;
+  daily.forEach((_,i,a) => a[i] = Math.round(a[i] * normFactor / 10000));
+
+  const statusBadge =
+    st.status==='good' ? '<span class="badge green">목표 달성</span>' :
+    st.status==='bad'  ? '<span class="badge red">적자</span>' :
+                         '<span class="badge gray">목표 미달</span>';
+
+  const html = `
+    <div class="page-title">
+      <div>
+        <div class="meta-tags" style="display:flex;gap:6px;margin-bottom:8px;">
+          <span class="badge blue">${r.name}</span>
+          <span class="badge gray">${st.code}</span>
+          ${statusBadge}
+        </div>
+        <h1>${st.name}</h1>
+        <div class="desc">점장 ${st.manager} · 면적 ${st.area}㎡ · 직원 ${st.staff}명 · 전사 ${st.rank}위 / 100개 매장</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid k4">
+      <div class="kpi"><div class="label">월 매출</div><div class="value">${fmtMan(st.revenue)}원</div><div class="delta ${st.momRev>=0?'up':'down'}">${st.momRev>=0?'▲':'▼'} ${Math.abs(st.momRev)}% (전월)</div></div>
+      <div class="kpi"><div class="label">영업이익</div><div class="value">${fmtMan(st.profit)}원</div><div class="sub-value">이익률 ${st.margin}%</div></div>
+      <div class="kpi"><div class="label">목표 달성률</div><div class="value">${st.goalRate}%</div><div class="sub-value">${st.status==='good'?'목표 초과 달성':'목표 미달'}</div></div>
+      <div class="kpi"><div class="label">상권 내 순위</div><div class="value">${list_rankInRegion(st)}위 / ${r.storeCount}개</div><div class="sub-value">상권 ${r.name}</div></div>
+    </div>
+
+    <div class="row r-2">
+      <div class="card">
+        <h2>일별 매출 추이 <span class="sub">단위: 만원</span></h2>
+        <div class="chart-box"><canvas id="dayChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>카테고리별 매출 비중</h2>
+        <div class="chart-box"><canvas id="catPie"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>이 매장의 베스트셀러 SKU TOP 10 <span class="sub">SKU 클릭 → 품목 상세</span></h2>
+      <table>
+        <thead><tr><th>순위</th><th>품목</th><th>카테고리</th><th>색상</th><th>단가</th><th>판매수량</th><th>매출</th><th>매장 매출 비중</th></tr></thead>
+        <tbody>
+          ${top10sku.map((x,i) => `
+            <tr class="clickable" onclick="location.hash='products/${x.sku.category}/${x.sku.code}'">
+              <td>${i+1}</td>
+              <td>${x.sku.name} <span style="color:var(--muted)">· ${x.sku.code}</span></td>
+              <td>${x.sku.categoryName}</td>
+              <td><span class="color-dot" style="background:${x.sku.colorHex}"></span>${x.sku.colorName}</td>
+              <td>${fmtKRW(x.sku.price)}</td>
+              <td>${fmtNum(x.qty)}개</td>
+              <td>${fmtMan(x.rev)}원</td>
+              <td>${(x.rev/st.revenue*100).toFixed(1)}%</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>카테고리별 매장 매출 상세</h2>
+      <table>
+        <thead><tr><th>카테고리</th><th>매출</th><th>비중</th><th>전사 동 카테고리 대비</th></tr></thead>
+        <tbody>
+          ${catBreak.sort((a,b)=>b.storeRev-a.storeRev).map(c => {
+            const share = (c.storeRev/st.revenue*100).toFixed(1);
+            const vsAvg = (c.storeRev / (c.revenue / 100) - 1) * 100;
+            const cls = vsAvg >= 0 ? 'up' : 'down';
+            return `
+            <tr>
+              <td><span class="color-dot" style="background:${c.color}"></span>${c.name}</td>
+              <td>${fmtMan(c.storeRev)}원</td>
+              <td>${share}%</td>
+              <td class="${cls}">${vsAvg>=0?'▲':'▼'} ${Math.abs(vsAvg).toFixed(1)}%</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  render(html, [
+    {label:'홈', href:'home'},
+    {label:'매장', href:'stores'},
+    {label:r.name, href:'stores/'+r.key},
+    {label:st.name, href:'stores/'+r.key+'/'+st.code}
+  ]);
+
+  makeChart('dayChart', {
+    type:'line',
+    data:{ labels: days, datasets:[{
+      label:'일매출(만원)', data: daily, borderColor:'#2f6bff',
+      backgroundColor: (ctx) => {
+        const chart = ctx.chart;
+        const {ctx: c, chartArea} = chart;
+        if (!chartArea) return 'rgba(47,107,255,0.08)';
+        const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        g.addColorStop(0, 'rgba(47,107,255,0.32)');
+        g.addColorStop(1, 'rgba(47,107,255,0.00)');
+        return g;
+      },
+      tension:0.35, pointRadius:0, pointHoverRadius:6,
+      pointHoverBackgroundColor:'#2f6bff', pointHoverBorderColor:'#fff', pointHoverBorderWidth:2,
+      borderWidth:2.5, fill:true
+    }]},
+    options:{ maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{grid:{display:false}}, y:{grid:{color:'#eef1f7'}, beginAtZero:true}}}
+  });
+
+  makeChart('catPie', {
+    type:'doughnut',
+    data:{ labels: catBreak.map(c=>c.name),
+      datasets:[{ data: catBreak.map(c=>+c.storeRev.toFixed(0)),
+        backgroundColor: catBreak.map(c=>c.color),
+        borderWidth:0, hoverOffset: 10 }]},
+    options:{ maintainAspectRatio:false, cutout:'62%',
+      plugins:{ legend:{position:'right', labels:{boxWidth:10, padding:8, font:{size:11}}},
+        tooltip:{callbacks:{label:(c)=> c.label+': '+fmtMan(c.parsed)+'원'}}}}
+  });
+}
+
+/* 상권 내 매장 순위 헬퍼 */
+function list_rankInRegion(st) {
+  const list = stores.filter(s => s.regionKey === st.regionKey).sort((a,b)=> b.revenue - a.revenue);
+  return list.findIndex(s => s.code === st.code) + 1;
+}
+</script>
+</body>
+</html>
