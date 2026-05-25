@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[기획안] AI 기반 CEO 보고서 자동화 도구 도입</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" />
+
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text: #0a0a0a;
+      --color-text-muted: #6b7280;
+      --color-text-faint: #9ca3af;
+      --color-border: #e5e7eb;
+      --color-border-strong: #d1d5db;
+      --color-accent: #635bff;
+      --color-accent-soft: #eef0ff;
+      --color-positive: #10b981;
+      --color-negative: #ef4444;
+      --color-warning: #f59e0b;
+      --color-callout-bg: #f9fafb;
+
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+        BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 64px 40px 96px;
+    }
+
+    /* ---- Header ---- */
+    header.report-header {
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 32px;
+      margin-bottom: 48px;
+    }
+    .meta-label {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 12px 0 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .meta-table th, .meta-table td {
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .meta-table th {
+      width: 130px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      background: var(--color-callout-bg);
+    }
+
+    /* ---- TL;DR Box ---- */
+    .tldr {
+      background: var(--color-accent-soft);
+      border-left: 4px solid var(--color-accent);
+      padding: 24px 28px;
+      margin: 32px 0 56px;
+      border-radius: 0 6px 6px 0;
+    }
+    .tldr-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .tldr p {
+      margin: 0;
+      font-size: 15.5px;
+      line-height: 1.7;
+    }
+
+    /* ---- Section ---- */
+    section.section { margin-bottom: 56px; }
+    .section-title {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .section-h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 24px;
+      letter-spacing: -0.01em;
+    }
+    .section-h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 28px 0 12px;
+      letter-spacing: -0.005em;
+    }
+
+    /* ---- Lists ---- */
+    ul, ol {
+      padding-left: 20px;
+      margin: 12px 0;
+    }
+    li { margin-bottom: 6px; }
+    li > strong { font-weight: 600; }
+
+    /* ---- Tables ---- */
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14.5px;
+    }
+    table.data th, table.data td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+    table.data thead th {
+      background: var(--color-callout-bg);
+      font-weight: 600;
+      font-size: 12.5px;
+      letter-spacing: 0.02em;
+      color: var(--color-text);
+      border-bottom: 2px solid var(--color-border-strong);
+    }
+    table.data td.num, table.data th.num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+    table.data tr.recommend td {
+      background: var(--color-accent-soft);
+    }
+    table.data tr.recommend td:first-child {
+      border-left: 3px solid var(--color-accent);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+    }
+    .badge.recommend { background: var(--color-accent); color: white; }
+    .badge.warn { background: var(--color-warning); color: white; }
+    .badge.high { background: var(--color-negative); color: white; }
+    .badge.mid { background: var(--color-warning); color: white; }
+    .badge.low { background: var(--color-text-muted); color: white; }
+
+    /* ---- Callout ---- */
+    .callout {
+      background: var(--color-callout-bg);
+      border-left: 3px solid var(--color-border-strong);
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: var(--color-text-muted);
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.accent {
+      background: var(--color-accent-soft);
+      border-left-color: var(--color-accent);
+      color: var(--color-text);
+    }
+    .callout strong { color: var(--color-text); }
+
+    /* ---- ADR Block ---- */
+    .adr {
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 22px 26px;
+      margin: 20px 0;
+      background: #fdfdff;
+    }
+    .adr-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      color: var(--color-accent);
+    }
+    .adr-field {
+      margin-bottom: 14px;
+    }
+    .adr-field:last-child { margin-bottom: 0; }
+    .adr-field-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .adr-field p { margin: 4px 0; }
+    .adr-field ul { margin: 6px 0; }
+
+    /* ---- Flow Diagram ---- */
+    pre.flow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--color-callout-bg);
+      padding: 20px 24px;
+      border-radius: 6px;
+      overflow-x: auto;
+      line-height: 1.6;
+      border: 1px solid var(--color-border);
+    }
+
+    /* ---- Approval items ---- */
+    .approval-list {
+      list-style: none;
+      padding: 0;
+      counter-reset: ap;
+    }
+    .approval-list li {
+      counter-increment: ap;
+      padding: 14px 18px 14px 56px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      position: relative;
+      background: white;
+    }
+    .approval-list li::before {
+      content: counter(ap);
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+    }
+    .approval-list li strong {
+      font-weight: 700;
+    }
+    .approval-list .sub {
+      font-size: 13.5px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* ---- Open Questions ---- */
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      font-size: 14.5px;
+    }
+    .checklist li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--color-border-strong);
+      border-radius: 3px;
+      background: white;
+    }
+
+    /* ---- Footer ---- */
+    footer.report-footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--color-border);
+      font-size: 12px;
+      color: var(--color-text-faint);
+      text-align: center;
+    }
+
+    /* ---- Print (PDF) ---- */
+    @media print {
+      html, body { font-size: 11pt; background: white; }
+      .container { padding: 0; max-width: none; }
+      a { color: var(--color-text); text-decoration: none; }
+      .tldr, .callout, .adr, .approval-list li, pre.flow {
+        page-break-inside: avoid;
+      }
+      section.section { page-break-inside: avoid; }
+      table.data { page-break-inside: auto; }
+      table.data tr { page-break-inside: avoid; }
+      thead { display: table-header-group; }
+      h1, .section-h2, .section-h3 {
+        page-break-after: avoid;
+      }
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 720px) {
+      .container { padding: 32px 20px 64px; }
+      h1 { font-size: 24px; }
+      .section-h2 { font-size: 19px; }
+      table.data { font-size: 13px; }
+      table.data th, table.data td { padding: 8px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ============== HEADER ============== -->
+    <header class="report-header">
+      <div class="meta-label">기획안 · Proposal</div>
+      <h1>AI 기반 CEO 보고서 자동화 도구 도입</h1>
+      <p style="color: var(--color-text-muted); font-size: 15px; margin: 0 0 18px;">
+        Claude Code · Google Workspace · 1Password 도입을 통한
+        대표이사 의사결정 지원 체계 구축 (안)
+      </p>
+      <table class="meta-table">
+        <tr><th>작성일</th><td class="num">2026-05-25</td></tr>
+        <tr><th>작성·보고자</th><td>내부 팀장</td></tr>
+        <tr><th>보고 대상</th><td>대표이사</td></tr>
+        <tr><th>협력 인력</th><td>외부 자문 컨설턴트 (프리랜서)</td></tr>
+        <tr><th>상태</th><td><span class="badge warn">Draft · 검토 요청</span></td></tr>
+      </table>
+    </header>
+
+    <!-- ============== TL;DR ============== -->
+    <div class="tldr">
+      <div class="tldr-label">TL;DR · 한 줄 요약</div>
+      <p>
+        현재도 정기적으로 보고되고 있는 CEO 의사결정 자료에,
+        <strong>AI(Claude Code)</strong>를 활용하여
+        <strong>분석의 범위와 깊이를 확장</strong>함으로써 대표이사의
+        <strong>데이터 기반 신속한 의사결정</strong>을 지원하고자 합니다.
+        우선 <strong>샘플 데이터로 PoC</strong>를 수행하여 유효성이 확인된 경우 단계적으로 확대하며,
+        외부 컨설턴트와의 안전한 원격 협업을 위해
+        <strong>Google Workspace 법인계정 · 1Password 법인계정</strong> 도입을 함께 요청드립니다.
+      </p>
+    </div>
+
+    <!-- ============== 2. 현황 ============== -->
+    <section class="section">
+      <p class="section-title">02 · Context</p>
+      <h2 class="section-h2">현황 및 추진 동기</h2>
+      <ul>
+        <li><strong>현황</strong>: 내부 팀에서 ERP 데이터를 주기적으로 정리·가공하여 잘 구조화된 보고서를 대표이사께 전달하고 있음</li>
+        <li><strong>한계</strong>: 가용 인력·시간 제약 상, 보고할 수 있는 <strong>정보의 양과 분석 단면(시계열·세그먼트·교차 비교 등)에 자연스러운 한계</strong> 존재</li>
+        <li><strong>기회</strong>: 시장 변동성·의사결정 속도가 중요해지는 환경에서, 대표이사가 <strong>더 넓은 범위·더 깊은 단면</strong>의 데이터를 적시에 검토할 수 있다면 의사결정 품질·속도 모두 향상 가능</li>
+        <li><strong>수단</strong>: AI 도구(특히 Claude Code)의 성숙으로, 동일 인력 구성에서도 분석 범위·결과물 형식을 다양화하는 것이 현실적 선택지로 등장</li>
+        <li><strong>선결 과제</strong>: 외부 컨설턴트의 원격 협업이 전제되므로, <strong>자료·계정 보안 체계의 사전 정립이 필수</strong></li>
+      </ul>
+    </section>
+
+    <!-- ============== 3. 목적 ============== -->
+    <section class="section">
+      <p class="section-title">03 · Why</p>
+      <h2 class="section-h2">추진 목적 (기대 효과)</h2>
+      <table class="data">
+        <thead><tr><th style="width:160px">구분</th><th>기대 효과</th></tr></thead>
+        <tbody>
+          <tr><td><strong>분석 범위·깊이 확장</strong></td><td>기존 보고서에 시계열 추세·세그먼트 분석·교차 비교 등 새로운 단면 추가</td></tr>
+          <tr><td><strong>의사결정 속도</strong></td><td>HTML 링크 형태로 제공 → 대표이사가 PC·모바일 어디서나 즉시 조회</td></tr>
+          <tr><td><strong>일관성</strong></td><td>동일 입력 → 동일 가공 → 보고서 포맷 표준화, 시점별 비교 용이</td></tr>
+          <tr><td><strong>단계적 검증</strong></td><td>샘플 PoC → 유효성 판단 → 단계적 확대로 투자 리스크 최소화</td></tr>
+          <tr><td><strong>자산화</strong></td><td>산출물(코드·문서·계정)이 모두 회사 자산으로 잔존 → 외부 인력 의존도 ↓</td></tr>
+          <tr><td><strong>보안 정비</strong></td><td>도구 도입을 계기로 외부 협업용 계정·자격증명 관리 체계를 일괄 정립</td></tr>
+        </tbody>
+      </table>
+      <div class="callout accent">
+        ※ 본 안의 핵심은 <strong>현재 보고 체계의 대체가 아니라, 분석 가능 범위의 확장</strong>입니다.
+        현행 보고는 유지하면서 AI 활용 분석을 별도 트랙으로 시범 운영합니다.
+      </div>
+    </section>
+
+    <!-- ============== 4. 성공지표 ============== -->
+    <section class="section">
+      <p class="section-title">04 · Success</p>
+      <h2 class="section-h2">성공 지표</h2>
+      <h3 class="section-h3">PoC 단계 — Gate 판단 기준</h3>
+      <ul>
+        <li>샘플 데이터 기반 신규 분석 보고서 <strong>1~2건</strong> 시범 작성</li>
+        <li>대표이사 검토 후 <strong>"현행 보고 대비 추가 가치 있음"</strong> 판단 시 확대 결정</li>
+      </ul>
+      <h3 class="section-h3">확대 단계 — 본운영</h3>
+      <ul>
+        <li>정기 보고에 <strong>신규 분석 항목 편입</strong> (수·범위는 PoC 결과에 따라 협의)</li>
+        <li>결과물 접근성: 대표이사가 PC/모바일에서 링크 1회로 열람</li>
+        <li>보안: 외부 컨설턴트 계약 종료 시 <strong>1회 작업으로 모든 접근 권한 회수</strong> 가능</li>
+      </ul>
+    </section>
+
+    <!-- ============== 5. 추진체계 ============== -->
+    <section class="section">
+      <p class="section-title">05 · Audience</p>
+      <h2 class="section-h2">추진 체계 및 역할</h2>
+      <table class="data">
+        <thead><tr><th>역할</th><th class="num">인원</th><th>주요 책임</th></tr></thead>
+        <tbody>
+          <tr><td>대표이사</td><td class="num">1</td><td>보고서 수신·의사결정</td></tr>
+          <tr><td>내부 팀장 (보고자)</td><td class="num">1</td><td>ERP 원본 데이터 추출·전달, 계정·권한 관리, 보고서 검토</td></tr>
+          <tr><td>내부 실무자</td><td class="num">1~2</td><td>보조 업무·검토</td></tr>
+          <tr><td>외부 자문 컨설턴트</td><td class="num">1</td><td>Claude Code 기반 자동화 구축·운영 (사내 PC 원격 접속)</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2"><strong>합계</strong></td><td><strong>5명 이내</strong> (계정 라이선스 산정 기준)</td></tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- ============== 6. 흐름 ============== -->
+    <section class="section">
+      <p class="section-title">06 · How it works</p>
+      <h2 class="section-h2">작업 흐름</h2>
+<pre class="flow">[사내 ERP]
+   │  ① 내부 팀장이 필요한 자료를 수기 추출 (.xlsx / .csv)
+   ▼
+[사내 작업 PC]  ← 외부 컨설턴트가 원격 접속 (사내 자료는 PC 밖으로 반출 X)
+   │  ② Claude Code가 데이터 → HTML 보고서 변환
+   ▼
+[Google Drive (법인 계정)]  ← 조직 내부자 한정 링크 권한
+   │  ③ HTML 보고서 저장 및 링크 생성
+   ▼
+[대표이사]  ← 링크 클릭으로 조회 (PC / 모바일)</pre>
+    </section>
+
+    <!-- ============== 7. 도구 구성 ============== -->
+    <section class="section">
+      <p class="section-title">07 · Tool Stack</p>
+      <h2 class="section-h2">도입 도구 구성</h2>
+      <table class="data">
+        <thead><tr><th>도구</th><th>역할</th><th>라이선스</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Claude Code</strong><br/><span style="color:var(--color-text-muted);font-size:12px;">Anthropic</span></td><td>AI 보고서 생성 엔진</td><td>사용자 계정</td><td>사내 PC에서 실행, 컨설턴트가 운용</td></tr>
+          <tr><td><strong>Google Workspace</strong><br/><span style="color:var(--color-text-muted);font-size:12px;">Business Plus</span></td><td>법인 메일·드라이브·권한 관리</td><td>법인계정 / 인당 월 라이선스</td><td>보고서 호스팅 및 공유</td></tr>
+          <tr><td><strong>1Password</strong><br/><span style="color:var(--color-text-muted);font-size:12px;">Teams Starter Pack</span></td><td>자격증명(ID/PW) 그룹 금고</td><td>법인계정 / 10인 정액</td><td>향후 추가 SaaS 자격증명 통합 관리</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============== 8. 보안 체계 ============== -->
+    <section class="section">
+      <p class="section-title">08 · Security</p>
+      <h2 class="section-h2">보안 체계 (핵심)</h2>
+
+      <h3 class="section-h3">8-1. 데이터 처리 경로 (정확한 사실)</h3>
+      <ul>
+        <li>ERP <strong>원본 파일</strong>(엑셀/CSV)은 사내 작업 PC에만 저장 — 외부 파일 공유·이메일 첨부 차단</li>
+        <li>외부 컨설턴트는 <strong>원격 접속(RDP/VDI 등)</strong>으로 사내 PC 화면을 사용 (가능 시 클립보드·드라이브 매핑 차단)</li>
+        <li>AI(Claude Code) 분석 시점에는 분석에 필요한 <strong>데이터가 Anthropic 서버로 일시 전송</strong>됨 (TLS 1.2+ 암호화) — 자세한 정책은 8-5 참조</li>
+        <li><strong>민감 항목(개인정보·매출 상세·인사 정보 등)은 마스킹·집계 후에만 AI에 입력</strong>하는 원칙 적용</li>
+        <li>외부 반출 가능한 산출물은 <strong>최종 HTML 보고서</strong>에 한정 (Google Drive 법인 계정 저장)</li>
+      </ul>
+
+      <h3 class="section-h3">8-2. 보고서 접근 권한 통제</h3>
+      <ul>
+        <li>Google Drive 공유 정책: <strong>"링크가 있는 모든 사용자" 옵션 사용 금지</strong></li>
+        <li><strong>"조직 내부자에 한해 링크 접근"</strong> 또는 <strong>"지정 사용자만"</strong>으로 강제</li>
+        <li>외부 공유가 불가피한 경우 만료일·다운로드 금지 설정</li>
+        <li>감사 로그(누가·언제·어떤 파일을 열람) 표준 보존</li>
+      </ul>
+
+      <h3 class="section-h3">8-3. 자격증명 통합 관리</h3>
+      <ul>
+        <li>모든 법인 SaaS 계정의 ID/PW는 1Password <strong>그룹 금고(Vault)</strong>에 보관</li>
+        <li>개인 메모·메신저·엑셀로 비밀번호 공유 <strong>전면 금지</strong></li>
+        <li>외부 컨설턴트는 별도 그룹으로 분리 권한 부여</li>
+        <li><strong>계약 종료 시 그룹 탈퇴 1회로 모든 SaaS 접근 동시 차단</strong></li>
+      </ul>
+
+      <h3 class="section-h3">8-4. 계정 Lifecycle</h3>
+      <ul>
+        <li>외부 인력 계정은 가입 시점부터 종료일을 명시</li>
+        <li>분기별 계정·권한 점검 (미사용·역할 변동 정리)</li>
+      </ul>
+
+      <h3 class="section-h3">8-5. AI(Claude Code) 데이터 정책 — Anthropic 공식</h3>
+      <table class="data">
+        <thead><tr><th style="width:200px">항목</th><th>본 안 적용 내용</th></tr></thead>
+        <tbody>
+          <tr><td>학습 사용</td><td><strong>모델 학습에 사용되지 않음</strong> (Max 플랜은 기본 옵트아웃, Team/Enterprise는 약관상 미사용)</td></tr>
+          <tr><td>데이터 보관</td><td><strong>30일 후 자동 삭제</strong> (Max/Team 공통)</td></tr>
+          <tr><td>즉시 삭제 (ZDR)</td><td>Enterprise 플랜에서만 제공 — PoC 단계는 미적용, 확대 단계에서 필요성 재평가</td></tr>
+          <tr><td>전송 구간 보안</td><td>TLS 1.2+ 암호화</td></tr>
+          <tr><td>운영 원칙</td><td>민감 항목 마스킹·집계 → AI 입력 → 결과 검수 → 보고서화</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        ※ 출처: Anthropic 공식 데이터 사용 정책 (code.claude.com/docs).
+        PoC 결과를 바탕으로 향후 더 강한 정책(ZDR / Enterprise) 전환 여부를 별도 검토.
+      </div>
+    </section>
+
+    <!-- ============== 9. ADR ============== -->
+    <section class="section">
+      <p class="section-title">09 · Decision Records</p>
+      <h2 class="section-h2">도구 채택 근거 (ADR)</h2>
+
+      <!-- ADR-001 -->
+      <div class="adr">
+        <h3 class="adr-title">ADR-001 · 분석·보고서 생성 엔진으로 Claude Code 채택</h3>
+        <div class="adr-field">
+          <div class="adr-field-label">Context</div>
+          <ul>
+            <li>현재 정기 보고에 사용하는 ERP 데이터에 <strong>다각도 분석·요약·시각화 추가</strong>로 대표이사 의사결정 지원</li>
+            <li>코드 작성·실행·파일 입출력·문서화를 한 환경에서 처리하여 구축·유지 비용 최소화</li>
+            <li>PoC 단계에서 빠른 가설 검증·결과물 반복 가능해야 함</li>
+            <li>외부 컨설턴트가 떠난 뒤에도 회사가 산출물을 그대로 운용할 수 있어야 함</li>
+          </ul>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Decision</div>
+          <p>분석·보고서 생성 엔진으로 <strong>Anthropic Claude Code</strong>를 채택하며, 플랜은 <strong>Claude Max 5x 2계정</strong>(관리자 + 외부 컨설턴트)을 권장한다.</p>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Consequences</div>
+          <ul>
+            <li><strong>긍정</strong>: 코드+실행+문서화가 한 도구에서 가능, 산출물(코드·문서)이 회사 자산으로 잔존</li>
+            <li><strong>긍정</strong>: Max 플랜은 학습에 사용되지 않으며(옵트아웃 기본), 데이터 30일 후 자동 삭제</li>
+            <li><strong>긍정</strong>: 관리자도 동일 도구를 사용하므로 <strong>컨설턴트 산출물 검증·계약 종료 후 자체 운용</strong> 가능</li>
+            <li><strong>유의</strong>: AI 분석 단계에서 입력 데이터가 Anthropic 서버로 전송됨 → 마스킹·집계 원칙 적용 (8-1, 8-5)</li>
+            <li><strong>유의</strong>: 즉시 삭제(ZDR)는 Enterprise에서만 가능 → PoC 단계 미적용, 확대 시 재평가</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ADR-002 -->
+      <div class="adr">
+        <h3 class="adr-title">ADR-002 · Google Workspace 법인계정 채택</h3>
+        <div class="adr-field">
+          <div class="adr-field-label">Context</div>
+          <ul>
+            <li>5인 내외 소규모이지만, HTML 보고서를 외부 인사 포함 통제된 방식으로 공유해야 함</li>
+            <li>개인 Gmail·드라이브 사용 시 자산 회수·감사 불가능</li>
+          </ul>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Decision</div>
+          <p><strong>Google Workspace Business Plus</strong> 법인계정(5인)으로 도메인·메일·드라이브·권한 체계를 구축한다.</p>
+          <div class="callout">
+            <strong>Plus 선택 이유</strong>: Vault(감사 로그·이디스커버리·보존정책)가 Plus부터 제공됨.
+            외부 인력이 접근하는 환경에서 누가 언제 어떤 파일을 열람·수정했는지 추적 가능해야 함.
+          </div>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Consequences</div>
+          <ul>
+            <li><strong>긍정</strong>: 법인 도메인 기반 계정 → 개인 계정과 데이터 분리, 자산 회수 가능</li>
+            <li><strong>긍정</strong>: 조직 단위 공유 정책(외부 공유 차단·만료일) 표준 제공</li>
+            <li><strong>긍정</strong>: Vault 감사 로그 표준 제공 → 외부 인력 접근 이력 추적</li>
+            <li><strong>긍정</strong>: 사용자당 5TB 스토리지 → 보고서·자료 보관 여유</li>
+            <li><strong>부담</strong>: 인당 <span class="num">$22</span>/월 (5인 약 <span class="num">$110</span>/월) — Standard 대비 약 <span class="num">$40</span>/월 더 비싸나 감사 기능 확보 가치 우선</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ADR-003 -->
+      <div class="adr">
+        <h3 class="adr-title">ADR-003 · 1Password 법인계정 채택</h3>
+        <div class="adr-field">
+          <div class="adr-field-label">Context</div>
+          <ul>
+            <li>향후 추가될 SaaS(분석·차트·번역 등) 자격증명을 안전하게 공유·회수해야 함</li>
+            <li>외부 컨설턴트가 일부 자격증명을 사용해야 하나, 계약 종료 시 일괄 회수 필수</li>
+          </ul>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Decision</div>
+          <p><strong>1Password Teams Starter Pack</strong> (10인 정액 <span class="num">$19.95</span>/월) 법인계정 + 그룹 금고(Vault) 운영을 채택한다.</p>
+          <div class="callout">
+            <strong>플랜 선택 근거</strong>: 본 안 인원은 5인 이내이므로 인당 단가 <span class="num">$7.99</span>인 Business(<span class="num">$39.95</span>/월)보다
+            <strong>10인 정액 <span class="num">$19.95</span>인 Starter Pack이 약 절반 가격</strong>.
+            SSO·고급 감사 기능이 필요해지는 시점에 Business로 업그레이드.
+          </div>
+        </div>
+        <div class="adr-field">
+          <div class="adr-field-label">Consequences</div>
+          <ul>
+            <li><strong>긍정</strong>: 그룹 단위 권한 부여·회수 → 계약 종료 시 즉시 모든 비밀번호 접근 차단</li>
+            <li><strong>긍정</strong>: 비밀번호 사용·열람 감사 로그 보존</li>
+            <li><strong>긍정</strong>: 향후 추가 SaaS도 동일 체계로 흡수 가능 (확장성)</li>
+            <li><strong>부담</strong>: 월 <span class="num">$19.95</span> 정액 → 5인 규모에서 비용 부담 가장 낮음</li>
+            <li><strong>한계</strong>: Starter Pack은 SSO·고급 감사 기능 미포함 → 인원 확대·SSO 필요 시 Business로 전환</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 10. 일정 ============== -->
+    <section class="section">
+      <p class="section-title">10 · Timeline</p>
+      <h2 class="section-h2">단계별 일정 (안)</h2>
+      <table class="data">
+        <thead><tr><th style="width:80px">단계</th><th>내용</th><th style="width:120px" class="num">기간(예상)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td><strong>인프라</strong>: Google Workspace · 1Password 법인계정 가입, 도메인 연결, 5인 계정 생성</td><td class="num">1주</td></tr>
+          <tr><td><strong>2</strong></td><td><strong>환경 구축</strong>: 사내 작업 PC 지정, 원격 접속 환경, Claude Code 설치·점검</td><td class="num">1주</td></tr>
+          <tr><td><strong>3</strong></td><td><strong>PoC</strong>: ERP <strong>샘플 데이터</strong>로 신규 분석 보고서 1~2건 시범 작성 → 대표이사 검토</td><td class="num">2~3주</td></tr>
+          <tr style="background:#fffbeb;"><td><strong>Gate</strong></td><td><strong>유효성 판단</strong> — 대표이사가 "현행 보고 대비 추가 가치 있음" 판단 시에만 확대</td><td class="num">—</td></tr>
+          <tr><td><strong>4</strong></td><td>(Gate 통과 시) 분석 항목 확대, 정기 보고에 단계적 편입, 운영 체크리스트 정립</td><td class="num">이후 단계적</td></tr>
+        </tbody>
+      </table>
+      <div class="callout accent">
+        ※ 3단계까지의 비용·공수만으로 <strong>유효성 검증 후 확대 여부를 결정</strong>하는 구조이므로, 도입 결정의 리스크가 제한적입니다.
+      </div>
+    </section>
+
+    <!-- ============== 11. 비용 ============== -->
+    <section class="section">
+      <p class="section-title">11 · Cost</p>
+      <h2 class="section-h2">비용 (공식 요금 기준 / USD)</h2>
+
+      <h3 class="section-h3">11-1. 기본 인프라</h3>
+      <table class="data">
+        <thead>
+          <tr>
+            <th>항목</th><th>권장 플랜</th>
+            <th class="num">단가</th><th class="num">5인 월 비용</th>
+            <th>비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="recommend">
+            <td>Google Workspace</td><td><strong>Business Plus</strong></td>
+            <td class="num">$22/인/월</td><td class="num"><strong>$110</strong></td>
+            <td>Vault 감사로그 확보</td>
+          </tr>
+          <tr>
+            <td>Google Workspace <em>(대안)</em></td><td>Business Standard</td>
+            <td class="num">$14/인/월</td><td class="num">$70</td>
+            <td>감사로그 미포함</td>
+          </tr>
+          <tr class="recommend">
+            <td>1Password</td><td><strong>Teams Starter Pack</strong></td>
+            <td class="num">$19.95/월 정액</td><td class="num"><strong>$19.95</strong></td>
+            <td>10인 한도 · 5인 규모 최적</td>
+          </tr>
+          <tr>
+            <td>1Password <em>(대안)</em></td><td>Business</td>
+            <td class="num">$7.99/인/월</td><td class="num">$39.95</td>
+            <td>SSO·고급감사 필요 시</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 class="section-h3">11-2. AI 엔진 (Claude Code) — 3개 시나리오 비교</h3>
+      <table class="data">
+        <thead>
+          <tr>
+            <th>시나리오</th><th>구성</th>
+            <th class="num">월 비용</th>
+            <th>학습</th><th>데이터 보관</th><th>적합성</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A</strong></td>
+            <td>Claude Max 5x <strong>1계정</strong> (컨설턴트만)</td>
+            <td class="num"><strong>$100</strong></td>
+            <td>옵트아웃</td><td class="num">30일</td>
+            <td>PoC 최저 비용. 관리자 자체 운용 불가</td>
+          </tr>
+          <tr>
+            <td><strong>A'</strong></td>
+            <td>Claude Max 20x <strong>1계정</strong> (컨설턴트만)</td>
+            <td class="num"><strong>$200</strong></td>
+            <td>옵트아웃</td><td class="num">30일</td>
+            <td>대용량 분석 필요 시</td>
+          </tr>
+          <tr class="recommend">
+            <td><span class="badge recommend">권장</span> <strong>B</strong></td>
+            <td>Claude Max 5x <strong>2계정</strong> (관리자 + 컨설턴트)</td>
+            <td class="num"><strong>$200</strong></td>
+            <td>옵트아웃</td><td class="num">30일</td>
+            <td>동일 비용으로 <strong>관리자도 직접 사용</strong>, 인수인계·검증 강화</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout accent">
+        <strong>시나리오 B 권장 근거</strong>: A'와 동일한 월 <span class="num">$200</span>으로 ①내부 팀장이 산출물을 직접 검증·수정 가능,
+        ②계약 종료 후 자체 운용 가능, ③PoC 단계부터 내부 학습 효과 누적.
+      </div>
+
+      <h3 class="section-h3">11-3. 그 외 (별도 산정)</h3>
+      <table class="data">
+        <thead><tr><th>항목</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>원격 접속 솔루션</td><td>사내 보유 솔루션 확인 후 산정</td></tr>
+          <tr><td>외부 컨설턴트 자문료</td><td>기존 자문 계약 범위 내 진행 가능 여부 확인</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="section-h3">11-4. 권장안 총 월 비용 요약</h3>
+      <table class="data">
+        <thead>
+          <tr>
+            <th>구성</th><th>Workspace</th><th>1Password</th><th>Claude Code</th>
+            <th class="num">합계 / 월</th><th class="num">합계 / 년</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>최저</td>
+            <td>Standard <span class="num">$70</span></td>
+            <td>Starter <span class="num">$19.95</span></td>
+            <td>Max 5x ×1 <span class="num">$100</span></td>
+            <td class="num">약 $190</td>
+            <td class="num">약 $2,280</td>
+          </tr>
+          <tr class="recommend">
+            <td><span class="badge recommend">권장</span></td>
+            <td><strong>Plus <span class="num">$110</span></strong></td>
+            <td><strong>Starter <span class="num">$19.95</span></strong></td>
+            <td><strong>Max 5x ×2 <span class="num">$200</span></strong></td>
+            <td class="num"><strong>약 $330</strong></td>
+            <td class="num"><strong>약 $3,960</strong></td>
+          </tr>
+          <tr>
+            <td>참고 · 확장</td>
+            <td>Plus <span class="num">$110</span></td>
+            <td>Business <span class="num">$39.95</span></td>
+            <td>Max 20x ×2 <span class="num">$400</span></td>
+            <td class="num">약 $550</td>
+            <td class="num">약 $6,600</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        ※ USD 기준. <strong>환율 1,400원/USD 가정 시 권장안 월 약 46만원 / 연 약 555만원</strong> 수준.<br/>
+        ※ 정확한 청구액·세금계산서 처리는 1단계 가입 시 확인 후 재보고드립니다.
+      </div>
+    </section>
+
+    <!-- ============== 12. 리스크 ============== -->
+    <section class="section">
+      <p class="section-title">12 · Risk</p>
+      <h2 class="section-h2">리스크 및 대응</h2>
+      <table class="data">
+        <thead>
+          <tr>
+            <th>리스크</th><th style="width:90px">영향도</th><th>대응 방안</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>외부 컨설턴트 원격 접속 중 사내 자료 유출</td>
+            <td><span class="badge high">高</span></td>
+            <td>원격 접속 로그 보존, 파일 외부 전송·클립보드 차단 설정, 작업 시간대·범위 사전 합의</td>
+          </tr>
+          <tr>
+            <td>AI 분석 과정에서 민감 데이터 외부 송신</td>
+            <td><span class="badge mid">中</span></td>
+            <td>마스킹·집계 후 AI 입력 원칙, 개인정보·매출 상세는 사내 단계에서 분리. Max 플랜은 학습 미사용·30일 후 삭제 (Anthropic 공식)</td>
+          </tr>
+          <tr>
+            <td>Claude Code의 원본 파일 자동 읽기 (예: <code>.env</code>)</td>
+            <td><span class="badge mid">中</span></td>
+            <td>작업 PC에 분석용 폴더 분리, 자격증명·민감 파일은 별도 위치 보관, 권한 설정으로 접근 제한</td>
+          </tr>
+          <tr>
+            <td>컨설턴트 계약 종료 후 시스템 유지 불가</td>
+            <td><span class="badge mid">中</span></td>
+            <td><strong>시나리오 B 채택 시 관리자가 동일 도구 사용</strong> → 자체 운용 가능. 코드·문서 일체 회사 보유, 1Password로 자격증명 일괄 회수, 인수인계 문서 의무화</td>
+          </tr>
+          <tr>
+            <td>SaaS 라이선스 비용 누적</td>
+            <td><span class="badge low">低</span></td>
+            <td>분기별 사용자 점검, 미사용 계정 즉시 비활성화</td>
+          </tr>
+          <tr>
+            <td>도구 장애·서비스 중단</td>
+            <td><span class="badge low">低</span></td>
+            <td>원본 데이터는 사내 ERP에 보존 → 일시 중단 시에도 현행 수기 보고로 fallback 가능</td>
+          </tr>
+          <tr>
+            <td>환율 변동에 따른 비용 증가</td>
+            <td><span class="badge low">低</span></td>
+            <td>USD 청구이므로 월별 KRW 비용 변동 가능 → 분기별 결산 시 점검</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============== 13. 결재 요청 ============== -->
+    <section class="section">
+      <p class="section-title">13 · Approval Request</p>
+      <h2 class="section-h2">결재 요청 사항</h2>
+      <ol class="approval-list">
+        <li>
+          <strong>법인계정 가입 승인</strong>
+          <div class="sub">
+            · Google Workspace <strong>Business Plus</strong> 5인 (월 약 <span class="num">$110</span>)<br/>
+            · 1Password <strong>Teams Starter Pack</strong> (월 정액 <span class="num">$19.95</span>)
+          </div>
+        </li>
+        <li>
+          <strong>Claude Code 플랜 선택 승인</strong>
+          <div class="sub">
+            · 권장: <strong>Max 5x 2계정</strong> (관리자 + 컨설턴트, 월 <span class="num">$200</span>)<br/>
+            · 대안 A: Max 5x 1계정 (<span class="num">$100</span>) — 컨설턴트만, 자체 운용 불가<br/>
+            · 대안 A': Max 20x 1계정 (<span class="num">$200</span>) — 단일 계정 대용량
+          </div>
+        </li>
+        <li>
+          <strong>사내 작업 PC 1대 지정</strong> 및 외부 컨설턴트 원격 접속 권한 부여 승인
+        </li>
+        <li>
+          <strong>AI 처리 시 민감 데이터 마스킹·집계 원칙</strong> 적용 승인
+        </li>
+        <li>
+          <strong>권장안 기준 월 약 <span class="num">$330</span>(약 46만원) 비용 집행 승인</strong>
+        </li>
+        <li>
+          1단계 완료 후 <strong>확정 비용·일정 재보고</strong> 일정 지정
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============== Open Questions ============== -->
+    <section class="section">
+      <p class="section-title">Appendix · Open Questions</p>
+      <h2 class="section-h2">보고 전 사내 확인 필요 사항</h2>
+      <ul class="checklist">
+        <li>원격 접속 솔루션 결정 (사내 VPN+RDP / 상용 솔루션 등)</li>
+        <li>ERP 데이터 추출 주기·범위 (월/주/일, 매출/원가/재고/인사 등)</li>
+        <li>CEO 보고서 1차 항목 우선순위 (대표이사 인터뷰 또는 기존 보고서 분석)</li>
+        <li><strong>Claude Code 플랜 결정</strong> — 시나리오 A(<span class="num">$100</span>) / A'(<span class="num">$200</span>) / B 권장(<span class="num">$200</span>) 중 선택</li>
+        <li><strong>USD 결제 수단 확보</strong> — 법인 신용카드(해외 결제 가능) 또는 카드 발급 일정</li>
+        <li><strong>세금계산서·수입세금계산서 처리 방식</strong> — 회계 담당자 사전 협의 (Anthropic·Google·1Password 모두 해외 사업자)</li>
+        <li>외부 컨설턴트 자문 계약서에 <strong>보안 서약·NDA</strong> 포함 여부 점검</li>
+        <li><strong>법인 도메인 보유 여부</strong> (Google Workspace 가입 전제 — 미보유 시 도메인 등록 선행)</li>
+        <li>ZDR(Enterprise) 전환 필요 시점·기준 (확대 단계 재평가)</li>
+      </ul>
+    </section>
+
+    <!-- ============== Footer ============== -->
+    <footer class="report-footer">
+      <p>본 기획안은 검토 단계(Draft)이며, 결재 요청 사항에 따라 1단계 진행 후 확정 내용을 재보고드립니다.</p>
+      <p>작성: 2026-05-25 · 작성자: 내부 팀장</p>
+    </footer>
+
+  </div>
+</body>
+</html>
